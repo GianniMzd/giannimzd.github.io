@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gianni — Finance & Risk</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── LIGHT THEME (default) ── */
+    :root,
+    [data-theme="light"] {
+      --bg: #faf9f7;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --accent: #1a3a5c;
+      --accent-light: #e8f0f8;
+      --link: #1a3a5c;
+      --border: #e0ddd8;
+      --tag-bg: #f0f4f8;
+      --toggle-bg: #e8f0f8;
+      --toggle-color: #1a3a5c;
+      --paper-text: #333;
+      --news-text: #333;
+    }
+
+    /* ── DARK THEME ── */
+    [data-theme="dark"] {
+      --bg: #0f1117;
+      --text: #e8e4dc;
+      --muted: #7a7a8a;
+      --accent: #7eaacc;
+      --accent-light: #1a2535;
+      --link: #8ab8d8;
+      --border: #2a2d36;
+      --tag-bg: #1a1d26;
+      --toggle-bg: #1a2535;
+      --toggle-color: #8ab8d8;
+      --paper-text: #c8c4bc;
+      --news-text: #c8c4bc;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 6rem;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.5rem;
+      background: var(--toggle-bg);
+      color: var(--toggle-color);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      z-index: 100;
+      letter-spacing: 0.02em;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    .theme-toggle svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .header-text {
+      flex: 1;
+    }
+
+    .header h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 3.4rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.9rem;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .header p {
+      color: var(--news-text);
+      margin-bottom: 0.5rem;
+      max-width: 520px;
+    }
+
+    /* ── INLINE LINKS ── */
+    .uni-link {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.25s ease;
+      padding-bottom: 2px;
+    }
+
+    .header-photo {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+    }
+
+    .header-photo-placeholder {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'EB Garamond', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    /* ── LINKS ROW ── */
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.2rem;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+    }
+
+    .links a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .links a:hover {
+      border-bottom-color: var(--link);
+    }
+
+    /* ── SECTION ── */
+    section {
+      margin-top: 3rem;
+    }
+
+    section h2 {
+      font-family: 'Caveat', cursive;
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-transform: lowercase;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.4rem;
+      transition: border-color 0.25s;
+    }
+
+    /* ── NEWS ── */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .news-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0 1rem;
+      align-items: baseline;
+    }
+
+    .news-date {
+      font-size: 0.82rem;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-top: 0.05rem;
+    }
+
+    .news-text {
+      font-size: 0.93rem;
+      color: var(--news-text);
+    }
+
+    .news-text a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .news-text a:hover {
+      border-bottom-color: var(--link);
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    /* ── PAPERS ── */
+    .paper-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+
+    .paper {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 0 1.2rem;
+      align-items: start;
+    }
+
+    .paper-thumb {
+      width: 110px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+    }
+
+    .paper-thumb-placeholder {
+      width: 110px;
+      height: 80px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .paper-venue {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .paper-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .paper-title a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .paper-title a:hover {
+      color: var(--accent);
+    }
+
+    .paper-authors {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .paper-authors a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .paper-authors a:hover {
+      color: var(--accent);
+    }
+
+    .paper-links {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .paper-links a {
+      font-size: 0.78rem;
+      color: var(--link);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .paper-links a:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      transition: border-color 0.25s;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 560px) {
+      body {
+        padding: 2rem 1.2rem 4rem;
+      }
+
+      .header {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+      }
+
+      .header-photo,
+      .header-photo-placeholder {
+        width: 80px;
+        height: 80px;
+      }
+
+      .paper {
+        grid-template-columns: 1fr;
+      }
+
+      .paper-thumb,
+      .paper-thumb-placeholder {
+        display: none;
+      }
+
+      .theme-toggle {
+        top: 0.8rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── THEME TOGGLE ── -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <!-- Moon icon (shown in light mode) -->
+    <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+    <!-- Sun icon (shown in dark mode, hidden initially) -->
+    <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <span id="toggleLabel">dark</span>
+  </button>
+
+  <!-- ═══════════════════════════════════
+       HEADER
+  ═══════════════════════════════════ -->
+  <div class="header">
+    <div class="header-text">
+      <h1>Gianni Mazaud</h1>
+
+      <p>
+        I am a student in <strong>Market Finance & Risk Management</strong> at the <a
+          href="https://www.pantheonsorbonne.fr/" target="_blank" class="uni-link">University Panthéon-Sorbonne</a>. My
+        interests sit at
+        the intersection
+        of
+        risk modeling, portfolio optimization, and financial modeling.
+      </p>
+
+      <p style="margin-top:0.6rem;">
+        I hold a Bachelor's degree in <strong>Applied Mathematics</strong> from <a href="https://univ-cotedazur.fr/"
+          target="_blank" class="uni-link">Nice University</a>, with a focus on social
+        sciences.
+        I'm expecting to graduate from a Master's degree in <strong>Finance</strong> from Panthéon-Sorbonne University,
+        with a focus on market finance & risk management, in June 2028.</p>
+
+      <p style="margin-top:0.6rem;">
+        Currently exploring several subjects: risk management, financial modeling, portfolio management (and
+        ocassionally accounting).
+      </p>
+
+      <div class="links">
+        <a href="mailto:gianni.mazaud@icloud.com">gianni.mazaud@icloud.com</a>
+        <a href="https://www.linkedin.com/in/gianni-mazaud-685587321/" target="_blank">LinkedIn</a>
+        <a href="https://github.com/GianniMzd" target="_blank">GitHub</a>
+      </div>
+    </div>
+
+    <div class="header-photo-placeholder">G</div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       NEWS
+  ═══════════════════════════════════ -->
+  <section>
+    <h2>news</h2>
+    <div class="news-list">
+
+      <div class="news-item">
+        <span class="news-date">Jun '26</span>
+        <span class="news-text">
+          <a href="News/Vivatech/vivatech_26.html">First time visiting VivaTech Paris.</a>
+          <span class="badge">New</span>
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════
+       PROJECTS
+  ═══════════════════════════════════ -->
+  <section>
+    <h2>selected projects</h2>
+    <div class="paper-list">
+
+      <!-- PROJECT 1 -->
+      <div class="paper">
+        <div class="paper-thumb-placeholder">📈</div>
+        <div>
+          <div class="paper-venue">Portfolio optimization · 2026</div>
+          <div class="paper-title">
+            <a href="https://github.com/GianniMzd/Beta-optimization/blob/main/preprint-draft.pdf">Optimal allocation
+              finding for an aggressive portfolio under given VaR constraint</a>
+          </div>
+          <div class="paper-authors">
+            Under the assumption of economic growth, the idea is to determine the allocation that gives the max beta
+            portfolio with a given MAVaR constraint
+            using KDE Monte Carlo simulation, SLSQP optimization, and walk-forward backtesting with train/deploy split.
+          </div>
+          <div class="paper-links">
+            <a href="https://github.com/GianniMzd/Beta-optimization/blob/main/preprint-draft.pdf">paper</a>
+            <a href="https://github.com/GianniMzd/Beta-optimization/blob/main/Beta_finding.py">code</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 2 -->
+      <div class="paper">
+        <div class="paper-thumb-placeholder">✈️</div>
+        <div>
+          <div class="paper-venue">Accounting · 2026</div>
+          <div class="paper-title">
+            <a href="#">Airline reporting comparison regarding IFRS 16 and how does Air France manage to bypass this
+              standard.</a>
+          </div>
+          <div class="paper-authors">
+            We compare the implications of the new IFRS 16 (leasing) standard for airlines and highlight the accounting
+            strategies used to mitigate its impact. We also analyze the case of Air France, which took advantage of the
+            "financing lease" to lower its lease liability.
+
+          </div>
+          <div class="paper-links">
+            <a href="#">paper</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 3 -->
+      <div class="paper">
+        <div class="paper-thumb-placeholder">📊</div>
+        <div>
+          <div class="paper-venue">Risk Management · 2025</div>
+          <div class="paper-title">
+            <a href="https://github.com/GianniMzd/VaR_CVaR_model/blob/main/Final_paper.pdf">Using Kernel Density
+              Function and Student's t-distribution to model Value at Risk and Expected
+              Shortfall using Monte Carlo method</a>
+          </div>
+          <div class="paper-authors">
+            Co-authored preprint with Yuto Murata. Monte Carlo method used on non-parametric KDE and parametric
+            Student's t-distribution to model Value at Risk and Expected Shortfall and compare it to traditional GBM.
+            It takes into consideration the Basel III/FTRB framework and uses a backtesting methodology to evaluate
+            the performance of the model.
+          </div>
+          <div class="paper-links">
+            <a href="https://github.com/GianniMzd/VaR_CVaR_model/blob/main/Final_paper.pdf">paper</a>
+            <a href="https://github.com/GianniMzd/VaR_CVaR_model/blob/main/VaR_CVaR_simulation.py">code</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <footer>
+    Last updated June 2026 · Built with plain HTML
+  </footer>
+
+  <script>
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const iconMoon = document.getElementById('iconMoon');
+    const iconSun = document.getElementById('iconSun');
+    const label = document.getElementById('toggleLabel');
+
+    // Respect system preference on first load
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const saved = localStorage.getItem('theme');
+    const initial = saved || (prefersDark ? 'dark' : 'light');
+    applyTheme(initial);
+
+    btn.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      localStorage.setItem('theme', next);
+    });
+
+    function applyTheme(theme) {
+      html.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        iconMoon.style.display = 'none';
+        iconSun.style.display = 'block';
+        label.textContent = 'light';
+      } else {
+        iconMoon.style.display = 'block';
+        iconSun.style.display = 'none';
+        label.textContent = 'dark';
+      }
+    }
+  </script>
+
+</body>
+
+</html>
