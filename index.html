@@ -25,7 +25,6 @@
       --paper-text: #333;
       --news-text: #333;
       --dot-color: rgba(26, 58, 92, 0.10);
-      /* Light mode dots */
     }
 
     /* ── DARK THEME ── */
@@ -43,7 +42,6 @@
       --paper-text: #c8c4bc;
       --news-text: #c8c4bc;
       --dot-color: rgba(126, 170, 204, 0.12);
-      /* Dark mode dots */
     }
 
     *,
@@ -404,11 +402,9 @@
 
   <!-- ── THEME TOGGLE ── -->
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-    <!-- Moon icon (shown in light mode) -->
     <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
-    <!-- Sun icon (shown in dark mode, hidden initially) -->
     <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
       <circle cx="12" cy="12" r="5" />
       <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -449,7 +445,7 @@
 
       <p style="margin-top:0.6rem;">
         Currently exploring several subjects: risk management, financial modeling, portfolio management (and
-        ocassionally accounting).
+        occasionally accounting).
       </p>
 
       <div class="links">
@@ -462,12 +458,11 @@
     <div class="header-photo-placeholder">G</div>
   </div>
 
-
   <!-- ═══════════════════════════════════
-       NEWS
+       EVENTS
   ═══════════════════════════════════ -->
   <section>
-    <h2>news</h2>
+    <h2>Events</h2>
     <div class="news-list">
 
       <div class="news-item">
@@ -486,7 +481,7 @@
        PROJECTS
   ═══════════════════════════════════ -->
   <section>
-    <h2>selected projects</h2>
+    <h2>projects</h2>
     <div class="paper-list">
 
       <!-- PROJECT 1 -->
@@ -517,14 +512,12 @@
           <div class="paper-venue">Accounting · 2026</div>
           <div class="paper-title">
             <a href="/paper/IFRS16_study.pdf">Airline reporting comparison regarding IFRS 16 and how does Air France
-              manage to bypass this
-              standard.</a>
+              manage to bypass this standard.</a>
           </div>
           <div class="paper-authors">
             We compare the implications of the new IFRS 16 (leasing) standard for airlines and highlight the accounting
             strategies used to mitigate its impact. We also analyze the case of Air France, which took advantage of the
             "financing lease" to lower its lease liability.
-
           </div>
           <div class="paper-links">
             <a href="#">paper</a>
@@ -558,42 +551,109 @@
     </div>
   </section>
 
+  <!-- ═══════════════════════════════════
+       AVIATION & AERONAUTICS
+  ═══════════════════════════════════ -->
+  <section>
+    <h2>aviation & aeronautics</h2>
+    <div>
+      <p style="color: var(--news-text); margin-bottom: 1rem; max-width: 650px;">
+        Since I was a child, I have been passionate about aviation, which has influenced me throughout the years.
+        In 2022, I earned my Light Aircraft Pilot License (LAPL). With over 110 flight hours, I fly in the south of
+        France,
+        especially in Corsica. I have flown the Robin DR400, Cessna 172, Cessna 152, and Piper PA28.
+      </p>
+      <div class="links" style="margin-top: 0;">
+        <a href="aero/aero_index.html"
+          style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; background: var(--accent-light); font-weight: 500;">
+          🛩️ Visit My Aviation Portal &rarr;
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════
+       CURRICULUM VITAE
+  ═══════════════════════════════════ -->
+  <section>
+    <h2>curriculum vitae</h2>
+    <div class="news-list">
+      <p style="color: var(--news-text); margin-bottom: 0.5rem; max-width: 600px;">
+        I am currently seeking professional internship opportunities for a gap year starting in <strong>June/July
+          2026</strong>.
+        Building upon my academic background, I possess a strong foundation in financial modeling (quantitative
+        methods),
+        risk management, accounting (especially IFRS) as well as a complete knowledge of financial instruments and
+        corporate finance.
+      </p>
+      <div class="links" style="margin-top: 0;">
+        <a href="/resume/Gianni_Mazaud_CV.pdf" target="_blank"
+          style="display: inline-flex; align-items: center; gap: 0.3rem;">
+          📄 Download CV (PDF)
+        </a>
+      </div>
+    </div>
+  </section>
 
   <footer>
     Last updated June 2026 · Built with AI 🤖
   </footer>
 
   <script>
-    const html = document.documentElement;
-    const btn = document.getElementById('themeToggle');
-    const iconMoon = document.getElementById('iconMoon');
-    const iconSun = document.getElementById('iconSun');
-    const label = document.getElementById('toggleLabel');
+    document.addEventListener('DOMContentLoaded', () => {
+      const html = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const iconMoon = document.getElementById('iconMoon');
+      const iconSun = document.getElementById('iconSun');
+      const label = document.getElementById('toggleLabel');
 
-    // Respect system preference on first load
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const saved = localStorage.getItem('theme');
-    const initial = saved || (prefersDark ? 'dark' : 'light');
-    applyTheme(initial);
+      if (!btn) return; // Safety check
 
-    btn.addEventListener('click', () => {
-      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      applyTheme(next);
-      localStorage.setItem('theme', next);
-    });
-
-    function applyTheme(theme) {
-      html.setAttribute('data-theme', theme);
-      if (theme === 'dark') {
-        iconMoon.style.display = 'none';
-        iconSun.style.display = 'block';
-        label.textContent = 'light';
-      } else {
-        iconMoon.style.display = 'block';
-        iconSun.style.display = 'none';
-        label.textContent = 'dark';
+      // 1. Try to get saved theme, with a fallback if the browser blocks it (like in local files)
+      let savedTheme = null;
+      try {
+        savedTheme = localStorage.getItem('theme');
+      } catch (e) {
+        console.warn("Local storage is restricted. Theme won't be saved on refresh.");
       }
-    }
+
+      // 2. Determine initial theme
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = savedTheme || (prefersDark ? 'dark' : 'light');
+
+      // 3. Apply theme function
+      function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        if (theme === 'dark') {
+          iconMoon.style.display = 'none';
+          iconSun.style.display = 'block';
+          label.textContent = 'light';
+        } else {
+          iconMoon.style.display = 'block';
+          iconSun.style.display = 'none';
+          label.textContent = 'dark';
+        }
+      }
+
+      // Set it on load
+      applyTheme(initial);
+
+      // 4. Click event to toggle
+      btn.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-theme');
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        applyTheme(nextTheme);
+
+        // Try saving it again safely
+        try {
+          localStorage.setItem('theme', nextTheme);
+        } catch (e) {
+          // Ignore error silently
+        }
+      });
+    });
   </script>
 
 </body>

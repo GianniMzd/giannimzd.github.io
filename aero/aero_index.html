@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coming Soon — Gianni Mazaud</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── LIGHT THEME (default) ── */
+        :root,
+        [data-theme="light"] {
+            --bg: #faf9f7;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #1a3a5c;
+            --accent-light: #e8f0f8;
+            --link: #1a3a5c;
+            --border: #e0ddd8;
+            --toggle-bg: #e8f0f8;
+            --toggle-color: #1a3a5c;
+            --dot-color: rgba(26, 58, 92, 0.10);
+        }
+
+        /* ── DARK THEME ── */
+        [data-theme="dark"] {
+            --bg: #0f1117;
+            --text: #e8e4dc;
+            --muted: #7a7a8a;
+            --accent: #7eaacc;
+            --accent-light: #1a2535;
+            --link: #8ab8d8;
+            --border: #2a2d36;
+            --toggle-bg: #1a2535;
+            --toggle-color: #8ab8d8;
+            --dot-color: rgba(126, 170, 204, 0.12);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 6rem;
+            transition: background-color 0.25s ease, color 0.25s ease;
+
+            /* Flexible layout to center the content vertically */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+
+            /* ── DOTTED BACKGROUND ── */
+            background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+            background-size: 22px 22px;
+            background-attachment: fixed;
+        }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.5rem;
+            background: var(--toggle-bg);
+            color: var(--toggle-color);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            z-index: 100;
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+        }
+
+        .theme-toggle svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* ── NAVIGATION ── */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent);
+        }
+
+        .nav-back svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* ── COMING SOON CONTENT ── */
+        .coming-soon-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-bottom: 10vh;
+            /* Slight optical adjustment */
+        }
+
+        .icon-placeholder {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .title {
+            font-family: 'Caveat', cursive;
+            font-size: 3.8rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            transition: border-color 0.25s;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 560px) {
+            body {
+                padding: 2rem 1.2rem 4rem;
+            }
+
+            .title {
+                font-size: 3rem;
+            }
+
+            .theme-toggle {
+                top: 0.8rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── THEME TOGGLE ── -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+        </svg>
+        <span id="toggleLabel">dark</span>
+    </button>
+
+    <!-- ── NAVIGATION ── -->
+    <a href="../index.html" class="nav-back">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+        Back to home
+    </a>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="coming-soon-container">
+        <div class="icon-placeholder">🚧</div>
+        <h1 class="title">Coming Soon</h1>
+        <p class="subtitle">I'm currently working on this section. Check back later to see my latest updates and
+            research.</p>
+    </main>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        Gianni Mazaud · june 2026
+    </footer>
+
+    <!-- ── SCRIPTS ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const iconMoon = document.getElementById('iconMoon');
+            const iconSun = document.getElementById('iconSun');
+            const label = document.getElementById('toggleLabel');
+
+            if (!btn) return;
+
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch (e) {
+                console.warn("Local storage is restricted. Theme won't be saved on refresh.");
+            }
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initial = savedTheme || (prefersDark ? 'dark' : 'light');
+
+            function applyTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    iconMoon.style.display = 'none';
+                    iconSun.style.display = 'block';
+                    label.textContent = 'light';
+                } else {
+                    iconMoon.style.display = 'block';
+                    iconSun.style.display = 'none';
+                    label.textContent = 'dark';
+                }
+            }
+
+            applyTheme(initial);
+
+            btn.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                applyTheme(nextTheme);
+
+                try {
+                    localStorage.setItem('theme', nextTheme);
+                } catch (e) { }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
