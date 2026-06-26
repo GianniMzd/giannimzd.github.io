@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VivaTech Paris 2026 — Gianni Mazaud</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── LIGHT THEME (default) ── */
+        :root,
+        [data-theme="light"] {
+            --bg: #faf9f7;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #1a3a5c;
+            --accent-light: #e8f0f8;
+            --link: #1a3a5c;
+            --border: #e0ddd8;
+            --tag-bg: #f0f4f8;
+            --toggle-bg: #e8f0f8;
+            --toggle-color: #1a3a5c;
+            --article-text: #333;
+        }
+
+        /* ── DARK THEME ── */
+        [data-theme="dark"] {
+            --bg: #0f1117;
+            --text: #e8e4dc;
+            --muted: #7a7a8a;
+            --accent: #7eaacc;
+            --accent-light: #1a2535;
+            --link: #8ab8d8;
+            --border: #2a2d36;
+            --tag-bg: #1a1d26;
+            --toggle-bg: #1a2535;
+            --toggle-color: #8ab8d8;
+            --article-text: #c8c4bc;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 6rem;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.5rem;
+            background: var(--toggle-bg);
+            color: var(--toggle-color);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            z-index: 100;
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+        }
+
+        .theme-toggle svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* ── NAVIGATION ── */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent);
+        }
+
+        .nav-back svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* ── ARTICLE HEADER ── */
+        .article-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .article-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            line-height: 1.1;
+        }
+
+        .article-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 0.1rem 0.45rem;
+            border-radius: 3px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        /* ── ARTICLE CONTENT ── */
+        .article-content {
+            color: var(--article-text);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 2.5rem 0 1rem;
+        }
+
+        .article-content a {
+            color: var(--link);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.25s ease;
+            padding-bottom: 2px;
+        }
+
+        .article-content a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--link);
+            transform: scaleX(0.3);
+            transform-origin: bottom left;
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        .article-content a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .article-content blockquote {
+            border-left: 3px solid var(--accent);
+            background: var(--accent-light);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .article-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── FIGURES & IMAGES ── */
+        .article-figure {
+            margin: 2.5rem 0;
+        }
+
+        .article-figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: border-color 0.25s;
+        }
+
+        .article-figure figcaption {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 0.65rem;
+            font-style: italic;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            transition: border-color 0.25s;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 560px) {
+            body {
+                padding: 2rem 1.2rem 4rem;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .theme-toggle {
+                top: 0.8rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── THEME TOGGLE ── -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+        </svg>
+        <span id="toggleLabel">dark</span>
+    </button>
+
+    <!-- ── NAVIGATION ── -->
+    <a href="../../index.html" class="nav-back">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+        Back to home
+    </a>
+
+    <!-- ── ARTICLE HEADER ── -->
+    <header class="article-header">
+        <h1 class="article-title">First Time at VivaTech Paris</h1>
+        <div class="article-meta">
+            <span>June 2026</span>
+            <span>•</span>
+            <span class="badge">Tech & Finance</span>
+        </div>
+    </header>
+
+    <!-- ── ARTICLE CONTENT ── -->
+    <article class="article-content">
+        <p>
+            Last week, I had the opportunity to attend <a href="https://vivatechnology.com/" target="_blank">VivaTech
+                Paris</a>
+            for the first time. As Europe's biggest tech event, the atmosphere at Paris Expo was incredibly innovative.
+            Coming from a finance background, I was curious about discovering what innovations are made in other
+            industries.
+        </p>
+
+        <p>
+            I spent most of the time attending conferences at the different stages and the theater.
+        </p>
+
+        <h2>Day one</h2>
+        <p>
+            I landed in Paris on June 18th in the morning, so I went to the event only in the afternoon.
+            I briefly explored the different stages and barely saw President Macron.
+        </p>
+
+        <h2>Day two</h2>
+        <p>
+            On June 19th I started with a small conference at the <b>Airbus stand about the future of aviation</b>.
+            The talk covered foldable wings, zeroE program which aims at doing electric flight without
+            batteries but hydrogen, and lastly the implications of AI in the industry. The presentation showed
+            us what the future of user flight experience could look like with for instance your seat screen
+            recognizing you and recommending you things based on previous travel, movies watched… But it also
+            helps for MRO (Maintenance, Repairs & Operations), like predicting a failure and early organizing the
+            maintenance.
+        </p>
+
+        <figure class="article-figure">
+            <img src="IMG_6642.jpg" alt="Airbus stand at VivaTech" />
+            <figcaption>The Airbus stand.</figcaption>
+        </figure>
+
+        <p>
+            After that I attended a round table about <b>the sovereignty (on European scale) of tech and AI</b>.
+            There was the former minister of AI and now French Ambassador to the EU Clara Chappaz, the CEO of ScaleWay
+            and the COO of Proton. It was an interesting topic given that we currently see the U.S. restricting the
+            access to some of their technology. They went through this new trend in Europe to build our own chips here
+            to reduce dependency. The core idea was to see Europe as an important actor in the AI and tech world thanks
+            to its regulation. While we often criticize EU regulations, they depicted another point of view. If you go
+            to US tech products, you have no guarantee that you will have access to it at all times and that your data
+            won't be sent to government or U.S. institutions. Europe brings that and we should capitalize on this to
+            spread and sell our products to people that want safe and independent products.
+        </p>
+
+        <p>
+            After that talk, I joined the theater to attend the conference of Cameron Fink, co-founder of Aaru. He
+            talked little about his company but more about his experience so far and our world today. There is one thing
+            he mentioned that kept my attention. There is a popular trend among entrepreneurs (and not only) to trash
+            universities as outdated and useless. Cameron Fink offered an interesting view of the matter saying: "if
+            you don't know what you want to do, college/uni is the best place to go".
+        </p>
+
+        <figure class="article-figure">
+            <img src="IMG_6652.jpg" alt="Conference at VivaTech theater" />
+            <figcaption>Cameron Fink at the VivaTech theater.</figcaption>
+        </figure>
+
+        <p>
+            Then, Emmanuel Moulin, the new Governor of the Bank of France came to give a short speech about the
+            future of money and especially euros (€). His view is that we are going to have digitalization of
+            traditional fiat currency. It will bring two changes to the payment system: the use of cash will (and has
+            already started to) decrease, and the digitalization of financial assets will take place. Tokenization in
+            the institution is seen as the next step in monetary markets. This implies that no intermediary will be
+            involved, which will significantly reduce costs. However, this comes with some risks. A main one is the risk
+            of dependency to a no-€ system.<br />
+            The Bank of France sees itself as a catalyst, not a substitute. Bank deposits need to enter the digital
+            world. In a nutshell: "the future of the euro is in code".
+        </p>
+
+        <figure class="article-figure">
+            <img src="IMG_6661.jpg" alt="Conference at VivaTech theater" />
+            <figcaption>Emmanuel Moulin giving his speech.</figcaption>
+        </figure>
+
+        <h2>Last day</h2>
+
+        <p>
+            The main point of the last day was the conference of Thomas Pesquet, a French astronaut (spationaut in
+            French ahah). Several topics came out, the first one was about his first extravehicular activity, the first
+            liftoff, and also the challenges to go to Mars.<br />
+            To him, the main challenge about going far beyond the Earth orbit (like lunar missions) is about the time it
+            takes. Pesquet explained a mission to Mars takes about 300 days to get there, 300 days on-site, and 300
+            days to return. Spending that much time so far seems more like a psychological issue at this point. He
+            explained the importance of travelling faster.
+        </p>
+
+        <figure class="article-figure">
+            <img src="IMG_6719.jpg" alt="Conference at VivaTech theater" />
+            <figcaption>Thomas Pesquet on stage.</figcaption>
+        </figure>
+
+    </article>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        Gianni Mazaud · june 2026
+    </footer>
+
+    <!-- ── SCRIPTS ── -->
+    <script>
+        const html = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        const iconMoon = document.getElementById('iconMoon');
+        const iconSun = document.getElementById('iconSun');
+        const label = document.getElementById('toggleLabel');
+
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const saved = localStorage.getItem('theme');
+        const initial = saved || (prefersDark ? 'dark' : 'light');
+        applyTheme(initial);
+
+        btn.addEventListener('click', () => {
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            localStorage.setItem('theme', next);
+        });
+
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            if (theme === 'dark') {
+                iconMoon.style.display = 'none';
+                iconSun.style.display = 'block';
+                label.textContent = 'light';
+            } else {
+                iconMoon.style.display = 'block';
+                iconSun.style.display = 'none';
+                label.textContent = 'dark';
+            }
+        }
+    </script>
+
+</body>
+
+</html>
