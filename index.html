@@ -9,7 +9,7 @@
     href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap"
     rel="stylesheet" />
   <style>
-    /* ── LIGHT THEME (default) ── */
+    /* ── LIGHT THEME ── */
     :root,
     [data-theme="light"] {
       --bg: #faf9f7;
@@ -22,7 +22,6 @@
       --tag-bg: #f0f4f8;
       --toggle-bg: #e8f0f8;
       --toggle-color: #1a3a5c;
-      --paper-text: #333;
       --news-text: #333;
       --dot-color: rgba(26, 58, 92, 0.10);
     }
@@ -39,7 +38,6 @@
       --tag-bg: #1a1d26;
       --toggle-bg: #1a2535;
       --toggle-color: #8ab8d8;
-      --paper-text: #c8c4bc;
       --news-text: #c8c4bc;
       --dot-color: rgba(126, 170, 204, 0.12);
     }
@@ -52,21 +50,99 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--bg);
       color: var(--text);
       font-family: 'Inter', sans-serif;
       font-size: 15px;
       line-height: 1.7;
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 3.5rem 2rem 6rem;
       transition: background-color 0.25s ease, color 0.25s ease;
-
-      /* ── DOTTED BACKGROUND ── */
       background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
       background-size: 22px 22px;
       background-attachment: fixed;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════
+       SIDEBAR
+    ══════════════════════════════ */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100vh;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 0.2rem 0 0;
+      z-index: 50;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      align-items: flex-end;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar-nav li {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .sidebar-nav li a {
+      display: block;
+      text-align: right;
+      text-decoration: none;
+      font-family: 'Caveat', cursive;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 0.38rem 0.6rem;
+      border-radius: 5px;
+      transition: color 0.15s, background 0.15s;
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+
+    .sidebar-nav li a:hover {
+      color: var(--text);
+      background: var(--accent-light);
+    }
+
+    .sidebar-nav li a.active {
+      color: var(--accent);
+      background: var(--accent-light);
+      font-weight: 700;
+    }
+
+    /* ══════════════════════════════
+       MAIN
+    ══════════════════════════════ */
+    .main {
+      margin-left: 200px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 3.5rem 3rem 5rem;
+    }
+
+    .main-inner {
+      width: 100%;
+      max-width: 720px;
     }
 
     /* ── THEME TOGGLE ── */
@@ -103,13 +179,22 @@
       flex-shrink: 0;
     }
 
+    /* ── SECTIONS ── */
+    .section {
+      padding-top: 4rem;
+    }
+
+    .section:first-child {
+      padding-top: 0;
+    }
+
     /* ── HEADER ── */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 2rem;
-      margin-bottom: 3rem;
+      margin-bottom: 1rem;
     }
 
     .header-text {
@@ -132,23 +217,11 @@
       max-width: 520px;
     }
 
-    /* ── INLINE LINKS ── */
     .uni-link {
       color: var(--link);
       text-decoration: none;
       font-weight: 500;
-      position: relative;
       transition: color 0.25s ease;
-      padding-bottom: 2px;
-    }
-
-    .header-photo {
-      flex-shrink: 0;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--border);
     }
 
     .header-photo-placeholder {
@@ -187,12 +260,8 @@
       border-bottom-color: var(--link);
     }
 
-    /* ── SECTION ── */
-    section {
-      margin-top: 3rem;
-    }
-
-    section h2 {
+    /* ── SECTION TITLE ── */
+    .section-title {
       font-family: 'Caveat', cursive;
       font-size: 1.7rem;
       font-weight: 700;
@@ -223,7 +292,6 @@
       font-size: 0.82rem;
       color: var(--muted);
       white-space: nowrap;
-      padding-top: 0.05rem;
     }
 
     .news-text {
@@ -253,7 +321,6 @@
       vertical-align: middle;
       letter-spacing: 0.03em;
       text-transform: uppercase;
-      transition: background 0.25s, color 0.25s;
     }
 
     /* ── PAPERS ── */
@@ -268,15 +335,6 @@
       grid-template-columns: 110px 1fr;
       gap: 0 1.2rem;
       align-items: start;
-    }
-
-    .paper-thumb {
-      width: 110px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--tag-bg);
     }
 
     .paper-thumb-placeholder {
@@ -323,15 +381,6 @@
       margin-bottom: 0.5rem;
     }
 
-    .paper-authors a {
-      color: var(--muted);
-      text-decoration: none;
-    }
-
-    .paper-authors a:hover {
-      color: var(--accent);
-    }
-
     .paper-links {
       display: flex;
       gap: 0.6rem;
@@ -361,13 +410,49 @@
       font-size: 0.8rem;
       color: var(--muted);
       text-align: center;
-      transition: border-color 0.25s;
     }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 560px) {
-      body {
+    @media (max-width: 680px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0.8rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        align-items: center;
+        justify-content: flex-start;
+        width: auto;
+      }
+
+      .sidebar-nav li {
+        width: auto;
+        justify-content: flex-start;
+      }
+
+      .sidebar-nav li a {
+        font-size: 1rem;
+        padding: 0.25rem 0.6rem;
+        text-align: left;
+      }
+
+      .main {
+        margin-left: 0;
         padding: 2rem 1.2rem 4rem;
+        justify-content: flex-start;
+      }
+
+      body {
+        flex-direction: column;
       }
 
       .header {
@@ -375,7 +460,6 @@
         align-items: flex-start;
       }
 
-      .header-photo,
       .header-photo-placeholder {
         width: 80px;
         height: 80px;
@@ -385,7 +469,6 @@
         grid-template-columns: 1fr;
       }
 
-      .paper-thumb,
       .paper-thumb-placeholder {
         display: none;
       }
@@ -400,12 +483,25 @@
 
 <body>
 
+  <!-- ══════════════════════════════
+       SIDEBAR
+  ══════════════════════════════ -->
+  <aside class="sidebar">
+    <ul class="sidebar-nav">
+      <li><a href="#about" class="active">about</a></li>
+      <li><a href="#events">events</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#aviation">aviation</a></li>
+      <li><a href="#cv">curriculum vitae</a></li>
+    </ul>
+  </aside>
+
   <!-- ── THEME TOGGLE ── -->
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-    <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <svg id="iconMoon" viewBox="0 0 24 24">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
-    <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <svg id="iconSun" viewBox="0 0 24 24" style="display:none">
       <circle cx="12" cy="12" r="5" />
       <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
       <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -419,239 +515,214 @@
     <span id="toggleLabel">dark</span>
   </button>
 
-  <!-- ═══════════════════════════════════
-       HEADER
-  ═══════════════════════════════════ -->
-  <div class="header">
-    <div class="header-text">
-      <h1>Gianni Mazaud</h1>
+  <!-- ══════════════════════════════
+       MAIN
+  ══════════════════════════════ -->
+  <main class="main">
+    <div class="main-inner">
 
-      <p>
-        I am a student in <strong>Market Finance & Risk Management</strong> at the <a
-          href="https://www.pantheonsorbonne.fr/" target="_blank" class="uni-link">University Panthéon-Sorbonne</a>. My
-        interests sit at
-        the intersection
-        of
-        risk management, portfolio optimization, and financial modeling.
-      </p>
-
-      <p style="margin-top:0.6rem;">
-        I hold a Bachelor's degree in <strong>Applied Mathematics</strong> from <a href="https://univ-cotedazur.fr/"
-          target="_blank" class="uni-link">Nice University</a>, with a focus on social
-        sciences.
-        I'm expecting to graduate from a Master's degree in <strong>Finance</strong> from <a
-          href="https://www.pantheonsorbonne.fr/" target="_blank" class="uni-link">Panthéon-Sorbonne University</a>,
-        with a focus on market finance & risk management, in June 2028.</p>
-
-      <p style="margin-top:0.6rem;">
-        Currently exploring several subjects: risk management, financial modeling, portfolio management (and
-        occasionally accounting).
-      </p>
-
-      <div class="links">
-        <a href="https://www.linkedin.com/in/gianni-mazaud-685587321/" target="_blank">LinkedIn</a>
-        <a href="https://github.com/GianniMzd" target="_blank">GitHub</a>
-        <a href="mailto:gianni.mazaud@icloud.com">gianni.mazaud@icloud.com</a>
-      </div>
-    </div>
-
-    <div class="header-photo-placeholder">G</div>
-  </div>
-
-  <!-- ═══════════════════════════════════
-       EVENTS
-  ═══════════════════════════════════ -->
-  <section>
-    <h2>Events</h2>
-    <div class="news-list">
-
-      <div class="news-item">
-        <span class="news-date">Jun '26</span>
-        <span class="news-text">
-          <a href="News/Vivatech/vivatech_26.html">First time visiting VivaTech Paris.</a>
-          <span class="badge">New</span>
-        </span>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════
-       PROJECTS
-  ═══════════════════════════════════ -->
-  <section>
-    <h2>projects</h2>
-    <div class="paper-list">
-
-      <!-- PROJECT 1 -->
-      <div class="paper">
-        <div class="paper-thumb-placeholder">📈</div>
-        <div>
-          <div class="paper-venue">Portfolio optimization · 2026</div>
-          <div class="paper-title">
-            <a href="/paper/beta-opt-mavar.pdf">Optimal allocation
-              finding for an aggressive portfolio under given VaR constraint</a>
+      <!-- ── ABOUT ── -->
+      <section class="section" id="about">
+        <div class="header">
+          <div class="header-text">
+            <h1>Gianni Mazaud</h1>
+            <p>
+              I am a student in <strong>Market Finance & Risk Management</strong> at the <a
+                href="https://www.pantheonsorbonne.fr/" target="_blank" class="uni-link">University
+                Panthéon-Sorbonne</a>.
+              My interests sit at the intersection of risk management, portfolio optimization, and financial modeling.
+            </p>
+            <p style="margin-top:0.6rem;">
+              I hold a Bachelor's degree in <strong>Applied Mathematics</strong> from <a
+                href="https://univ-cotedazur.fr/" target="_blank" class="uni-link">Nice University</a>, with a focus on
+              social sciences.
+              I'm expecting to graduate from a Master's degree in <strong>Finance</strong> from <a
+                href="https://www.pantheonsorbonne.fr/" target="_blank" class="uni-link">Panthéon-Sorbonne
+                University</a>,
+              with a focus on market finance & risk management, in June 2028.
+            </p>
+            <p style="margin-top:0.6rem;">
+              Currently exploring several subjects: risk management, financial modeling, portfolio management (and
+              occasionally accounting).
+            </p>
+            <div class="links">
+              <a href="https://www.linkedin.com/in/gianni-mazaud-685587321/" target="_blank">LinkedIn</a>
+              <a href="https://github.com/GianniMzd" target="_blank">GitHub</a>
+              <a href="mailto:gianni.mazaud@icloud.com">gianni.mazaud@icloud.com</a>
+            </div>
           </div>
-          <div class="paper-authors">
-            Under the assumption of economic growth, the idea is to determine the allocation that gives the max beta
-            portfolio with a given MAVaR constraint
-            using KDE Monte Carlo simulation, SLSQP optimization, and walk-forward backtesting with train/deploy split.
-          </div>
-          <div class="paper-links">
-            <a href="/paper/beta-opt-mavar.pdf">paper</a>
-            <a href="https://github.com/GianniMzd/Beta-optimization/blob/main/Beta_finding.py">code</a>
+          <div class="header-photo-placeholder">G</div>
+        </div>
+      </section>
+
+      <!-- ── EVENTS ── -->
+      <section class="section" id="events">
+        <div class="section-title">events</div>
+        <div class="news-list">
+          <div class="news-item">
+            <span class="news-date">Jun '26</span>
+            <span class="news-text">
+              <a href="News/Vivatech/vivatech_26.html">First time visiting VivaTech Paris.</a>
+              <span class="badge">New</span>
+            </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- PROJECT 2 -->
-      <div class="paper">
-        <div class="paper-thumb-placeholder">✈️</div>
-        <div>
-          <div class="paper-venue">Accounting · 2026</div>
-          <div class="paper-title">
-            <a href="/paper/IFRS16_study.pdf">Airline reporting comparison regarding IFRS 16 and how does Air France
-              manage to bypass this standard.</a>
+      <!-- ── PROJECTS ── -->
+      <section class="section" id="projects">
+        <div class="section-title">selected projects</div>
+        <div class="paper-list">
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">📈</div>
+            <div>
+              <div class="paper-venue">Portfolio optimization · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/beta-opt-mavar.pdf">Optimal allocation finding for an aggressive portfolio under given
+                  VaR constraint</a>
+              </div>
+              <div class="paper-authors">
+                Under the assumption of economic growth, the idea is to determine the allocation that gives the max beta
+                portfolio with a given MAVaR constraint using KDE Monte Carlo simulation, SLSQP optimization, and
+                walk-forward backtesting with train/deploy split.
+              </div>
+              <div class="paper-links">
+                <a href="/paper/beta-opt-mavar.pdf">paper</a>
+                <a href="https://github.com/GianniMzd/Beta-optimization/blob/main/Beta_finding.py">code</a>
+              </div>
+            </div>
           </div>
-          <div class="paper-authors">
-            We compare the implications of the new IFRS 16 (leasing) standard for airlines and highlight the accounting
-            strategies used to mitigate its impact. We also analyze the case of Air France, which took advantage of the
-            "financing lease" to lower its lease liability.
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">✈️</div>
+            <div>
+              <div class="paper-venue">Accounting · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/IFRS16_study.pdf">Airline reporting comparison regarding IFRS 16 and how does Air France
+                  manage to bypass this standard.</a>
+              </div>
+              <div class="paper-authors">
+                We compare the implications of the new IFRS 16 (leasing) standard for airlines and highlight the
+                accounting strategies used to mitigate its impact. We also analyze the case of Air France, which took
+                advantage of the "financing lease" to lower its lease liability.
+              </div>
+              <div class="paper-links">
+                <a href="#">paper</a>
+              </div>
+            </div>
           </div>
-          <div class="paper-links">
-            <a href="#">paper</a>
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">📊</div>
+            <div>
+              <div class="paper-venue">Risk Management · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/CVaR_VaR_modeling.pdf">Using Kernel Density Function and Student's t-distribution to
+                  model Value at Risk and Expected Shortfall using Monte Carlo method</a>
+              </div>
+              <div class="paper-authors">
+                Co-authored preprint with Yuto Murata. Monte Carlo method used on non-parametric KDE and parametric
+                Student's t-distribution to model Value at Risk and Expected Shortfall and compare it to traditional
+                GBM.
+                It takes into consideration the Basel III/FRTB framework and uses a backtesting methodology to evaluate
+                the performance of the model.
+              </div>
+              <div class="paper-links">
+                <a href="/paper/CVaR_VaR_modeling.pdf">paper</a>
+                <a href="https://github.com/GianniMzd/VaR_CVaR_model/blob/main/VaR_CVaR_simulation.py">code</a>
+              </div>
+            </div>
           </div>
+
         </div>
-      </div>
+      </section>
 
-      <!-- PROJECT 3 -->
-      <div class="paper">
-        <div class="paper-thumb-placeholder">📊</div>
-        <div>
-          <div class="paper-venue">Risk Management · 2026</div>
-          <div class="paper-title">
-            <a href="/paper/CVaR_VaR_modeling.pdf">Using Kernel Density
-              Function and Student's t-distribution to model Value at Risk and Expected
-              Shortfall using Monte Carlo method</a>
-          </div>
-          <div class="paper-authors">
-            Co-authored preprint with Yuto Murata. Monte Carlo method used on non-parametric KDE and parametric
-            Student's t-distribution to model Value at Risk and Expected Shortfall and compare it to traditional GBM.
-            It takes into consideration the Basel III/FTRB framework and uses a backtesting methodology to evaluate
-            the performance of the model.
-          </div>
-          <div class="paper-links">
-            <a href="/paper/CVaR_VaR_modeling.pdf">paper</a>
-            <a href="https://github.com/GianniMzd/VaR_CVaR_model/blob/main/VaR_CVaR_simulation.py">code</a>
-          </div>
+      <!-- ── AVIATION ── -->
+      <section class="section" id="aviation">
+        <div class="section-title">aviation & aeronautics</div>
+        <p style="color: var(--news-text); margin-bottom: 1rem; max-width: 620px;">
+          Since I was a child, I have been passionate about aviation, which has influenced me throughout the years.
+          In 2022, I earned my Light Aircraft Pilot License (LAPL). With over 110 flight hours, I fly in the south of
+          France, especially in Corsica. I have flown the Robin DR400, Cessna 172, Cessna 152, and Piper PA28.
+        </p>
+        <div class="links" style="margin-top: 0;">
+          <a href="aero/aero_index.html"
+            style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; background: var(--accent-light); font-weight: 500;">
+            🛩️ Visit My Aviation Portal &rarr;
+          </a>
         </div>
-      </div>
+      </section>
+
+      <!-- ── CV ── -->
+      <section class="section" id="cv">
+        <div class="section-title">curriculum vitae</div>
+        <p style="color: var(--news-text); margin-bottom: 1rem; max-width: 600px;">
+          I am currently seeking professional internship opportunities for a gap year starting in <strong>June/July
+            2026</strong>.
+          Building upon my academic background, I possess a strong foundation in financial modeling (quantitative
+          methods), risk management, accounting (especially IFRS) as well as a complete knowledge of financial
+          instruments and corporate finance.
+        </p>
+        <div class="links" style="margin-top: 0;">
+          <a href="Gianni_Mazaud_CV.pdf" target="_blank"
+            style="display: inline-flex; align-items: center; gap: 0.3rem;">
+            📄 Download CV (PDF)
+          </a>
+        </div>
+      </section>
+
+      <footer>Last updated June 2026 · Built with AI 🤖</footer>
 
     </div>
-  </section>
-
-  <!-- ═══════════════════════════════════
-       AVIATION & AERONAUTICS
-  ═══════════════════════════════════ -->
-  <section>
-    <h2>aviation & aeronautics</h2>
-    <div>
-      <p style="color: var(--news-text); margin-bottom: 1rem; max-width: 650px;">
-        Since I was a child, I have been passionate about aviation, which has influenced me throughout the years.
-        In 2022, I earned my Light Aircraft Pilot License (LAPL). With over 110 flight hours, I fly in the south of
-        France,
-        especially in Corsica. I have flown the Robin DR400, Cessna 172, Cessna 152, and Piper PA28.
-      </p>
-      <div class="links" style="margin-top: 0;">
-        <a href="aero/aero_index.html"
-          style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; background: var(--accent-light); font-weight: 500;">
-          🛩️ Visit My Aviation Portal &rarr;
-        </a>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ═══════════════════════════════════
-       CURRICULUM VITAE
-  ═══════════════════════════════════ -->
-  <section>
-    <h2>curriculum vitae</h2>
-    <div class="news-list">
-      <p style="color: var(--news-text); margin-bottom: 0.5rem; max-width: 600px;">
-        I am currently seeking professional internship opportunities for a gap year starting in <strong>June/July
-          2026</strong>.
-        Building upon my academic background, I possess a strong foundation in financial modeling (quantitative
-        methods),
-        risk management, accounting (especially IFRS) as well as a complete knowledge of financial instruments and
-        corporate finance.
-      </p>
-      <div class="links" style="margin-top: 0;">
-        <a href="Gianni_Mazaud_CV.pdf" target="_blank" style="display: inline-flex; align-items: center; gap: 0.3rem;">
-          📄 Download CV (PDF)
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    Last updated June 2026 · Built with AI 🤖
-  </footer>
+  </main>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+      // ── THEME ──
       const html = document.documentElement;
       const btn = document.getElementById('themeToggle');
       const iconMoon = document.getElementById('iconMoon');
       const iconSun = document.getElementById('iconSun');
       const label = document.getElementById('toggleLabel');
 
-      if (!btn) return; // Safety check
-
-      // 1. Try to get saved theme, with a fallback if the browser blocks it (like in local files)
       let savedTheme = null;
-      try {
-        savedTheme = localStorage.getItem('theme');
-      } catch (e) {
-        console.warn("Local storage is restricted. Theme won't be saved on refresh.");
-      }
-
-      // 2. Determine initial theme
+      try { savedTheme = localStorage.getItem('theme'); } catch (e) { }
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const initial = savedTheme || (prefersDark ? 'dark' : 'light');
 
-      // 3. Apply theme function
       function applyTheme(theme) {
         html.setAttribute('data-theme', theme);
-        if (theme === 'dark') {
-          iconMoon.style.display = 'none';
-          iconSun.style.display = 'block';
-          label.textContent = 'light';
-        } else {
-          iconMoon.style.display = 'block';
-          iconSun.style.display = 'none';
-          label.textContent = 'dark';
-        }
+        iconMoon.style.display = theme === 'dark' ? 'none' : 'block';
+        iconSun.style.display = theme === 'dark' ? 'block' : 'none';
+        label.textContent = theme === 'dark' ? 'light' : 'dark';
       }
 
-      // Set it on load
       applyTheme(initial);
 
-      // 4. Click event to toggle
       btn.addEventListener('click', () => {
-        const currentTheme = html.getAttribute('data-theme');
-        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-        applyTheme(nextTheme);
-
-        // Try saving it again safely
-        try {
-          localStorage.setItem('theme', nextTheme);
-        } catch (e) {
-          // Ignore error silently
-        }
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem('theme', next); } catch (e) { }
       });
+
+      // ── SCROLL SPY ──
+      const navLinks = document.querySelectorAll('.sidebar-nav a');
+      const sections = document.querySelectorAll('.section');
+
+      function onScroll() {
+        let current = sections[0].id;
+        sections.forEach(sec => {
+          if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+        });
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
     });
   </script>
 
