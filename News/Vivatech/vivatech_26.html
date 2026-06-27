@@ -23,6 +23,7 @@
             --toggle-bg: #e8f0f8;
             --toggle-color: #1a3a5c;
             --article-text: #333;
+            --dot-color: rgba(26, 58, 92, 0.10);
         }
 
         /* ── DARK THEME ── */
@@ -38,6 +39,7 @@
             --toggle-bg: #1a2535;
             --toggle-color: #8ab8d8;
             --article-text: #c8c4bc;
+            --dot-color: rgba(126, 170, 204, 0.12);
         }
 
         *,
@@ -49,7 +51,7 @@
         }
 
         body {
-            background: var(--bg);
+            background-color: var(--bg);
             color: var(--text);
             font-family: 'Inter', sans-serif;
             font-size: 16px;
@@ -57,7 +59,11 @@
             max-width: 700px;
             margin: 0 auto;
             padding: 3.5rem 2rem 6rem;
-            transition: background 0.25s ease, color 0.25s ease;
+            transition: background-color 0.25s ease, color 0.25s ease;
+
+            background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+            background-size: 22px 22px;
+            background-attachment: fixed;
         }
 
         /* ── THEME TOGGLE ── */
@@ -159,6 +165,8 @@
 
         .article-content p {
             margin-bottom: 1.5rem;
+            text-align: justify;
+            hyphens: auto;
         }
 
         .article-content h2 {
@@ -413,35 +421,51 @@
 
     <!-- ── SCRIPTS ── -->
     <script>
-        const html = document.documentElement;
-        const btn = document.getElementById('themeToggle');
-        const iconMoon = document.getElementById('iconMoon');
-        const iconSun = document.getElementById('iconSun');
-        const label = document.getElementById('toggleLabel');
+        document.addEventListener('DOMContentLoaded', () => {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const iconMoon = document.getElementById('iconMoon');
+            const iconSun = document.getElementById('iconSun');
+            const label = document.getElementById('toggleLabel');
 
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const saved = localStorage.getItem('theme');
-        const initial = saved || (prefersDark ? 'dark' : 'light');
-        applyTheme(initial);
+            if (!btn) return;
 
-        btn.addEventListener('click', () => {
-            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            applyTheme(next);
-            localStorage.setItem('theme', next);
-        });
-
-        function applyTheme(theme) {
-            html.setAttribute('data-theme', theme);
-            if (theme === 'dark') {
-                iconMoon.style.display = 'none';
-                iconSun.style.display = 'block';
-                label.textContent = 'light';
-            } else {
-                iconMoon.style.display = 'block';
-                iconSun.style.display = 'none';
-                label.textContent = 'dark';
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch (e) {
+                console.warn("Local storage is restricted. Theme won't be saved on refresh.");
             }
-        }
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initial = savedTheme || (prefersDark ? 'dark' : 'light');
+
+            function applyTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    iconMoon.style.display = 'none';
+                    iconSun.style.display = 'block';
+                    label.textContent = 'light';
+                } else {
+                    iconMoon.style.display = 'block';
+                    iconSun.style.display = 'none';
+                    label.textContent = 'dark';
+                }
+            }
+
+            applyTheme(initial);
+
+            btn.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                applyTheme(nextTheme);
+
+                try {
+                    localStorage.setItem('theme', nextTheme);
+                } catch (e) { }
+            });
+        });
     </script>
 
 </body>
