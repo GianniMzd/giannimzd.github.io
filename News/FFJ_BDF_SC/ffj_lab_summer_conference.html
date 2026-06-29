@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banque de France - Fondation France-Japon Lab Summer Conference 2026 — Gianni Mazaud</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── LIGHT THEME (default) ── */
+        :root,
+        [data-theme="light"] {
+            --bg: #faf9f7;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #1a3a5c;
+            --accent-light: #e8f0f8;
+            --link: #1a3a5c;
+            --border: #e0ddd8;
+            --tag-bg: #f0f4f8;
+            --toggle-bg: #e8f0f8;
+            --toggle-color: #1a3a5c;
+            --article-text: #333;
+            --dot-color: rgba(26, 58, 92, 0.10);
+        }
+
+        /* ── DARK THEME ── */
+        [data-theme="dark"] {
+            --bg: #0f1117;
+            --text: #e8e4dc;
+            --muted: #7a7a8a;
+            --accent: #7eaacc;
+            --accent-light: #1a2535;
+            --link: #8ab8d8;
+            --border: #2a2d36;
+            --tag-bg: #1a1d26;
+            --toggle-bg: #1a2535;
+            --toggle-color: #8ab8d8;
+            --article-text: #c8c4bc;
+            --dot-color: rgba(126, 170, 204, 0.12);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 6rem;
+            transition: background-color 0.25s ease, color 0.25s ease;
+
+            background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+            background-size: 22px 22px;
+            background-attachment: fixed;
+        }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.5rem;
+            background: var(--toggle-bg);
+            color: var(--toggle-color);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            z-index: 100;
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+        }
+
+        .theme-toggle svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* ── NAVIGATION ── */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent);
+        }
+
+        .nav-back svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* ── ARTICLE HEADER ── */
+        .article-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .article-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            line-height: 1.1;
+        }
+
+        .article-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 0.1rem 0.45rem;
+            border-radius: 3px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        /* ── ARTICLE CONTENT ── */
+        .article-content {
+            color: var(--article-text);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .article-content h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 2.5rem 0 1rem;
+        }
+
+        .article-content a {
+            color: var(--link);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.25s ease;
+            padding-bottom: 2px;
+        }
+
+        .article-content a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--link);
+            transform: scaleX(0.3);
+            transform-origin: bottom left;
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        .article-content a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .article-content blockquote {
+            border-left: 3px solid var(--accent);
+            background: var(--accent-light);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .article-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── FIGURES & IMAGES ── */
+        .article-figure {
+            margin: 2.5rem 0;
+        }
+
+        .article-figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: border-color 0.25s;
+        }
+
+        .article-figure figcaption {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 0.65rem;
+            font-style: italic;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            transition: border-color 0.25s;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 560px) {
+            body {
+                padding: 2rem 1.2rem 4rem;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .theme-toggle {
+                top: 0.8rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── THEME TOGGLE ── -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+        </svg>
+        <span id="toggleLabel">dark</span>
+    </button>
+
+    <!-- ── NAVIGATION ── -->
+    <a href="../../index.html" class="nav-back">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+        Back to home
+    </a>
+
+    <!-- ── ARTICLE HEADER ── -->
+    <header class="article-header">
+        <h1 class="article-title">Banque de France - Fondation France-Japon Lab Summer Conference 2026</h1>
+        <div class="article-meta">
+            <span>June 2026</span>
+            <span>•</span>
+            <span class="badge">Economics</span>
+        </div>
+    </header>
+
+    <!-- ── ARTICLE CONTENT ── -->
+    <article class="article-content">
+        <p>
+            I had the chance to attend the 2026 summer conference of the France-Japon Foundation and Banque de France,
+            which
+            took place at the Palais Brongniart in Paris. This year's topic was "Global Imbalances:
+            (Un)learned Lessons from the Japanese Experience".
+        </p>
+
+        <figure class="article-figure">
+            <img src="view.jpg" alt="View from the Palais Brongniart" />
+            <figcaption>View from the Palais Brongniart.</figcaption>
+        </figure>
+
+        <p>
+            As it was emphasized several times during the conference, Japan is an economy with profound historical
+            experience managing
+            global imbalances, notably the "lost decades." Throughout the event, different perspectives were explored
+            from
+            both Japanese and French economists and policymakers.
+        </p>
+
+        <figure class="article-figure">
+            <img src="conference.jpg" alt="conference view" />
+        </figure>
+
+        <h2>The Return of Global Imbalances & The Plaza Accord — Takeo Hoshi</h2>
+        <p>
+            Global imbalances have definitively returned, and the scope extends far beyond simple trade competition.
+            Technically speaking, global imbalances can be defined as the sum of the absolute values of each economy's
+            current account deficit and surplus.
+        </p>
+
+        <figure class="article-figure">
+            <img src="imbalances.jpg" alt="imbalances graph" />
+        </figure>
+
+        <p>
+            The Plaza Accord is a crucial shift in economic policy that occurred in 1985. During that period, Reagan's
+            fiscal expansion paired with Volcker's disinflation (highlighting that interest rates alone cannot resolve
+            the issue, but are part of the process) led to a remarkably strong dollar and surging protectionist
+            pressure.
+            The Accord implied a dollar depreciation, which reduced protectionist pressure and created room for
+            political adjustments and domestic structural reforms, with the ultimate goal of lowering global
+            imbalances.
+        </p>
+        <p>
+            While the immediate and short-term objectives were achieved, the longer-term objectives proved more
+            complicated.
+            The agreement couldn't fundamentally halt the increase in the US saving rate or Japanese demand.
+            The outcomes are perceived completely differently:
+        </p>
+        <ul>
+            <li><b>Japan:</b> The appreciation of the yen severely damaged competitiveness, leading to economic
+                stagnation and what is now known as the "lost decades."</li>
+            <li><b>United States:</b> The outcomes were largely viewed as desired.</li>
+        </ul>
+        <p>
+            Ultimately, US pressure led to yen appreciation, which prompted Japanese monetary easing to resist it. This
+            easing fueled a bubble economy that inevitably burst, leading to the lost decades. Generally, the easing
+            policies are forgotten in what caused this economic event.
+        </p>
+
+        <h2>How the Landscape Has Changed (1985-2000 vs. Today)</h2>
+        <p>
+            The global paradigm has shifted significantly since the Plaza Accord era. The principal surplus country is
+            no longer Japan, but China. Furthermore, there is substantially less trust in multilateral rules today. What
+            used to be primarily an economic rivalry has now evolved into a geopolitical and economic rivalry.
+        </p>
+
+        <h2>Structural Adjustments & Macroeconomic Modeling — Kazumasa Iwata</h2>
+        <p>
+            Borrowing from abroad was modeled by K. Iwata as a function of the labor growth rate, technological
+            progress, and the national saving rate. Notably, total factor productivity is expected to begin decreasing
+            globally by 2035.
+        </p>
+
+        <figure class="article-figure">
+            <img src="Model.jpg" alt="equation model" />
+        </figure>
+
+        <p>
+            Effective structural adjustments must be made by some countries to correct these imbalances:
+        </p>
+        <ul>
+            <li><b>China:</b> Needs to shift toward more domestic consumption.</li>
+            <li><b>United States:</b> Must focus on better public finances and reducing deficits.</li>
+            <li><b>Europe:</b> Requires more productive investment. (Currently, the core issue with EU investments isn't
+                the percentage of investment, but its composition, exacerbated by capital markets that remain fragmented
+                across member states).</li>
+        </ul>
+        <p>
+            If debt reaches levels perceived as unsustainable, financial markets will force abrupt, painful adjustments.
+            Tariffs and industrial policies are largely ineffective tools for rebalancing these global imbalances. With
+            foreign exchange (Forex) markets now driven 90% by speculative trading and only 10% by real transactions,
+            orderly adjustments require radical transparency. Transparency enables the proper functioning of markets to
+            quantify and price risks accurately.
+        </p>
+
+        <h2>Japan's Path Forward: "Sanaenomics" — Takuji Aida</h2>
+        <p>
+            Has Japan finally exited its "lost decades"? While there is a nominal GDP (NGDP) expansion, structural
+            stagnating pressures remain. For instance, the corporate saving rate should theoretically be below zero for
+            heavy investment, but it remains above zero in Japan, indicating the transition isn't complete.
+        </p>
+        <p>
+            The path forward is being framed around <b>Sanaenomics</b>, which marks a transition from a cost-cutting
+            model to an investment growth model. Key pillars include:
+        </p>
+        <ul>
+            <li>Strategic investments.</li>
+            <li>Creating a "high pressure economy" by shifting the output gap target from a low-pressure 0% to a
+                high-pressure 2%.</li>
+        </ul>
+        <p>
+            Currently, the CAPEX cycle is shifting upward, and corporate net debt has disappeared. While the
+            debt structure is resilient, it still needs to be reduced, though the fiscal situation is improving
+            alongside rising NGDP.
+        </p>
+
+        <h2>Global Imbalances Nowadays — Xavier Debrun</h2>
+
+        <p>
+            China's economic structure intrinsically enables imbalances, and this will likely continue with the
+            integration of AI. China currently has little room for economic stimulus due to military spending and
+            existing deficits. Furthermore, AI adoption in China is heavily focused on manufacturing and automation,
+            which does little to boost domestic consumption, and may even harm it.
+        </p>
+        <p>
+            Globally, imbalances are currently driven more by saving rates than by investment. Right now, there are more
+            trade surpluses globally than deficits (oil exporters, for instance, generally run persistent trade
+            surpluses). High and persistent imbalances are dangerous because flows eventually accumulate into stocks,
+            creating a snowball effect.
+        </p>
+
+        <p>
+            On the European front, U.S. tariffs have, on average, no real directional impact on the EU. The effect is
+            not K-shaped; rather, tariffs simply lower both exports and imports, acting more as a substitute to a VAT
+            increase.
+        </p>
+
+    </article>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        Gianni Mazaud · June 2026
+    </footer>
+
+    <!-- ── SCRIPTS ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const iconMoon = document.getElementById('iconMoon');
+            const iconSun = document.getElementById('iconSun');
+            const label = document.getElementById('toggleLabel');
+
+            if (!btn) return;
+
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch (e) {
+                console.warn("Local storage is restricted. Theme won't be saved on refresh.");
+            }
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initial = savedTheme || (prefersDark ? 'dark' : 'light');
+
+            function applyTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    iconMoon.style.display = 'none';
+                    iconSun.style.display = 'block';
+                    label.textContent = 'light';
+                } else {
+                    iconMoon.style.display = 'block';
+                    iconSun.style.display = 'none';
+                    label.textContent = 'dark';
+                }
+            }
+
+            applyTheme(initial);
+
+            btn.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                applyTheme(nextTheme);
+
+                try {
+                    localStorage.setItem('theme', nextTheme);
+                } catch (e) { }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
