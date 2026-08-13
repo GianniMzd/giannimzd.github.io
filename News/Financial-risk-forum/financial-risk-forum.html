@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>19th FINANCIAL RISKS INTERNATIONAL FORUM</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ── LIGHT THEME (default) ── */
+        :root,
+        [data-theme="light"] {
+            --bg: #faf9f7;
+            --text: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #1a3a5c;
+            --accent-light: #e8f0f8;
+            --link: #1a3a5c;
+            --border: #e0ddd8;
+            --tag-bg: #f0f4f8;
+            --toggle-bg: #e8f0f8;
+            --toggle-color: #1a3a5c;
+            --article-text: #333;
+            --dot-color: rgba(26, 58, 92, 0.10);
+        }
+
+        /* ── DARK THEME ── */
+        [data-theme="dark"] {
+            --bg: #0f1117;
+            --text: #e8e4dc;
+            --muted: #7a7a8a;
+            --accent: #7eaacc;
+            --accent-light: #1a2535;
+            --link: #8ab8d8;
+            --border: #2a2d36;
+            --tag-bg: #1a1d26;
+            --toggle-bg: #1a2535;
+            --toggle-color: #8ab8d8;
+            --article-text: #c8c4bc;
+            --dot-color: rgba(126, 170, 204, 0.12);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 6rem;
+            transition: background-color 0.25s ease, color 0.25s ease;
+
+            background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+            background-size: 22px 22px;
+            background-attachment: fixed;
+        }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.5rem;
+            background: var(--toggle-bg);
+            color: var(--toggle-color);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.2s, border-color 0.2s, color 0.2s;
+            z-index: 100;
+            letter-spacing: 0.02em;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+        }
+
+        .theme-toggle svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        /* ── NAVIGATION ── */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--accent);
+        }
+
+        .nav-back svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* ── ARTICLE HEADER ── */
+        .article-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .article-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3.2rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            line-height: 1.1;
+        }
+
+        .article-meta {
+            font-size: 0.85rem;
+            color: var(--muted);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 0.1rem 0.45rem;
+            border-radius: 3px;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+        }
+
+        /* ── ARTICLE CONTENT ── */
+        .article-content {
+            color: var(--article-text);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .article-content h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 2.5rem 0 1rem;
+        }
+
+        .article-content a {
+            color: var(--link);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.25s ease;
+            padding-bottom: 2px;
+        }
+
+        .article-content a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--link);
+            transform: scaleX(0.3);
+            transform-origin: bottom left;
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        .article-content a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .article-content blockquote {
+            border-left: 3px solid var(--accent);
+            background: var(--accent-light);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        .article-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── FIGURES & IMAGES ── */
+        .article-figure {
+            margin: 2.5rem 0;
+        }
+
+        .article-figure img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            transition: border-color 0.25s;
+        }
+
+        .article-figure figcaption {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 0.65rem;
+            font-style: italic;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-align: center;
+            transition: border-color 0.25s;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 560px) {
+            body {
+                padding: 2rem 1.2rem 4rem;
+            }
+
+            .article-title {
+                font-size: 2.5rem;
+            }
+
+            .theme-toggle {
+                top: 0.8rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── THEME TOGGLE ── -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none">
+            <circle cx="12" cy="12" r="5" />
+            <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" />
+        </svg>
+        <span id="toggleLabel">dark</span>
+    </button>
+
+    <!-- ── NAVIGATION ── -->
+    <a href="../../index.html" class="nav-back">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+        </svg>
+        Back to home
+    </a>
+
+    <!-- ── ARTICLE HEADER ── -->
+    <header class="article-header">
+        <h1 class="article-title">19th Financial Risks International Forum.</h1>
+        <div class="article-meta">
+            <span>June 2026</span>
+            <span>•</span>
+            <span class="badge">Economics</span>
+        </div>
+    </header>
+
+    <!-- ── ARTICLE CONTENT ── -->
+    <article class="article-content">
+        <p>
+            I recently attendend to the <a href="https://www.risks-forum.org">19th Financial Risks International Forum</a>
+            which
+            took place at the Palais Brongniart in Paris.
+            This year’s edition notably focused on AI and the risks associated with it.
+        </p>
+
+        <figure class="article-figure">
+            <img src="room.jpg" alt="Salon d'honneur" />
+            <figcaption>Salon d'honneur.</figcaption>
+        </figure>
+
+        <p>
+            The forum opened with an address from the Chair of the AMF (Autorité des marchés financiers), 
+            who shaped the second day notably around AI: used properly, AI allows regulators 
+            and market participants to detect risks earlier and with far more precision than traditional 
+            tools could. She walked through how AI is now embedded across financial institutions, 
+            from asset managers automating parts of the investment process relying on 
+            models for real-time transaction monitoring. Retail investors were also part of the speech, 
+            with AI-driven research tools and chatbots becoming part of the everyday 
+            investing experience, which raises the question of how well individuals actually understand the 
+            tools guiding their decisions.
+        </p>
+
+        <p>
+            She was equally direct about the issues this shift creates. Governance, model transparency, 
+            data protection and systemic risk were enumerated as four areas regulators need to watch more 
+            closely as AI adoption accelerates. Because so many market participants may end up relying 
+            on similar models trained on similar data, decisions could become more correlated across the 
+            market, amplifying moves during periods of stress rather than absorbing them.
+        </p>
+
+        <p>
+            On the supervisory side, she described how AI is already changing the AMF's own toolbox. 
+            Machine learning is used to process and analyze far larger volumes of market data than before, 
+            helping detect market abuse, filter out false positives, and identify malicious websites and 
+            fraud schemes targeting retail investors (tasks that would be extremely time-consuming to carry 
+            out manually). She referenced a recent survey showing that around 90% of market participants 
+            already use AI, or plan to adopt it, a figure that illustrates how 
+            quickly the technology has moved from experimentation to becoming a standard part of the toolbox.
+        </p>    
+
+        <h2>AI and the Integrity of knowledge</h2>
+
+        <p>
+            Several interconnected traps threatening the reliability of AI-driven knowledge were emphasized. 
+            The epistemic trap arises when models trained on AI-generated outputs degrade accuracy through feedback 
+            loops, while the homogenization trap flattens the diversity of thought as organizations converge on 
+            the same few large language models. The infrastructure trap compounds these risks: with cloud platforms
+            dominated by three hyperscalers, AI accelerators controlled by NVIDIA, and semiconductor lithography 
+            monopolized by ASML, financial institutions face dangerous dependency on Big Tech. Meanwhile, the 
+            information trap makes verification prohibitively expensive (in a world where AI can generate plausible 
+            content at scale, the burden of fact-checking falls on human experts, and flawed AI-generated papers 
+            can slip through peer review undetected).
+        </p>
+
+        <figure class="article-figure">
+            <img src="conference.jpg" alt="AI and the Integrity of knowledge" />
+            <figcaption>AI and the Integrity of knowledge.</figcaption>
+        </figure>
+
+        <p>
+            At the core of these concerns lies a single issue: using AI as a substitute for human judgment 
+            rather than as a tool to augment it. The speaker emphasized that LLMs may read faster, but speed does 
+            not equal understanding or accuracy. Data is just as important: firms are overwhelmed with information, 
+            but using bad or biased data in models gives false risk results. Ensuring the integrity of knowledge 
+            in an AI-driven world will require stronger governance, diversified infrastructure, and a renewed 
+            commitment to human expertise as the final arbiter of truth.
+        </p>
+
+        <h2>Round Table: Hidden Risks in AI and pricing models</h2>
+
+        <p>
+            This round table, I found particularly interesting, focused on several subjects, especially keeping humans 
+            in the loop for AI-driven risk management. The speakers agreed that only humans can truly interpret meaning 
+            and context (especially in high-stakes processes like systemic risk monitoring) where a single wrong call 
+            can have cascading effects. They also stressed that humans must validate the data fed into models, since 
+            the assumption that observations are independent and identically distributed (i.i.d.) is almost never true 
+            in real financial markets.
+
+            The panel also warned against conflating volume with value. It is cheap to produce information but costly to 
+            verify it. AI can generate endless content, but that does not make it knowledge. As one speaker put it: 
+            information that proliferates is not knowledge. In risk management, distinguishing between the two is essential.
+        </p>
+
+    </article>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        Gianni Mazaud · June 2026
+    </footer>
+
+    <!-- ── SCRIPTS ── -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const html = document.documentElement;
+            const btn = document.getElementById('themeToggle');
+            const iconMoon = document.getElementById('iconMoon');
+            const iconSun = document.getElementById('iconSun');
+            const label = document.getElementById('toggleLabel');
+
+            if (!btn) return;
+
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('theme');
+            } catch (e) {
+                console.warn("Local storage is restricted. Theme won't be saved on refresh.");
+            }
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const initial = savedTheme || (prefersDark ? 'dark' : 'light');
+
+            function applyTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    iconMoon.style.display = 'none';
+                    iconSun.style.display = 'block';
+                    label.textContent = 'light';
+                } else {
+                    iconMoon.style.display = 'block';
+                    iconSun.style.display = 'none';
+                    label.textContent = 'dark';
+                }
+            }
+
+            applyTheme(initial);
+
+            btn.addEventListener('click', () => {
+                const currentTheme = html.getAttribute('data-theme');
+                const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                applyTheme(nextTheme);
+
+                try {
+                    localStorage.setItem('theme', nextTheme);
+                } catch (e) { }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
