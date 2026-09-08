@@ -1,285 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slap Trump</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      font-family: Georgia, 'Times New Roman', serif;
-      color: #f5f0e6;
-      overflow: hidden;
-      user-select: none;
-    }
-    h1 {
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      margin-bottom: 0.3em;
-      text-shadow: 2px 2px 0 #c9a227;
-      letter-spacing: 0.04em;
-    }
-    .subtitle { opacity: 0.7; margin-bottom: 1.5rem; font-style: italic; }
-    .stage {
-      position: relative;
-      width: min(420px, 90vw);
-      height: min(480px, 70vh);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .face-wrap {
-      position: relative;
-      width: 280px;
-      height: 340px;
-      cursor: pointer;
-      transform-origin: 50% 40%;
-      transition: transform 0.08s ease-out;
-    }
-    .face-wrap.slapped {
-      animation: slap-shake 0.35s ease-out;
-    }
-    @keyframes slap-shake {
-      0%   { transform: rotate(0) scale(1); }
-      15%  { transform: rotate(-12deg) scale(0.96) translateX(-18px); }
-      35%  { transform: rotate(10deg) scale(1.04) translateX(14px); }
-      55%  { transform: rotate(-6deg) scale(0.98); }
-      75%  { transform: rotate(4deg); }
-      100% { transform: rotate(0) scale(1); }
-    }
-    .hair {
-      position: absolute;
-      top: 8px; left: 50%;
-      transform: translateX(-50%);
-      width: 220px; height: 90px;
-      background: #f4d03f;
-      border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%;
-      box-shadow:
-        -50px 20px 0 -10px #f4d03f,
-        55px 18px 0 -12px #f4d03f,
-        0 -8px 0 8px #e8c547;
-      z-index: 2;
-    }
-    .hair::after {
-      content: '';
-      position: absolute;
-      top: 55px; left: 20px;
-      width: 180px; height: 40px;
-      background: #f4d03f;
-      border-radius: 40%;
-    }
-    .head {
-      position: absolute;
-      top: 55px; left: 50%;
-      transform: translateX(-50%);
-      width: 200px; height: 240px;
-      background: #e8a87c;
-      border-radius: 45% 45% 50% 50% / 35% 35% 65% 65%;
-      box-shadow: inset -12px -8px 20px rgba(180, 80, 40, 0.25);
-      z-index: 1;
-    }
-    .brow {
-      position: absolute;
-      top: 95px;
-      width: 58px; height: 10px;
-      background: #3d2b1f;
-      border-radius: 4px;
-      z-index: 3;
-    }
-    .brow.l { left: 68px; transform: rotate(-8deg); }
-    .brow.r { right: 68px; transform: rotate(8deg); }
-    .eye {
-      position: absolute;
-      top: 112px;
-      width: 28px; height: 22px;
-      background: #fff;
-      border-radius: 50%;
-      z-index: 3;
-    }
-    .eye.l { left: 78px; }
-    .eye.r { right: 78px; }
-    .pupil {
-      position: absolute;
-      top: 6px; left: 8px;
-      width: 12px; height: 12px;
-      background: #2c1810;
-      border-radius: 50%;
-    }
-    .nose {
-      position: absolute;
-      top: 130px; left: 50%;
-      transform: translateX(-50%);
-      width: 36px; height: 48px;
-      background: #d4896a;
-      border-radius: 40% 40% 50% 50%;
-      z-index: 3;
-    }
-    .mouth {
-      position: absolute;
-      top: 190px; left: 50%;
-      transform: translateX(-50%);
-      width: 70px; height: 18px;
-      border-bottom: 5px solid #8b3a2a;
-      border-radius: 0 0 50% 50%;
-      z-index: 3;
-    }
-    .mouth.oof {
-      width: 40px; height: 28px;
-      border: 4px solid #8b3a2a;
-      border-radius: 50%;
-      background: #4a1c14;
-    }
-    .hand {
-      position: absolute;
-      font-size: 90px;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 10;
-      filter: drop-shadow(4px 4px 6px rgba(0,0,0,0.4));
-    }
-    .hand.show {
-      animation: hand-slap 0.4s ease-out forwards;
-    }
-    @keyframes hand-slap {
-      0%   { opacity: 1; transform: translate(-80px, -40px) rotate(-40deg) scale(1.2); }
-      40%  { opacity: 1; transform: translate(10px, 20px) rotate(10deg) scale(1); }
-      100% { opacity: 0; transform: translate(40px, 10px) rotate(25deg) scale(0.8); }
-    }
-    .mark {
-      position: absolute;
-      width: 70px; height: 70px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(200,40,40,0.45) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 4;
-      animation: fade-mark 1.2s ease-out forwards;
-    }
-    @keyframes fade-mark {
-      0% { opacity: 0.8; transform: scale(0.4); }
-      30% { opacity: 0.7; transform: scale(1); }
-      100% { opacity: 0; transform: scale(1.3); }
-    }
-    .stats {
-      margin-top: 1.4rem;
-      font-size: 1.25rem;
-      text-align: center;
-    }
-    .stats strong { color: #f4d03f; font-size: 1.6rem; }
-    button {
-      margin-top: 1.2rem;
-      padding: 0.7rem 1.8rem;
-      font-size: 1.15rem;
-      font-family: inherit;
-      background: #c0392b;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 0 #7b241c;
-    }
-    button:active { transform: translateY(3px); box-shadow: 0 1px 0 #7b241c; }
-    .quote {
-      margin-top: 1rem;
-      min-height: 1.5em;
-      font-style: italic;
-      opacity: 0.85;
-      text-align: center;
-      max-width: 90vw;
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Slap Trump Deluxe</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 12%,#5a3a10 0%,transparent 42%),linear-gradient(165deg,#101018,#1b2438 50%,#0c1524);
+  font-family:Georgia,serif;color:#f4efe4;overflow:hidden;user-select:none;
+}
+body.shake{animation:shake .28s}
+body.ko{animation:koflash .6s}
+@keyframes shake{20%{transform:translate(-12px,6px)}40%{transform:translate(12px,-5px)}70%{transform:translate(-6px,3px)}}
+@keyframes koflash{30%{filter:brightness(1.35) saturate(1.3)}}
+h1{font-size:clamp(2rem,6vw,3.1rem);letter-spacing:.06em;text-shadow:3px 3px 0 #8a6b12;margin-bottom:.15em}
+.sub{opacity:.7;font-style:italic;margin-bottom:10px}
+.stage{position:relative;width:min(360px,92vw);height:min(480px,68vh);display:grid;place-items:center}
+.face{position:relative;width:300px;height:430px;cursor:pointer;transform-origin:50% 26%;filter:drop-shadow(0 18px 24px #0008)}
+.face.hit{animation:hit .4s cubic-bezier(.2,.8,.2,1)}
+.face.down{animation:fall .7s forwards}
+.face.up{animation:up .5s}
+.face.w1{filter:drop-shadow(0 18px 24px #0008) saturate(1.3) hue-rotate(-10deg)}
+.face.w2{filter:drop-shadow(0 18px 24px #0008) saturate(1.5) hue-rotate(-18deg) contrast(1.12)}
+.face.w3{filter:drop-shadow(0 18px 24px #0008) saturate(1.7) hue-rotate(-26deg) contrast(1.2)}
+@keyframes hit{12%{transform:scale(.9,1.12) rotate(-13deg) translateX(-22px)}30%{transform:scale(1.12,.86) rotate(10deg) translateX(16px)}100%{transform:none}}
+@keyframes fall{60%{transform:rotate(78deg) translate(40px,90px)}100%{transform:rotate(86deg) translate(50px,120px)}}
+@keyframes up{0%{transform:rotate(86deg) translate(50px,120px)}100%{transform:none}}
+svg{width:100%;height:100%;overflow:visible}
+.hair{transform-origin:150px 70px}
+.tie{transform-origin:150px 280px}
+.face.hit .hair{animation:flip .42s}
+.face.hit .tie{animation:tie .4s}
+@keyframes flip{30%{transform:rotate(-18deg) translate(-8px,-12px)}}
+@keyframes tie{30%{transform:rotate(18deg)}}
+.eyes{transform-origin:150px 148px}
+.face.hit .eyes{animation:squint .35s}
+@keyframes squint{25%{transform:scaleY(.28)}}
+.oof,.stars-eyes{opacity:0}
+.face.hit .ok{animation:hide .35s}
+.face.hit .oof{animation:show .35s}
+.face.down .stars-eyes{opacity:1}
+@keyframes hide{18%,72%{opacity:0}100%{opacity:1}}
+@keyframes show{18%,72%{opacity:1}100%{opacity:0}}
+.flash{position:absolute;inset:0;background:radial-gradient(circle at var(--fx,50%) var(--fy,30%),#fff,transparent 55%);opacity:0;pointer-events:none}
+.flash.go{animation:flash .2s}
+@keyframes flash{0%{opacity:.9}}
+.hand{position:absolute;font-size:92px;z-index:12;opacity:0;pointer-events:none;filter:drop-shadow(4px 6px 6px #0007)}
+.hand.go{animation:hand .36s forwards}
+@keyframes hand{0%{opacity:1;transform:translate(var(--sx),var(--sy)) rotate(var(--sr)) scale(1.3)}40%{opacity:1;transform:rotate(8deg)}100%{opacity:0;transform:translate(20px,10px) rotate(24deg) scale(.7)}}
+.shock{position:absolute;width:40px;height:40px;border:4px solid #ffe6a0;border-radius:50%;pointer-events:none;animation:shock .45s forwards}
+@keyframes shock{to{transform:scale(6.5);opacity:0}}
+.mark{position:absolute;width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(190,40,30,.55),transparent 62%);pointer-events:none;mix-blend-mode:multiply;animation:mark 2.5s forwards}
+@keyframes mark{0%{opacity:0;transform:scale(.3)}18%{opacity:.85}100%{opacity:.28}}
+.float{position:absolute;pointer-events:none;z-index:11;font-weight:900}
+.pow{font:900 42px Impact,sans-serif;color:#ffe566;text-shadow:3px 3px 0 #c0392b;animation:pow .55s forwards}
+.dmg{font:800 22px Impact,sans-serif;color:#fff;text-shadow:2px 2px 0 #000;animation:dmg .7s forwards}
+.bill,.sweat,.star{font-size:22px;animation:fly .8s forwards}
+@keyframes pow{0%{transform:scale(.4) rotate(-12deg)}35%{transform:scale(1.2)}100%{opacity:0;transform:translateY(-34px) scale(1.35)}}
+@keyframes dmg{100%{opacity:0;transform:translateY(-46px)}}
+@keyframes fly{100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot,40deg))}}
+.combo{position:absolute;top:2px;font:28px Impact,sans-serif;color:#ffdd55;text-shadow:2px 2px 0 #7a1c14;opacity:0;z-index:13}
+.combo.show{animation:combo .7s}
+@keyframes combo{25%{opacity:1;transform:scale(1.25)}100%{opacity:0;transform:translateY(-26px)}}
+.meter{width:min(280px,80vw);height:10px;background:#0006;border-radius:99px;margin-top:12px;overflow:hidden}
+.meter>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e8c547,#e74c3c);transition:width .12s}
+.hud{margin-top:10px;text-align:center}
+.hud b{color:#e8c547;font-size:1.45rem}
+.quote{margin-top:8px;min-height:1.3em;font-style:italic;opacity:.9;max-width:92vw}
+.row{display:flex;gap:8px;margin-top:12px}
+button{padding:10px 18px;font:1.05rem Georgia,serif;color:#fff;background:linear-gradient(#e74c3c,#a93226);border:0;border-radius:10px;cursor:pointer;box-shadow:0 5px 0 #6e1d16}
+button.alt{background:linear-gradient(#4a6fa5,#2c3e6b);box-shadow:0 5px 0 #1b2744}
+button:active{transform:translateY(4px);box-shadow:0 1px 0 #0006}
+.hint{margin-top:8px;opacity:.45;font-size:.8rem}
+</style>
 </head>
 <body>
-  <h1>SLAP TRUMP</h1>
-  <p class="subtitle">Click the face. Do it for democracy. Or whatever.</p>
-
-  <div class="stage">
-    <div class="face-wrap" id="face" onclick="slap(event)">
-      <div class="hair"></div>
-      <div class="head"></div>
-      <div class="brow l"></div>
-      <div class="brow r"></div>
-      <div class="eye l"><div class="pupil"></div></div>
-      <div class="eye r"><div class="pupil"></div></div>
-      <div class="nose"></div>
-      <div class="mouth" id="mouth"></div>
-    </div>
-    <div class="hand" id="hand">🖐️</div>
+<h1>SLAP TRUMP</h1>
+<p class="sub">Click, tap, or smash Space / S</p>
+<div class="stage" id="stage">
+  <div class="face" id="face">
+    <svg viewBox="0 0 300 430">
+      <path fill="#1c2c4d" d="M40 300 L150 250 L260 300 L280 430 L20 430 Z"/>
+      <path fill="#f4f1ea" d="M118 262 L150 248 L182 262 L176 430 L124 430 Z"/>
+      <g class="tie">
+        <path fill="#c0392b" d="M146 262 L154 262 L164 430 L136 430 Z"/>
+        <path fill="#9b2e22" d="M150 280 L168 400 L150 408 L144 320 Z"/>
+      </g>
+      <ellipse cx="66" cy="168" rx="16" ry="24" fill="#d48962"/>
+      <ellipse cx="234" cy="168" rx="16" ry="24" fill="#d48962"/>
+      <ellipse cx="150" cy="250" rx="48" ry="28" fill="#d48962"/>
+      <ellipse cx="150" cy="155" rx="86" ry="100" fill="#e39a6c"/>
+      <g class="hair">
+        <path fill="#e6c034" d="M72 128 C70 70 110 38 150 36 C198 34 236 68 230 122 C210 92 190 86 150 90 C118 94 92 108 72 128 Z"/>
+        <path fill="#f3d56a" d="M92 108 C130 78 175 74 222 108 C180 88 140 92 92 108 Z"/>
+      </g>
+      <path fill="#c9a227" d="M96 132 Q118 122 138 134 Q118 128 96 132"/>
+      <path fill="#c9a227" d="M204 132 Q182 122 162 134 Q182 128 204 132"/>
+      <g class="eyes">
+        <ellipse cx="118" cy="148" rx="13" ry="9" fill="#fff"/>
+        <ellipse cx="182" cy="148" rx="13" ry="9" fill="#fff"/>
+        <circle cx="121" cy="149" r="5" fill="#2a1a12"/>
+        <circle cx="179" cy="149" r="5" fill="#2a1a12"/>
+      </g>
+      <g class="stars-eyes" font-size="16">
+        <text x="108" y="154">💫</text><text x="172" y="154">💫</text>
+      </g>
+      <path fill="#d48962" d="M150 148 L138 188 Q150 198 162 188 Z"/>
+      <ellipse cx="150" cy="190" rx="16" ry="9" fill="#cc7f58"/>
+      <g class="ok"><path d="M128 214 Q150 222 172 214" stroke="#a05642" fill="none" stroke-width="3" stroke-linecap="round"/></g>
+      <g class="oof"><ellipse cx="150" cy="218" rx="16" ry="14" fill="#6b2a22"/></g>
+    </svg>
+    <div class="flash" id="flash"></div>
   </div>
-
-  <div class="stats">Slaps: <strong id="count">0</strong></div>
-  <button type="button" onclick="slap()">SLAP</button>
-  <p class="quote" id="quote">Go on. He can take it.</p>
-
-  <script>
-    let slaps = 0;
-    const quotes = [
-      "That's gonna leave a mark.",
-      "Huge slap. The biggest.",
-      "People are saying that's the best slap.",
-      "Covfefe.",
-      "Wrong!",
-      "I alone can slap.",
-      "Sad!",
-      "Many people are slapping. Tremendous people.",
-      "The face is fine. Really fine. The finest.",
-      "You're fired. From slapping. No wait—"
-    ];
-
-    function slap(e) {
-      slaps++;
-      document.getElementById('count').textContent = slaps;
-      document.getElementById('quote').textContent =
-        quotes[Math.floor(Math.random() * quotes.length)];
-
-      const wrap = document.getElementById('face');
-      wrap.classList.remove('slapped');
-      void wrap.offsetWidth;
-      wrap.classList.add('slapped');
-
-      const mouth = document.getElementById('mouth');
-      mouth.classList.add('oof');
-      setTimeout(() => mouth.classList.remove('oof'), 280);
-
-      const hand = document.getElementById('hand');
-      const rect = wrap.getBoundingClientRect();
-      const stage = wrap.parentElement.getBoundingClientRect();
-      let x = 140, y = 160;
-      if (e && e.clientX) {
-        x = e.clientX - stage.left;
-        y = e.clientY - stage.top;
-      }
-      hand.style.left = (x - 40) + 'px';
-      hand.style.top = (y - 50) + 'px';
-      hand.classList.remove('show');
-      void hand.offsetWidth;
-      hand.classList.add('show');
-
-      const mark = document.createElement('div');
-      mark.className = 'mark';
-      mark.style.left = (x - rect.left + wrap.offsetLeft - 35) + 'px';
-      mark.style.top = (y - rect.top + wrap.offsetTop - 35) + 'px';
-      wrap.appendChild(mark);
-      setTimeout(() => mark.remove(), 1200);
-
-      // tiny procedural slap sound
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type = 'square';
-        o.frequency.setValueAtTime(180, ctx.currentTime);
-        o.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.08);
-        g.gain.setValueAtTime(0.15, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(); o.stop(ctx.currentTime + 0.13);
-      } catch (_) {}
-    }
-  </script>
+  <div class="hand" id="hand">🖐️</div>
+  <div class="combo" id="combo">COMBO</div>
+</div>
+<div class="meter"><i id="bar"></i></div>
+<div class="hud">Slaps <b id="count">0</b> &nbsp; Best combo <b id="best">0</b> &nbsp; Crits <b id="crits">0</b></div>
+<p class="quote" id="quote">First one’s free.</p>
+<div class="row">
+  <button type="button" id="btn">SLAP</button>
+  <button type="button" class="alt" id="mega">MEGA SLAP</button>
+</div>
+<p class="hint">Mega slap = 5 hits. At 50 he faceplants, then gets back up. Space or S also slaps.</p>
+<script>
+const face=document.getElementById('face'), stage=document.getElementById('stage');
+const hand=document.getElementById('hand'), flash=document.getElementById('flash');
+const quote=document.getElementById('quote'), comboEl=document.getElementById('combo');
+const countEl=document.getElementById('count'), bestEl=document.getElementById('best');
+const critsEl=document.getElementById('crits'), bar=document.getElementById('bar');
+let slaps=0,combo=0,best=0,crits=0,last=0,down=false,koAt=50;
+const quotes=["Huge slap.","Hair barely moved. Fake news.","Covfefe.","Wrong!","Sad!","Best face. Everybody says so.","That's not a slap, that's a deal.","We're slapping at record levels.","Many people are saying: ouch.","The tie did not approve."];
+const pows=["POW!","WHAP!","SLAP!","BAM!","OOF!","THWACK!","KAPOW!","SMACK!"];
+const rand=(a,b)=>a+Math.random()*(b-a), pick=a=>a[Math.floor(Math.random()*a.length)];
+function thud(p){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime, buf=ctx.createBuffer(1,ctx.sampleRate*0.12,ctx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.2);
+    const src=ctx.createBufferSource(); src.buffer=buf;
+    const f=ctx.createBiquadFilter(); f.type='lowpass';
+    f.frequency.setValueAtTime(650+p*90,t); f.frequency.exponentialRampToValueAtTime(110,t+.1);
+    const g=ctx.createGain(); g.gain.setValueAtTime(Math.min(.4,.16+p*.04),t); g.gain.exponentialRampToValueAtTime(.001,t+.12);
+    src.connect(f); f.connect(g); g.connect(ctx.destination); src.start();
+  }catch(e){}
+}
+function fx(cls,text,x,y,extra){
+  extra=extra||{};
+  const el=document.createElement('div'); el.className='float '+cls; el.textContent=text;
+  el.style.left=x+'px'; el.style.top=y+'px';
+  if(extra.dx) el.style.setProperty('--dx',extra.dx);
+  if(extra.dy) el.style.setProperty('--dy',extra.dy);
+  if(extra.rot) el.style.setProperty('--rot',extra.rot);
+  stage.appendChild(el); setTimeout(function(){el.remove();},800);
+}
+function slap(ev, power){
+  power=power||1;
+  if(down) return;
+  slaps+=power; countEl.textContent=slaps;
+  const now=Date.now(); combo=(now-last<750)?combo+1:1; last=now;
+  if(combo>best){best=combo;bestEl.textContent=best;}
+  const crit=Math.random()<.18 || power>=5;
+  if(crit){crits++; critsEl.textContent=crits;}
+  bar.style.width=Math.min(100,combo*10)+'%';
+  quote.textContent=crit?'CRITICAL HIT. Tremendous.':pick(quotes);
+  thud(combo+(crit?3:0));
+  document.body.classList.remove('shake'); void document.body.offsetWidth; document.body.classList.add('shake');
+  face.classList.remove('hit'); void face.offsetWidth; face.classList.add('hit');
+  face.classList.toggle('w1',slaps>=8);
+  face.classList.toggle('w2',slaps>=20);
+  face.classList.toggle('w3',slaps>=40);
+  const r=stage.getBoundingClientRect();
+  let x=r.width/2,y=r.height*0.32;
+  if(ev&&ev.clientX){x=ev.clientX-r.left;y=ev.clientY-r.top;}
+  flash.style.setProperty('--fx',(x/r.width*100)+'%');
+  flash.style.setProperty('--fy',(y/r.height*100)+'%');
+  flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
+  const dirs=[{sx:'-90px',sy:'-40px',sr:'-50deg'},{sx:'90px',sy:'-30px',sr:'40deg'},{sx:'-70px',sy:'50px',sr:'-20deg'},{sx:'60px',sy:'55px',sr:'25deg'}];
+  const dir=pick(dirs);
+  hand.style.left=(x-48)+'px'; hand.style.top=(y-48)+'px';
+  hand.style.setProperty('--sx',dir.sx); hand.style.setProperty('--sy',dir.sy); hand.style.setProperty('--sr',dir.sr);
+  hand.classList.remove('go'); void hand.offsetWidth; hand.classList.add('go');
+  const shock=document.createElement('div'); shock.className='shock';
+  shock.style.left=(x-20)+'px'; shock.style.top=(y-20)+'px';
+  stage.appendChild(shock); setTimeout(function(){shock.remove();},450);
+  const mark=document.createElement('div'); mark.className='mark';
+  const f=face.getBoundingClientRect();
+  mark.style.left=(x-(f.left-r.left)-39)+'px'; mark.style.top=(y-(f.top-r.top)-39)+'px';
+  face.appendChild(mark);
+  fx('pow', crit?'CRITICAL!':pick(pows), x-50, y-74);
+  fx('dmg', crit?'-999':'-'+ (12+combo*3), x+10, y-20);
+  var i;
+  for(i=0;i<6+Math.min(combo,8);i++){
+    fx('star', pick(['✦','★','✧','💥']), x, y, {dx:rand(-90,90)+'px', dy:rand(-100,24)+'px'});
+  }
+  if(combo>=3){
+    fx('sweat','💦', x+28, y-8, {dx:'12px', dy:'46px'});
+    fx('bill','💵', x-20, y, {dx:rand(-80,80)+'px', dy:rand(-90,-20)+'px', rot:rand(-40,40)+'deg'});
+  }
+  if(combo>=2){
+    comboEl.textContent=combo>=8?'NUCLEAR x'+combo:(combo>=5?'MEGA x'+combo:combo+'x COMBO');
+    comboEl.classList.remove('show'); void comboEl.offsetWidth; comboEl.classList.add('show');
+  }
+  if(slaps>=koAt){
+    down=true; koAt+=50;
+    face.classList.remove('hit'); face.classList.add('down');
+    document.body.classList.add('ko');
+    quote.textContent='KO! He’ll be back. He always is.';
+    setTimeout(function(){
+      face.classList.remove('down'); face.classList.add('up');
+      document.body.classList.remove('ko');
+      quote.textContent='Never happened. Fake KO.';
+      setTimeout(function(){face.classList.remove('up'); down=false;},500);
+    },1600);
+  }
+}
+face.addEventListener('click', slap);
+document.getElementById('btn').addEventListener('click', function(){slap();});
+document.getElementById('mega').addEventListener('click', function(){slap(null,5);});
+window.addEventListener('keydown', function(e){
+  if(e.repeat) return;
+  if(e.code==='Space'||e.key==='s'||e.key==='S'){e.preventDefault(); slap();}
+  if(e.key==='m'||e.key==='M') slap(null,5);
+});
+</script>
 </body>
 </html>
