@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slap Trump</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      font-family: Georgia, 'Times New Roman', serif;
+      color: #f5f0e6;
+      overflow: hidden;
+      user-select: none;
+    }
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      margin-bottom: 0.3em;
+      text-shadow: 2px 2px 0 #c9a227;
+      letter-spacing: 0.04em;
+    }
+    .subtitle { opacity: 0.7; margin-bottom: 1.5rem; font-style: italic; }
+    .stage {
+      position: relative;
+      width: min(420px, 90vw);
+      height: min(480px, 70vh);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .face-wrap {
+      position: relative;
+      width: 280px;
+      height: 340px;
+      cursor: pointer;
+      transform-origin: 50% 40%;
+      transition: transform 0.08s ease-out;
+    }
+    .face-wrap.slapped {
+      animation: slap-shake 0.35s ease-out;
+    }
+    @keyframes slap-shake {
+      0%   { transform: rotate(0) scale(1); }
+      15%  { transform: rotate(-12deg) scale(0.96) translateX(-18px); }
+      35%  { transform: rotate(10deg) scale(1.04) translateX(14px); }
+      55%  { transform: rotate(-6deg) scale(0.98); }
+      75%  { transform: rotate(4deg); }
+      100% { transform: rotate(0) scale(1); }
+    }
+    .hair {
+      position: absolute;
+      top: 8px; left: 50%;
+      transform: translateX(-50%);
+      width: 220px; height: 90px;
+      background: #f4d03f;
+      border-radius: 50% 50% 40% 40% / 70% 70% 30% 30%;
+      box-shadow:
+        -50px 20px 0 -10px #f4d03f,
+        55px 18px 0 -12px #f4d03f,
+        0 -8px 0 8px #e8c547;
+      z-index: 2;
+    }
+    .hair::after {
+      content: '';
+      position: absolute;
+      top: 55px; left: 20px;
+      width: 180px; height: 40px;
+      background: #f4d03f;
+      border-radius: 40%;
+    }
+    .head {
+      position: absolute;
+      top: 55px; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 240px;
+      background: #e8a87c;
+      border-radius: 45% 45% 50% 50% / 35% 35% 65% 65%;
+      box-shadow: inset -12px -8px 20px rgba(180, 80, 40, 0.25);
+      z-index: 1;
+    }
+    .brow {
+      position: absolute;
+      top: 95px;
+      width: 58px; height: 10px;
+      background: #3d2b1f;
+      border-radius: 4px;
+      z-index: 3;
+    }
+    .brow.l { left: 68px; transform: rotate(-8deg); }
+    .brow.r { right: 68px; transform: rotate(8deg); }
+    .eye {
+      position: absolute;
+      top: 112px;
+      width: 28px; height: 22px;
+      background: #fff;
+      border-radius: 50%;
+      z-index: 3;
+    }
+    .eye.l { left: 78px; }
+    .eye.r { right: 78px; }
+    .pupil {
+      position: absolute;
+      top: 6px; left: 8px;
+      width: 12px; height: 12px;
+      background: #2c1810;
+      border-radius: 50%;
+    }
+    .nose {
+      position: absolute;
+      top: 130px; left: 50%;
+      transform: translateX(-50%);
+      width: 36px; height: 48px;
+      background: #d4896a;
+      border-radius: 40% 40% 50% 50%;
+      z-index: 3;
+    }
+    .mouth {
+      position: absolute;
+      top: 190px; left: 50%;
+      transform: translateX(-50%);
+      width: 70px; height: 18px;
+      border-bottom: 5px solid #8b3a2a;
+      border-radius: 0 0 50% 50%;
+      z-index: 3;
+    }
+    .mouth.oof {
+      width: 40px; height: 28px;
+      border: 4px solid #8b3a2a;
+      border-radius: 50%;
+      background: #4a1c14;
+    }
+    .hand {
+      position: absolute;
+      font-size: 90px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+      filter: drop-shadow(4px 4px 6px rgba(0,0,0,0.4));
+    }
+    .hand.show {
+      animation: hand-slap 0.4s ease-out forwards;
+    }
+    @keyframes hand-slap {
+      0%   { opacity: 1; transform: translate(-80px, -40px) rotate(-40deg) scale(1.2); }
+      40%  { opacity: 1; transform: translate(10px, 20px) rotate(10deg) scale(1); }
+      100% { opacity: 0; transform: translate(40px, 10px) rotate(25deg) scale(0.8); }
+    }
+    .mark {
+      position: absolute;
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,40,40,0.45) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 4;
+      animation: fade-mark 1.2s ease-out forwards;
+    }
+    @keyframes fade-mark {
+      0% { opacity: 0.8; transform: scale(0.4); }
+      30% { opacity: 0.7; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.3); }
+    }
+    .stats {
+      margin-top: 1.4rem;
+      font-size: 1.25rem;
+      text-align: center;
+    }
+    .stats strong { color: #f4d03f; font-size: 1.6rem; }
+    button {
+      margin-top: 1.2rem;
+      padding: 0.7rem 1.8rem;
+      font-size: 1.15rem;
+      font-family: inherit;
+      background: #c0392b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #7b241c;
+    }
+    button:active { transform: translateY(3px); box-shadow: 0 1px 0 #7b241c; }
+    .quote {
+      margin-top: 1rem;
+      min-height: 1.5em;
+      font-style: italic;
+      opacity: 0.85;
+      text-align: center;
+      max-width: 90vw;
+    }
+  </style>
+</head>
+<body>
+  <h1>SLAP TRUMP</h1>
+  <p class="subtitle">Click the face. Do it for democracy. Or whatever.</p>
+
+  <div class="stage">
+    <div class="face-wrap" id="face" onclick="slap(event)">
+      <div class="hair"></div>
+      <div class="head"></div>
+      <div class="brow l"></div>
+      <div class="brow r"></div>
+      <div class="eye l"><div class="pupil"></div></div>
+      <div class="eye r"><div class="pupil"></div></div>
+      <div class="nose"></div>
+      <div class="mouth" id="mouth"></div>
+    </div>
+    <div class="hand" id="hand">🖐️</div>
+  </div>
+
+  <div class="stats">Slaps: <strong id="count">0</strong></div>
+  <button type="button" onclick="slap()">SLAP</button>
+  <p class="quote" id="quote">Go on. He can take it.</p>
+
+  <script>
+    let slaps = 0;
+    const quotes = [
+      "That's gonna leave a mark.",
+      "Huge slap. The biggest.",
+      "People are saying that's the best slap.",
+      "Covfefe.",
+      "Wrong!",
+      "I alone can slap.",
+      "Sad!",
+      "Many people are slapping. Tremendous people.",
+      "The face is fine. Really fine. The finest.",
+      "You're fired. From slapping. No wait—"
+    ];
+
+    function slap(e) {
+      slaps++;
+      document.getElementById('count').textContent = slaps;
+      document.getElementById('quote').textContent =
+        quotes[Math.floor(Math.random() * quotes.length)];
+
+      const wrap = document.getElementById('face');
+      wrap.classList.remove('slapped');
+      void wrap.offsetWidth;
+      wrap.classList.add('slapped');
+
+      const mouth = document.getElementById('mouth');
+      mouth.classList.add('oof');
+      setTimeout(() => mouth.classList.remove('oof'), 280);
+
+      const hand = document.getElementById('hand');
+      const rect = wrap.getBoundingClientRect();
+      const stage = wrap.parentElement.getBoundingClientRect();
+      let x = 140, y = 160;
+      if (e && e.clientX) {
+        x = e.clientX - stage.left;
+        y = e.clientY - stage.top;
+      }
+      hand.style.left = (x - 40) + 'px';
+      hand.style.top = (y - 50) + 'px';
+      hand.classList.remove('show');
+      void hand.offsetWidth;
+      hand.classList.add('show');
+
+      const mark = document.createElement('div');
+      mark.className = 'mark';
+      mark.style.left = (x - rect.left + wrap.offsetLeft - 35) + 'px';
+      mark.style.top = (y - rect.top + wrap.offsetTop - 35) + 'px';
+      wrap.appendChild(mark);
+      setTimeout(() => mark.remove(), 1200);
+
+      // tiny procedural slap sound
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = 'square';
+        o.frequency.setValueAtTime(180, ctx.currentTime);
+        o.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.08);
+        g.gain.setValueAtTime(0.15, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 0.13);
+      } catch (_) {}
+    }
+  </script>
+</body>
+</html>
