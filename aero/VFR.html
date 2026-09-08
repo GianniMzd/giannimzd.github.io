@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlightPrep Solution — VFR Chart & Navlog</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- PDF & Canvas Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg-color: #F6F4F0;
+            --border-color: #111111;
+            --text-color: #111111;
+            --hover-bg: #E4DFD3;
+            --accent-green: #4A7C59;
+            --accent-orange: #C16E56;
+            --accent-blue: #3A6B88;
+            --card-bg: #FFFFFF;
+            --muted-text: #6B6558;
+            --danger: #B0402F;
+        }
+
+        html.dark-mode {
+            --bg-color: #15171A;
+            --border-color: #EDEBE6;
+            --text-color: #EDEBE6;
+            --hover-bg: #23262B;
+            --accent-green: #6FBE86;
+            --accent-orange: #E08A6D;
+            --accent-blue: #5B9BBF;
+            --card-bg: #1D2024;
+            --muted-text: #A6A197;
+            --danger: #E0725E;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { transition: background-color 0.25s ease; }
+
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 30px; height: 80px; border-bottom: 2px solid var(--border-color); background-color: var(--bg-color); }
+        .brand { display: flex; align-items: center; gap: 15px; font-size: 24px; font-weight: 700; letter-spacing: -0.03em; }
+        .brand svg { width: 40px; height: 40px; }
+        
+        .theme-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 2px solid var(--border-color); border-radius: 50%; background-color: var(--bg-color); color: var(--text-color); cursor: pointer; transition: transform 0.2s ease; }
+        .theme-toggle:hover { background-color: var(--hover-bg); transform: scale(1.05); }
+        .theme-toggle svg { width: 20px; height: 20px; stroke: var(--text-color); }
+        .theme-toggle .icon-moon { display: none; }
+        html.dark-mode .theme-toggle .icon-sun { display: none; }
+        html.dark-mode .theme-toggle .icon-moon { display: block; }
+
+        .main-layout { display: flex; flex: 1; overflow: hidden; }
+        
+        .sidebar { width: 260px; flex: 0 0 260px; border-right: 2px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; background-color: var(--bg-color); z-index: 10;}
+        .sidebar a { padding: 25px; text-decoration: none; color: var(--text-color); font-size: 16px; font-weight: 500; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 10px; white-space: nowrap; transition: background-color 0.2s ease;}
+        .sidebar a::after { content: '→'; flex-shrink: 0; opacity: 0; transform: translateX(-6px); transition: opacity 0.2s ease, transform 0.2s ease; }
+        .sidebar a:hover { background-color: var(--hover-bg); }
+        .sidebar a:hover::after { opacity: 1; transform: translateX(0); }
+        .sidebar a.highlight { background-color: var(--border-color); color: var(--bg-color); }
+
+        .btn-export-bw {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            border: 2px solid var(--text-color);
+            padding: 16px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .btn-export-bw:hover {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .btn-export-bw:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .workspace { flex: 1; display: grid; grid-template-columns: 1fr 480px; }
+
+        .map-section { display: flex; flex-direction: column; border-right: 2px solid var(--border-color); }
+        .map-header { padding: 15px 20px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-color); z-index: 2; }
+        .map-header h2 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .btn-action { background: var(--border-color); color: var(--bg-color); border: 2px solid var(--border-color); padding: 8px 16px; font-weight: 700; font-family: 'Inter'; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: opacity 0.15s ease; border-radius: 4px; }
+        .btn-action:hover { opacity: 0.85; }
+        .btn-action.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+        .map-wrapper { position: relative; flex: 1; width: 100%; }
+        #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: #e5e3df; z-index: 1; }
+        html.dark-mode .leaflet-tile-pane { filter: brightness(0.7) invert(0) contrast(1.1) saturate(0.8); }
+        html.dark-mode .leaflet-bar a { background-color: var(--card-bg); color: var(--text-color); border-bottom-color: var(--border-color); }
+        html.dark-mode .leaflet-bar a:hover { background-color: var(--hover-bg); }
+
+        .wp-custom-marker { background-color: var(--accent-orange); border: 2px solid var(--border-color); border-radius: 50%; width: 14px; height: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: grab; }
+        .wp-custom-marker:active { cursor: grabbing; }
+
+        .navlog-panel { background-color: var(--card-bg); display: flex; flex-direction: column; overflow-y: auto; }
+        .navlog-header { padding: 15px 20px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-color); }
+        .navlog-header h2 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .perf-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; border-bottom: 2px solid var(--border-color); }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--muted-text); text-transform: uppercase; }
+        .form-group input { border: 2px solid var(--hover-bg); background: transparent; padding: 8px; font-family: 'Inter'; font-size: 14px; color: var(--text-color); outline: none; width: 100%; }
+        .form-group input:focus { border-color: var(--border-color); }
+
+        .wp-edit-section { display: flex; flex-direction: column; border-bottom: 2px solid var(--border-color); max-height: 250px; }
+        .section-heading { padding: 10px 20px; font-size: 11px; font-weight: 700; color: var(--muted-text); text-transform: uppercase; background-color: var(--bg-color); border-bottom: 1px solid var(--hover-bg); }
+        .wp-edit-list { list-style: none; overflow-y: auto; margin: 0; padding: 0; }
+        .wp-edit-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px; border-bottom: 1px solid var(--hover-bg); gap: 10px; }
+        
+        .wp-name-input { flex: 1; border: 2px solid transparent; background: transparent; padding: 6px 10px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; }
+        .wp-alt-input { width: 85px; border: 2px solid var(--hover-bg); background: transparent; padding: 6px 10px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; text-align: right; }
+        .wp-name-input:focus, .wp-alt-input:focus { border-color: var(--border-color); background: var(--bg-color); }
+        
+        .btn-delete-wp { background: none; border: none; color: var(--muted-text); cursor: pointer; font-size: 16px; padding: 4px; }
+        .btn-delete-wp:hover { color: var(--danger); }
+        .empty-state-text { padding: 15px 20px; font-size: 13px; color: var(--muted-text); text-align: center; }
+
+        .log-table-wrapper { flex: 1; overflow-y: auto; }
+        table.ui-table { width: 100%; border-collapse: collapse; text-align: left; }
+        table.ui-table th, table.ui-table td { padding: 12px 10px; border-bottom: 1px solid var(--hover-bg); font-size: 13px; }
+        table.ui-table th { font-size: 11px; text-transform: uppercase; color: var(--muted-text); border-bottom: 2px solid var(--border-color); position: sticky; top: 0; background-color: var(--card-bg); z-index: 2; }
+        table.ui-table tr:hover td { background-color: var(--hover-bg); }
+        
+        .totals-bar { padding: 20px; border-top: 2px solid var(--border-color); background-color: var(--bg-color); font-weight: 700; display: flex; justify-content: space-between; font-size: 14px; }
+        .empty-map-state { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--card-bg); border: 2px solid var(--border-color); padding: 10px 20px; font-weight: 500; font-size: 14px; z-index: 1000; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="brand">
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
+                <path d="M50 10 L90 85 L50 70 L10 85 Z" fill="var(--border-color)" />
+                <path d="M50 10 L50 70" stroke="var(--bg-color)" stroke-width="4" />
+            </svg>
+            FlightPrep Solution
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+    </header>
+
+    <main class="main-layout">
+        <nav class="sidebar">
+            <a href="flg_prep.html">Flight Preparation</a>
+            <a href="#" class="highlight">Interactive Route Map</a>
+            <a href="perfo.html">Aircraft Performance</a>
+            <a href="checklists.html">Checklists</a>
+            <a href="#">Emergency Procedures</a>
+            
+            <!-- EXPORT FLIGHT DOSSIER BUTTON -->
+            <div class="sidebar-export-wrap" style="padding: 25px;">
+                <button class="btn-export-bw btn-export-dossier" id="exportFlightDocBtn" title="Export complete flight dossier (Navlog, Minimap, Performance, Checklists & Emergency)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export Flight Dossier
+                </button>
+            </div>
+        </nav>
+
+        <div class="workspace">
+            <div class="map-section">
+                <div class="map-header">
+                    <h2>VFR Aeronautical Chart</h2>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="btn-action" id="centerRouteBtn" disabled style="padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; opacity: 0.5; cursor: not-allowed;" title="Center map on flight track">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>
+                            Center Track
+                        </button>
+                        <button class="btn-action danger" id="clearRouteBtn" style="padding: 6px 12px; font-size: 11px;">Clear</button>
+                    </div>
+                </div>
+                <div class="map-wrapper">
+                    <div id="map"></div>
+                    <div id="mapInstruction" class="empty-map-state">Click anywhere on the map to drop a waypoint.</div>
+                </div>
+            </div>
+
+            <div class="navlog-panel">
+                <div class="navlog-header">
+                    <h2>Navigation Log</h2>
+                </div>
+
+                <div class="perf-inputs">
+                    <div class="form-group">
+                        <label>Global TAS (kt)</label>
+                        <input type="number" id="tasInput" value="110">
+                    </div>
+                    <div class="form-group">
+                        <label>Winds Aloft Dir/Spd</label>
+                        <div style="display:flex; gap: 5px;">
+                            <input type="number" id="windDirInput" value="0" placeholder="°" style="width:55%;">
+                            <input type="number" id="windSpdInput" value="0" placeholder="kt" style="width:45%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wp-edit-section">
+                    <div class="section-heading">Waypoints & Leg Altitudes</div>
+                    <ul class="wp-edit-list" id="waypointEditList">
+                        <li class="empty-state-text">No waypoints plotted.</li>
+                    </ul>
+                </div>
+
+                <div class="log-table-wrapper">
+                    <table class="ui-table" id="navlogTableElement">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Leg</th>
+                                <th style="width: 12.5%; text-align:center;">ALT</th>
+                                <th style="width: 12.5%; text-align:center;">TC</th>
+                                <th style="width: 12.5%; text-align:center;">Dist</th>
+                                <th style="width: 12.5%; text-align:center;">TH</th>
+                                <th style="width: 12.5%; text-align:center;">GS</th>
+                                <th style="width: 12.5%; text-align:center;">ETE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="navlogBody">
+                            <tr><td colspan="7" style="text-align: center; color: var(--muted-text); padding: 40px 20px;">Start plotting to generate navlog.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="totals-bar" id="totalsBar">
+                    <span>Total Dist: 0.0 nm</span>
+                    <span>Total ETE: 0 min</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    
+    <script>
+        const NAV_STORAGE_KEY = 'flightprep_map_data_v11';
+        const PERF_STORAGE_KEY = 'flightprep_perf_data_v10';
+        const CHK_STORAGE_KEY = 'flightprep_checklists_data_v2';
+        
+        const map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([48.83, 2.75], 9);
+        L.control.zoom({ position: 'topright' }).addTo(map);
+
+        const CenterControl = L.Control.extend({
+            options: { position: 'topright' },
+            onAdd: function() {
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                const btn = L.DomUtil.create('a', '', container);
+                btn.href = '#';
+                btn.title = 'Center map on flight track';
+                btn.setAttribute('role', 'button');
+                btn.setAttribute('aria-label', 'Center map on flight track');
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.justifyContent = 'center';
+                btn.style.width = '30px';
+                btn.style.height = '30px';
+                btn.style.cursor = 'pointer';
+                btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>`;
+                L.DomEvent.disableClickPropagation(container);
+                L.DomEvent.disableScrollPropagation(container);
+                L.DomEvent.on(btn, 'click', function(e) {
+                    L.DomEvent.stop(e);
+                    centerOnRoute();
+                });
+                return container;
+            }
+        });
+        map.addControl(new CenterControl());
+
+        setTimeout(() => { map.invalidateSize(); }, 200);
+        
+        const baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap', crossOrigin: true });
+        const vfrLayer = L.tileLayer('https://{s}.tile.openflightmaps.org/tiles/default/{z}/{x}/{y}.png', { maxZoom: 14, subdomains: ['a', 'b', 'c'], opacity: 0.95, crossOrigin: true });
+        
+        baseLayer.addTo(map);
+        vfrLayer.addTo(map);
+
+        let waypoints = [];
+        let routeLine = null;
+        let markers = [];
+
+        const navlogBody = document.getElementById('navlogBody');
+        const totalsBar = document.getElementById('totalsBar');
+        const tasInput = document.getElementById('tasInput');
+        const windDirInput = document.getElementById('windDirInput');
+        const windSpdInput = document.getElementById('windSpdInput');
+        const instruction = document.getElementById('mapInstruction');
+        const waypointEditList = document.getElementById('waypointEditList');
+        const customWpIcon = L.divIcon({ className: 'wp-custom-marker', iconSize: [14, 14], iconAnchor: [7, 7] });
+
+        function saveState() {
+            const data = { waypoints, tas: tasInput.value, windDir: windDirInput.value, windSpd: windSpdInput.value };
+            localStorage.setItem(NAV_STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function loadState() {
+            const rawData = localStorage.getItem(NAV_STORAGE_KEY);
+            if (rawData) {
+                try {
+                    const data = JSON.parse(rawData);
+                    if (data.tas) tasInput.value = data.tas;
+                    if (data.windDir) windDirInput.value = data.windDir;
+                    if (data.windSpd) windSpdInput.value = data.windSpd;
+                    if (Array.isArray(data.waypoints) && data.waypoints.length > 0) {
+                        waypoints = data.waypoints;
+                        updateUI();
+                    }
+                } catch (e) { console.warn("Failed to load nav state.", e); }
+            }
+        }
+
+        function centerOnRoute() {
+            if (!waypoints || waypoints.length === 0) return;
+            if (waypoints.length === 1) {
+                map.setView([parseFloat(waypoints[0].lat), parseFloat(waypoints[0].lng)], 11, { animate: true });
+            } else {
+                const bounds = L.latLngBounds(waypoints.map(wp => [parseFloat(wp.lat), parseFloat(wp.lng)]));
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13, animate: true });
+            }
+        }
+
+        function updateUI() {
+            const hasWaypoints = waypoints.length > 0;
+            instruction.style.display = hasWaypoints ? 'none' : 'block';
+            const centerBtn = document.getElementById('centerRouteBtn');
+            if (centerBtn) {
+                centerBtn.disabled = !hasWaypoints;
+                centerBtn.style.opacity = hasWaypoints ? '1' : '0.5';
+                centerBtn.style.cursor = hasWaypoints ? 'pointer' : 'not-allowed';
+            }
+            renderMarkers();
+            drawRoute();
+            renderWaypointEditor();
+            generateNavlog();
+            saveState();
+        }
+
+        map.on('click', function(e) {
+            waypoints.push({ lat: e.latlng.lat, lng: e.latlng.lng, name: `WP ${waypoints.length + 1}`, alt: 3500 });
+            updateUI();
+        });
+
+        function renderMarkers() {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            waypoints.forEach((wp, index) => {
+                const marker = L.marker([wp.lat, wp.lng], { icon: customWpIcon, draggable: true }).addTo(map).bindTooltip(wp.name, {permanent: true, direction: 'right', className: 'wp-tooltip', offset: [5, 0]});
+                marker.on('drag', function(e) { waypoints[index].lat = e.latlng.lat; waypoints[index].lng = e.latlng.lng; drawRoute(); generateNavlog(); });
+                marker.on('dragend', function() { saveState(); });
+                markers.push(marker);
+            });
+        }
+
+        function drawRoute() {
+            const latlngs = waypoints.map(wp => [wp.lat, wp.lng]);
+            if (latlngs.length > 1) {
+                if (routeLine) routeLine.setLatLngs(latlngs);
+                else routeLine = L.polyline(latlngs, { color: '#3A6B88', weight: 5, opacity: 0.9, dashArray: '10, 10' }).addTo(map);
+            } else if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+        }
+
+        function renderWaypointEditor() {
+            waypointEditList.innerHTML = '';
+            if (waypoints.length === 0) {
+                waypointEditList.innerHTML = '<li class="empty-state-text">No waypoints plotted.</li>';
+                return;
+            }
+            waypoints.forEach((wp, index) => {
+                const li = document.createElement('li');
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text'; nameInput.className = 'wp-name-input'; nameInput.value = wp.name;
+                nameInput.addEventListener('input', (e) => {
+                    waypoints[index].name = e.target.value.trim() || `WP ${index + 1}`;
+                    if (markers[index]) markers[index].setTooltipContent(waypoints[index].name);
+                    generateNavlog(); saveState();
+                });
+
+                const altInput = document.createElement('input');
+                altInput.type = 'number'; altInput.className = 'wp-alt-input'; altInput.value = wp.alt !== undefined ? wp.alt : 3500; altInput.step = 500;
+                if (index === waypoints.length - 1) altInput.style.visibility = 'hidden';
+                altInput.addEventListener('input', (e) => { waypoints[index].alt = parseInt(e.target.value) || 0; generateNavlog(); saveState(); });
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-delete-wp'; delBtn.innerHTML = '✕';
+                delBtn.onclick = () => { waypoints.splice(index, 1); updateUI(); };
+
+                li.appendChild(nameInput); li.appendChild(altInput); li.appendChild(delBtn);
+                waypointEditList.appendChild(li);
+            });
+        }
+
+        function calculateNavData(lat1, lon1, lat2, lon2) {
+            const R = 3440.065; const toRad = Math.PI / 180; const toDeg = 180 / Math.PI;
+            const φ1 = lat1 * toRad; const φ2 = lat2 * toRad;
+            const Δφ = (lat2 - lat1) * toRad; const Δλ = (lon2 - lon1) * toRad;
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const dist = R * c;
+            const y = Math.sin(Δλ) * Math.cos(φ2);
+            const x = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+            let bearing = Math.atan2(y, x) * toDeg;
+            return { dist, course: (bearing + 360) % 360 };
+        }
+
+        function calculateLegPerformance(course, dist, tas, windDir, windSpd) {
+            const windAngle = (windDir - course) * (Math.PI / 180);
+            const crossWind = Math.sin(windAngle) * windSpd;
+            const headWind = Math.cos(windAngle) * windSpd;
+            let wca = 0, gs = tas;
+            if (tas > Math.abs(crossWind)) {
+                wca = Math.asin(crossWind / tas) * (180 / Math.PI);
+                gs = Math.sqrt(tas * tas - crossWind * crossWind) - headWind;
+            } else { gs = 0; }
+            return { wca, th: (course + wca + 360) % 360, gs, ete: gs > 0 ? (dist / gs) * 60 : 0 };
+        }
+
+        function generateNavlog() {
+            if (waypoints.length < 2) {
+                navlogBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted-text); padding: 40px 20px;">Add at least 2 points to generate legs.</td></tr>`;
+                totalsBar.innerHTML = `<span>Total Dist: 0.0 nm</span><span>Total ETE: 0 min</span>`;
+                return;
+            }
+
+            const tas = parseFloat(tasInput.value) || 0;
+            const windDir = parseFloat(windDirInput.value) || 0;
+            const windSpd = parseFloat(windSpdInput.value) || 0;
+            let html = '', totalDist = 0, totalETE = 0;
+
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                const p1 = waypoints[i]; const p2 = waypoints[i+1];
+                const legAlt = p1.alt !== undefined ? p1.alt : 3500;
+                const geo = calculateNavData(p1.lat, p1.lng, p2.lat, p2.lng);
+                const perf = calculateLegPerformance(geo.course, geo.dist, tas, windDir, windSpd);
+
+                totalDist += geo.dist; totalETE += perf.ete;
+
+                html += `
+                    <tr>
+                        <td style="font-weight: 500;">${escapeHtml(p1.name)} ➔ ${escapeHtml(p2.name)}</td>
+                        <td style="text-align: center;">${legAlt}</td>
+                        <td style="text-align: center;">${Math.round(geo.course).toString().padStart(3, '0')}°</td>
+                        <td style="text-align: center;">${geo.dist.toFixed(1)}</td>
+                        <td style="font-weight: 700; color: var(--accent-blue); text-align: center;">${Math.round(perf.th).toString().padStart(3, '0')}°</td>
+                        <td style="text-align: center;">${Math.round(perf.gs)}</td>
+                        <td style="text-align: center;">${Math.round(perf.ete)} m</td>
+                    </tr>
+                `;
+            }
+            navlogBody.innerHTML = html;
+            totalsBar.innerHTML = `<span>Total Dist: ${totalDist.toFixed(1)} nm</span><span>Total ETE: ${Math.round(totalETE)} min</span>`;
+        }
+
+        function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+
+
+        // ==========================================
+        // PERFORMANCE SYNC LOGIC (TAS <-> Cruise Speed)
+        // ==========================================
+        
+        function syncTasFromPerf() {
+            try {
+                const raw = localStorage.getItem(PERF_STORAGE_KEY);
+                if (raw) {
+                    const perf = JSON.parse(raw);
+                    // Fallback to Vc if not selected yet
+                    const cruiseName = perf.range?.cruiseTas || 'Vc';
+                    if (Array.isArray(perf.speeds)) {
+                        const speedObj = perf.speeds.find(s => s.name === cruiseName);
+                        if (speedObj && !isNaN(speedObj.value)) {
+                            if (parseFloat(tasInput.value) !== parseFloat(speedObj.value)) {
+                                tasInput.value = speedObj.value;
+                                generateNavlog();
+                                saveState();
+                            }
+                        }
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function syncTasToPerf() {
+            try {
+                const raw = localStorage.getItem(PERF_STORAGE_KEY);
+                if (raw) {
+                    let perf = JSON.parse(raw);
+                    const cruiseName = perf.range?.cruiseTas || 'Vc';
+                    const newTas = parseFloat(tasInput.value) || 0;
+                    let changed = false;
+                    
+                    if (Array.isArray(perf.speeds)) {
+                        let speedObj = perf.speeds.find(s => s.name === cruiseName);
+                        // If it doesn't exist (e.g. wiped out), create it
+                        if (!speedObj) {
+                            speedObj = { name: cruiseName, value: newTas, unit: 'kt', desc: 'Cruising speed', type: 'normal' };
+                            perf.speeds.push(speedObj);
+                            changed = true;
+                        } else if (parseFloat(speedObj.value) !== newTas) {
+                            speedObj.value = newTas;
+                            changed = true;
+                        }
+                    }
+                    if (changed) {
+                        localStorage.setItem(PERF_STORAGE_KEY, JSON.stringify(perf));
+                    }
+                }
+            } catch(e) {}
+        }
+
+        // Attach listeners
+        tasInput.addEventListener('input', () => { 
+            generateNavlog(); 
+            saveState(); 
+            syncTasToPerf(); 
+        });
+        
+        windDirInput.addEventListener('input', () => { generateNavlog(); saveState(); });
+        windSpdInput.addEventListener('input', () => { generateNavlog(); saveState(); });
+        const centerRouteBtn = document.getElementById('centerRouteBtn');
+        if (centerRouteBtn) centerRouteBtn.addEventListener('click', centerOnRoute);
+        document.getElementById('clearRouteBtn').addEventListener('click', () => { waypoints = []; updateUI(); });
+        
+        // Listen to changes coming from the Performance page
+        window.addEventListener('focus', syncTasFromPerf);
+        window.addEventListener('storage', (e) => {
+            if (e.key === PERF_STORAGE_KEY) syncTasFromPerf();
+        });
+
+
+        const toggleBtn = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark-mode');
+        toggleBtn.addEventListener('click', () => root.classList.toggle('dark-mode'));
+
+        loadState();
+        syncTasFromPerf(); // Attempt initial sync right away
+        updateUI();
+    </script>
+    <script src="flight_dossier.js"></script>
+</body>
+</html>

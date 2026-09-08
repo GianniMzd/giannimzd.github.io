@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlightPrep Solution — Aircraft Performance</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg-color: #F6F4F0;
+            --border-color: #111111;
+            --text-color: #111111;
+            --hover-bg: #E4DFD3;
+            --accent-green: #4A7C59;
+            --accent-orange: #C16E56;
+            --accent-blue: #3A6B88;
+            --sidebar-highlight-hover: #333;
+            --card-bg: #FFFFFF;
+            --muted-text: #6B6558;
+            --danger: #B0402F;
+            --danger-bg: rgba(176, 64, 47, 0.12);
+            --danger-border: rgba(176, 64, 47, 0.25);
+            --special-bg: rgba(58, 107, 136, 0.08);
+            --special-border: rgba(58, 107, 136, 0.25);
+        }
+
+        html.dark-mode {
+            --bg-color: #15171A;
+            --border-color: #EDEBE6;
+            --text-color: #EDEBE6;
+            --hover-bg: #23262B;
+            --accent-green: #6FBE86;
+            --accent-orange: #E08A6D;
+            --accent-blue: #5B9BBF;
+            --sidebar-highlight-hover: #cfcac1;
+            --card-bg: #1D2024;
+            --muted-text: #A6A197;
+            --danger: #E0725E;
+            --danger-bg: rgba(224, 114, 94, 0.12);
+            --danger-border: rgba(224, 114, 94, 0.25);
+            --special-bg: rgba(91, 155, 191, 0.12);
+            --special-border: rgba(91, 155, 191, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { transition: background-color 0.25s ease; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Bar & Sidebar */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 30px; height: 80px; border-bottom: 2px solid var(--border-color); background-color: var(--bg-color);
+            gap: 15px;
+        }
+        .brand { display: flex; align-items: center; gap: 15px; font-size: 24px; font-weight: 700; letter-spacing: -0.03em; }
+        .brand svg { width: 40px; height: 40px; }
+
+        .top-bar-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .unit-selector-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted-text);
+        }
+
+        .unit-system-select {
+            border: 2px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 6px 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            border-radius: 4px;
+            transition: background-color 0.15s ease;
+        }
+        .unit-system-select:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .theme-toggle {
+            display: flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px; border: 2px solid var(--border-color);
+            border-radius: 50%; background-color: var(--bg-color); color: var(--text-color);
+            cursor: pointer; transition: transform 0.2s ease;
+        }
+        .theme-toggle:hover { background-color: var(--hover-bg); transform: scale(1.05); }
+        .theme-toggle svg { width: 20px; height: 20px; stroke: var(--text-color); }
+        .theme-toggle .icon-moon { display: none; }
+        html.dark-mode .theme-toggle .icon-sun { display: none; }
+        html.dark-mode .theme-toggle .icon-moon { display: block; }
+
+        .main-layout { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Animated Sidebar */
+        .sidebar { width: 260px; flex: 0 0 260px; border-right: 2px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar a {
+            padding: 25px; text-decoration: none; color: var(--text-color); font-size: 16px; font-weight: 500;
+            border-bottom: 2px solid var(--border-color); transition: background-color 0.2s ease; display: flex;
+            justify-content: space-between; align-items: center; gap: 10px; white-space: nowrap;
+        }
+        .sidebar a::after { content: '→'; flex-shrink: 0; opacity: 0; transform: translateX(-6px); transition: opacity 0.2s ease, transform 0.2s ease; }
+        .sidebar a:hover { background-color: var(--hover-bg); }
+        .sidebar a:hover::after { opacity: 1; transform: translateX(0); }
+        .sidebar a.highlight { background-color: var(--border-color); color: var(--bg-color); }
+        .sidebar a.highlight:hover { background-color: var(--sidebar-highlight-hover); }
+
+        .sidebar-export-wrap { padding: 25px; }
+        .btn-export-bw {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            border: 2px solid var(--text-color);
+            padding: 14px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .btn-export-bw:hover {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .btn-export-bw:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Workspace Grid */
+        .workspace { flex: 1; display: grid; grid-template-columns: 1fr 480px; overflow: hidden; }
+
+        /* Left Column: Profile / Speeds / Range */
+        .perf-section { display: flex; flex-direction: column; border-right: 2px solid var(--border-color); overflow-y: auto; }
+
+        .card { border-bottom: 2px solid var(--border-color); }
+        .card-header { padding: 15px 20px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-color); position: sticky; top: 0; z-index: 2; }
+        .card-header h2 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-body { padding: 20px; }
+
+        .btn-action { background: transparent; color: var(--text-color); border: 2px solid var(--border-color); padding: 6px 12px; font-weight: 700; font-family: 'Inter'; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: background 0.15s ease; }
+        .btn-action:hover { background: var(--hover-bg); }
+        .btn-action.primary { background: var(--border-color); color: var(--bg-color); }
+        .btn-action.primary:hover { opacity: 0.9; background: var(--border-color); }
+        .btn-action.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .btn-action.danger:hover { opacity: 0.9; }
+        .btn-action.small { padding: 4px 8px; font-size: 11px; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 11px; font-weight: 700; color: var(--muted-text); text-transform: uppercase; }
+        .form-group input, .form-group select { border: 2px solid var(--hover-bg); background: transparent; padding: 8px; font-family: 'Inter'; font-size: 14px; color: var(--text-color); outline: none; width: 100%; cursor: pointer; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--border-color); }
+
+        /* Speeds list */
+        .speeds-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--muted-text); margin: 0 0 8px 0; border-bottom: 2px solid var(--border-color); padding-bottom: 6px;}
+        .speeds-section-title.emergency-title { color: var(--danger); border-bottom-color: var(--danger); margin-top: 24px; }
+        .speeds-section-title.special-title { color: var(--accent-blue); border-bottom-color: var(--accent-blue); margin-top: 24px; }
+        
+        .edit-list { list-style: none; margin: 0 0 12px 0; padding: 0; }
+        .edit-list li { display: flex; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--hover-bg); gap: 8px; transition: background-color 0.15s ease;}
+        
+        /* Emergency row styles */
+        .edit-list.emergency-list li { background-color: var(--danger-bg); border-bottom: 1px solid var(--danger-border); }
+        .edit-list.emergency-list .name-input, .edit-list.emergency-list .val-input { color: var(--danger); font-weight: 700; }
+        .edit-list.emergency-list .desc-input { color: var(--danger); opacity: 0.8; }
+        .edit-list.emergency-list .val-input { border-color: var(--danger-border); }
+        
+        /* Special row styles */
+        .edit-list.special-list li { background-color: var(--special-bg); border-bottom: 1px solid var(--special-border); }
+        .edit-list.special-list .name-input, .edit-list.special-list .val-input { color: var(--accent-blue); font-weight: 700; }
+        .edit-list.special-list .desc-input { color: var(--accent-blue); opacity: 0.8; }
+        .edit-list.special-list .val-input { border-color: var(--special-border); }
+
+        .name-input { flex: 1.2; border: 2px solid transparent; background: transparent; padding: 6px 8px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; }
+        .val-input { width: 80px; border: 2px solid var(--hover-bg); background: transparent; padding: 6px 8px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; text-align: right; }
+        .desc-input { flex: 2; border: 2px solid transparent; background: transparent; padding: 6px 8px; font-family: 'Inter'; font-size: 12px; color: var(--muted-text); outline: none; border-radius: 4px; }
+        
+        .name-input:focus, .name-input:hover, .val-input:focus, .val-input:hover, .desc-input:focus, .desc-input:hover { border-color: var(--border-color); background: var(--bg-color); }
+        .edit-list.emergency-list .name-input:focus, .edit-list.emergency-list .name-input:hover, .edit-list.emergency-list .val-input:focus, .edit-list.emergency-list .val-input:hover, .edit-list.emergency-list .desc-input:focus, .edit-list.emergency-list .desc-input:hover { border-color: var(--danger); }
+        .edit-list.special-list .name-input:focus, .edit-list.special-list .name-input:hover, .edit-list.special-list .val-input:focus, .edit-list.special-list .val-input:hover, .edit-list.special-list .desc-input:focus, .edit-list.special-list .desc-input:hover { border-color: var(--accent-blue); }
+
+        .unit-tag { font-size: 11px; color: var(--muted-text); font-weight: 700; width: 22px; }
+        .edit-list.emergency-list .unit-tag { color: var(--danger); }
+        .edit-list.special-list .unit-tag { color: var(--accent-blue); }
+
+        .type-select { border: 1px solid transparent; background: transparent; padding: 4px; font-family: 'Inter'; font-size: 11px; color: var(--muted-text); outline: none; border-radius: 4px; cursor: pointer;}
+        .type-select:hover { border-color: var(--hover-bg); background: var(--hover-bg); color: var(--text-color); }
+        
+        .edit-list.emergency-list .type-select { color: var(--danger); opacity: 0.8; }
+        .edit-list.emergency-list .type-select:hover { background: var(--danger-border); border-color: var(--danger-border); color: var(--danger); }
+        
+        .edit-list.special-list .type-select { color: var(--accent-blue); opacity: 0.8; }
+        .edit-list.special-list .type-select:hover { background: var(--special-border); border-color: var(--special-border); color: var(--accent-blue); }
+        
+        .btn-delete { background: none; border: none; color: var(--muted-text); cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.15s ease; }
+        .btn-delete:hover { color: var(--danger); }
+        
+        /* Range results */
+        .result-strip { display: flex; gap: 0; margin-top: 18px; border: 2px solid var(--border-color); }
+        .result-box { flex: 1; padding: 14px; text-align: center; border-right: 2px solid var(--border-color); }
+        .result-box:last-child { border-right: none; }
+        .result-box .r-label { font-size: 10px; text-transform: uppercase; color: var(--muted-text); font-weight: 700; }
+        .result-box .r-value { font-size: 20px; font-weight: 700; margin-top: 4px; }
+
+        /* W&B Panel (right column) */
+        .wb-panel { background-color: var(--card-bg); display: flex; flex-direction: column; overflow-y: auto; }
+        
+        .wb-params { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; border-bottom: 2px solid var(--border-color); background-color: var(--bg-color); }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 10px 8px; border-bottom: 1px solid var(--hover-bg); font-size: 12.5px; }
+        th { font-size: 10.5px; text-transform: uppercase; color: var(--muted-text); border-bottom: 2px solid var(--border-color); position: sticky; top: 0; background-color: var(--card-bg); z-index: 1; }
+        tr:hover td { background-color: var(--hover-bg); }
+        td input { width: 100%; border: 2px solid transparent; background: transparent; padding: 5px 6px; font-family: 'Inter'; font-size: 12.5px; color: var(--text-color); outline: none; border-radius: 4px; text-align: right; }
+        td input:focus, td input:hover { border-color: var(--border-color); background: var(--bg-color); }
+        td.item-name input { text-align: left; font-weight: 500; }
+        td.moment-cell { font-weight: 700; text-align: right; }
+
+        .wb-totals { padding: 16px 20px; border-top: 2px solid var(--border-color); background-color: var(--bg-color); }
+        .wb-totals .row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
+        .wb-totals .row.grand { font-weight: 700; font-size: 15px; border-top: 1px solid var(--hover-bg); margin-top: 6px; padding-top: 10px; }
+
+        .status-banner { margin: 16px 20px 0 20px; padding: 12px 14px; border: 2px solid var(--border-color); font-weight: 700; font-size: 13px; text-align: center; }
+        .status-banner.ok { color: var(--accent-green); border-color: var(--accent-green); }
+        .status-banner.bad { color: var(--danger); border-color: var(--danger); }
+
+        .cg-graph-wrap { padding: 16px 20px; }
+        svg text { font-family: 'Inter', sans-serif; }
+
+        .limits-inputs { padding: 0 20px 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="brand">
+            <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
+                <path d="M50 10 L90 85 L50 70 L10 85 Z" fill="var(--border-color)" />
+                <path d="M50 10 L50 70" stroke="var(--bg-color)" stroke-width="4" />
+            </svg>
+            FlightPrep Solution
+        </div>
+        <div class="top-bar-controls">
+            <div class="unit-selector-wrap">
+                <span style="opacity: 0.6; margin-right: 2px;">Units:</span>
+                <select id="unitWeight" class="unit-system-select" title="Weight Unit">
+                    <option value="kg">kg</option>
+                    <option value="lbs">lbs</option>
+                </select>
+                <select id="unitArm" class="unit-system-select" title="Arm Unit">
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                </select>
+                <select id="unitFuel" class="unit-system-select" title="Fuel Unit">
+                    <option value="L">L</option>
+                    <option value="USG">USG</option>
+                </select>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-layout">
+        <nav class="sidebar">
+            <a href="flg_prep.html">Flight Preparation</a>
+            <a href="VFR.html">Interactive Route Map</a>
+            <a href="perfo.html" class="highlight">Aircraft Performance</a>
+            <a href="checklists.html">Checklists</a>
+            <a href="#">Emergency Procedures</a>
+            
+            <!-- EXPORT FLIGHT DOSSIER BUTTON -->
+            <div class="sidebar-export-wrap">
+                <button class="btn-export-bw btn-export-dossier" id="exportFlightDocBtn" title="Export complete flight dossier (Navlog, Minimap, Performance, Checklists & Emergency)">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export Flight Dossier
+                </button>
+            </div>
+        </nav>
+
+        <div class="workspace">
+            <div class="perf-section">
+
+                <div class="card">
+                    <div class="card-header"><h2>Aircraft Profile</h2></div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Flight / Callsign</label>
+                                <input type="text" id="acReg" placeholder="F-GXXX">
+                            </div>
+                            <div class="form-group">
+                                <label>Aircraft Type</label>
+                                <input type="text" id="acType" placeholder="DR400">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Speeds (V-Speeds)</h2>
+                    </div>
+                    <div class="card-body" style="padding-top:15px;">
+                        <!-- Normal Speeds -->
+                        <div class="speeds-section-title">Normal Operations</div>
+                        <ul class="edit-list" id="normalSpeedsList"></ul>
+                        <button class="btn-action small" id="addNormalSpeedBtn">+ Add Normal</button>
+
+                        <!-- Emergency Speeds -->
+                        <div class="speeds-section-title emergency-title">Emergency &amp; Limits</div>
+                        <ul class="edit-list emergency-list" id="emergencySpeedsList"></ul>
+                        <button class="btn-action small" id="addEmergencySpeedBtn" style="border-color: var(--danger); color: var(--danger);">+ Add Emergency</button>
+                        
+                        <!-- Special Procedures -->
+                        <div class="speeds-section-title special-title">Special Procedures</div>
+                        <ul class="edit-list special-list" id="specialSpeedsList"></ul>
+                        <button class="btn-action small" id="addSpecialSpeedBtn" style="border-color: var(--accent-blue); color: var(--accent-blue);">+ Add Special</button>
+                    </div>
+                </div>
+
+                <div class="card" style="border-bottom: none;">
+                    <div class="card-header"><h2>Range &amp; Endurance</h2></div>
+                    <div class="card-body">
+                        <div class="form-grid cols-3">
+                            <div class="form-group">
+                                <label>Fuel on Board (<span class="unit-fuel">L</span>)</label>
+                                <input type="number" id="fuelOnBoard" value="110" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Fuel Burn (<span class="unit-fuel-flow">L/h</span>)</label>
+                                <input type="number" id="fuelBurn" value="28" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Final Reserve (min)</label>
+                                <input type="number" id="reserveMin" value="45">
+                            </div>
+                            <div class="form-group">
+                                <label>Cruise Speed Ref.</label>
+                                <select id="cruiseTas"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Taxi / Startup (<span class="unit-fuel">L</span>)</label>
+                                <input type="number" id="taxiFuel" value="4" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label>Usable Fuel Capacity (<span class="unit-fuel">L</span>)</label>
+                                <input type="number" id="fuelCapacity" value="110" step="0.1">
+                            </div>
+                        </div>
+
+                        <div class="result-strip">
+                            <div class="result-box">
+                                <div class="r-label">Usable Fuel</div>
+                                <div class="r-value" id="resUsableFuel">— L</div>
+                            </div>
+                            <div class="result-box">
+                                <div class="r-label">Endurance</div>
+                                <div class="r-value" id="resEndurance">— h</div>
+                            </div>
+                            <div class="result-box">
+                                <div class="r-label">Still-Air Range</div>
+                                <div class="r-value" id="resRange">— nm</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="wb-panel">
+                <div class="card-header">
+                    <h2>Weight &amp; Balance</h2>
+                    <button class="btn-action primary" id="exportPdfBtn">Export PDF</button>
+                </div>
+                
+                <div class="wb-params">
+                    <div class="form-group">
+                        <label>Empty Wgt (<span class="unit-weight">kg</span>)</label>
+                        <input type="number" id="emptyWeight" value="600" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Empty Arm (<span class="unit-arm">cm</span>)</label>
+                        <input type="number" id="emptyArm" value="230" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>MTOW (<span class="unit-weight">kg</span>)</label>
+                        <input type="number" id="mtow" value="1000" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>MLW (<span class="unit-weight">kg</span>)</label>
+                        <input type="number" id="mlw" value="1000" step="0.1">
+                    </div>
+                </div>
+
+                <table id="wbTable">
+                    <thead>
+                        <tr>
+                            <th style="width:34%;">Item</th>
+                            <th>Weight (<span class="unit-weight">kg</span>)</th>
+                            <th>Arm (<span class="unit-arm">cm</span>)</th>
+                            <th>Moment</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="wbBody"></tbody>
+                </table>
+                <div style="padding: 10px 20px;">
+                    <button class="btn-action small" id="addRowBtn">+ Add Item</button>
+                </div>
+
+                <div class="wb-totals">
+                    <div class="row"><span>Total Weight</span><span id="totWeight">0 kg</span></div>
+                    <div class="row"><span>Total Moment</span><span id="totMoment">0</span></div>
+                    <div class="row grand"><span>Resulting CG (Arm)</span><span id="totCg">0 cm</span></div>
+                    <div class="row"><span>Margin vs MTOW</span><span id="totMargin">0 kg</span></div>
+                </div>
+
+                <div class="limits-inputs">
+                    <div class="form-group">
+                        <label>Fwd CG Limit (<span class="unit-arm">cm</span>)</label>
+                        <input type="number" id="fwdLimit" value="215" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Aft CG Limit (<span class="unit-arm">cm</span>)</label>
+                        <input type="number" id="aftLimit" value="245" step="0.1">
+                    </div>
+                </div>
+
+                <div id="statusBanner" class="status-banner ok">Enter data to check envelope</div>
+
+                <div class="cg-graph-wrap">
+                    <svg id="cgGraph" viewBox="0 0 440 260" width="100%" height="260"></svg>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const STORAGE_KEY = 'flightprep_perf_data_v10'; // Bumped for Layout changes
+        const BRIEFING_STORAGE_KEY = 'flightprep_info_v1'; // Added for cross-tab sync
+
+        // Conversion Factors
+        const KG_TO_LBS = 2.2046226218;
+        const CM_TO_IN = 0.3937007874;
+        const L_TO_USG = 0.2641720524;
+
+        // Active Unit States
+        let currentUnitWeight = 'kg';
+        let currentUnitArm = 'cm';
+        let currentUnitFuel = 'L';
+
+        // Avgas Fuel Density getter (dynamically scales to combinations)
+        function getFuelDensity() {
+            // Base density is 0.72 kg per Liter
+            let weightBase = currentUnitWeight === 'lbs' ? (0.72 * KG_TO_LBS) : 0.72;
+            
+            if (currentUnitFuel === 'USG') {
+                return weightBase / L_TO_USG; 
+            }
+            return weightBase; 
+        }
+
+        // ---------- Elements ----------
+        const unitWeightSelect = document.getElementById('unitWeight');
+        const unitArmSelect = document.getElementById('unitArm');
+        const unitFuelSelect = document.getElementById('unitFuel');
+
+        const acReg = document.getElementById('acReg');
+        const acType = document.getElementById('acType');
+        const emptyWeight = document.getElementById('emptyWeight');
+        const emptyArm = document.getElementById('emptyArm');
+        const mtow = document.getElementById('mtow');
+        const mlw = document.getElementById('mlw');
+        const fuelCapacity = document.getElementById('fuelCapacity');
+
+        const normalSpeedsList = document.getElementById('normalSpeedsList');
+        const emergencySpeedsList = document.getElementById('emergencySpeedsList');
+        const specialSpeedsList = document.getElementById('specialSpeedsList');
+        
+        const addNormalSpeedBtn = document.getElementById('addNormalSpeedBtn');
+        const addEmergencySpeedBtn = document.getElementById('addEmergencySpeedBtn');
+        const addSpecialSpeedBtn = document.getElementById('addSpecialSpeedBtn');
+
+        const fuelOnBoard = document.getElementById('fuelOnBoard');
+        const fuelBurn = document.getElementById('fuelBurn');
+        const reserveMin = document.getElementById('reserveMin');
+        const cruiseTas = document.getElementById('cruiseTas');
+        const taxiFuel = document.getElementById('taxiFuel');
+        const resUsableFuel = document.getElementById('resUsableFuel');
+        const resEndurance = document.getElementById('resEndurance');
+        const resRange = document.getElementById('resRange');
+
+        const wbBody = document.getElementById('wbBody');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const totWeight = document.getElementById('totWeight');
+        const totMoment = document.getElementById('totMoment');
+        const totCg = document.getElementById('totCg');
+        const totMargin = document.getElementById('totMargin');
+        const fwdLimit = document.getElementById('fwdLimit');
+        const aftLimit = document.getElementById('aftLimit');
+        const statusBanner = document.getElementById('statusBanner');
+        const cgGraph = document.getElementById('cgGraph');
+
+        // ---------- Default data ----------
+        let speeds = [
+            { name: 'Vs0', value: 40, unit: 'kt', desc: 'Stall speed, landing config', type: 'emergency' },
+            { name: 'Vs1', value: 47, unit: 'kt', desc: 'Stall speed, clean config', type: 'emergency' },
+            { name: 'Vfe', value: 100, unit: 'kt', desc: 'Max flap extended speed', type: 'normal' },
+            { name: 'Vc', value: 110, unit: 'kt', desc: 'Design cruising speed', type: 'normal' },
+            { name: 'Vno', value: 138, unit: 'kt', desc: 'Max structural cruise speed', type: 'normal' },
+            { name: 'Vne', value: 172, unit: 'kt', desc: 'Never exceed speed', type: 'emergency' },
+            { name: 'Va', value: 108, unit: 'kt', desc: 'Maneuvering speed', type: 'normal' },
+            { name: 'Vr', value: 55, unit: 'kt', desc: 'Rotation speed', type: 'normal' },
+            { name: 'Vref', value: 65, unit: 'kt', desc: 'Approach reference speed', type: 'normal' },
+            { name: 'Best Glide', value: 70, unit: 'kt', desc: 'Best glide speed, idle power', type: 'emergency' },
+            { name: 'Vx', value: 62, unit: 'kt', desc: 'Best angle of climb', type: 'special' },
+            { name: 'Vy', value: 68, unit: 'kt', desc: 'Best rate of climb', type: 'special' },
+            { name: 'Von', value: 110, unit: 'kt', desc: 'Operating maneuvering speed', type: 'special' }
+        ];
+
+        let wbRows = [
+            { name: 'Basic Empty Weight', weight: 600, arm: 230, linkedEmpty: true },
+            { name: 'Pilot + Front Pax', weight: 160, arm: 210 },
+            { name: 'Rear Passengers', weight: 0, arm: 280 },
+            { name: 'Fuel', weight: 79.2, arm: 240, linkedFuel: true },
+            { name: 'Baggage', weight: 0, arm: 320 }
+        ];
+
+        function updateUnitLabels() {
+            document.querySelectorAll('.unit-weight').forEach(el => el.textContent = currentUnitWeight);
+            document.querySelectorAll('.unit-arm').forEach(el => el.textContent = currentUnitArm);
+            document.querySelectorAll('.unit-fuel').forEach(el => el.textContent = currentUnitFuel);
+            document.querySelectorAll('.unit-fuel-flow').forEach(el => el.textContent = currentUnitFuel + '/h');
+        }
+
+        // --- Unit Change Listeners ---
+        unitWeightSelect.addEventListener('change', (e) => {
+            const newUnit = e.target.value;
+            if (newUnit === currentUnitWeight) return;
+            
+            const factor = newUnit === 'lbs' ? KG_TO_LBS : (1 / KG_TO_LBS);
+            
+            emptyWeight.value = (parseFloat(emptyWeight.value) * factor).toFixed(1);
+            mtow.value = (parseFloat(mtow.value) * factor).toFixed(1);
+            mlw.value = (parseFloat(mlw.value) * factor).toFixed(1);
+            
+            wbRows.forEach(r => {
+                r.weight = parseFloat((r.weight * factor).toFixed(1));
+            });
+            
+            currentUnitWeight = newUnit;
+            updateUnitLabels();
+            renderWB();
+            computeRange();
+            saveState();
+        });
+
+        unitArmSelect.addEventListener('change', (e) => {
+            const newUnit = e.target.value;
+            if (newUnit === currentUnitArm) return;
+            
+            const factor = newUnit === 'in' ? CM_TO_IN : (1 / CM_TO_IN);
+            
+            emptyArm.value = (parseFloat(emptyArm.value) * factor).toFixed(1);
+            fwdLimit.value = (parseFloat(fwdLimit.value) * factor).toFixed(1);
+            aftLimit.value = (parseFloat(aftLimit.value) * factor).toFixed(1);
+            
+            wbRows.forEach(r => {
+                r.arm = parseFloat((r.arm * factor).toFixed(1));
+            });
+            
+            currentUnitArm = newUnit;
+            updateUnitLabels();
+            renderWB();
+            saveState();
+        });
+
+        unitFuelSelect.addEventListener('change', (e) => {
+            const newUnit = e.target.value;
+            if (newUnit === currentUnitFuel) return;
+            
+            const factor = newUnit === 'USG' ? L_TO_USG : (1 / L_TO_USG);
+            
+            fuelCapacity.value = (parseFloat(fuelCapacity.value) * factor).toFixed(1);
+            fuelOnBoard.value = (parseFloat(fuelOnBoard.value) * factor).toFixed(1);
+            fuelBurn.value = (parseFloat(fuelBurn.value) * factor).toFixed(1);
+            taxiFuel.value = (parseFloat(taxiFuel.value) * factor).toFixed(1);
+            
+            currentUnitFuel = newUnit;
+            updateUnitLabels();
+            computeRange();
+            computeWB();
+            saveState();
+        });
+
+        // ---------- Persistence & Cross-Tab Sync ----------
+        
+        function syncToFlightPrep() {
+            try {
+                const raw = localStorage.getItem(BRIEFING_STORAGE_KEY);
+                const data = raw ? JSON.parse(raw) : {};
+                data.flightNumber = acReg.value;
+                data.aircraft = acType.value;
+                localStorage.setItem(BRIEFING_STORAGE_KEY, JSON.stringify(data));
+            } catch(e) {}
+        }
+
+        function syncFromFlightPrep() {
+            try {
+                const raw = localStorage.getItem(BRIEFING_STORAGE_KEY);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    let changed = false;
+                    if (data.flightNumber !== undefined && acReg.value !== data.flightNumber) {
+                        acReg.value = data.flightNumber;
+                        changed = true;
+                    }
+                    if (data.aircraft !== undefined && acType.value !== data.aircraft) {
+                        acType.value = data.aircraft;
+                        changed = true;
+                    }
+                    if (changed) {
+                        saveState();
+                    }
+                } else {
+                    // If the briefing key doesn't exist yet, push our defaults to it
+                    syncToFlightPrep();
+                }
+            } catch(e) {}
+        }
+
+        function saveState() {
+            const data = {
+                units: {
+                    weight: currentUnitWeight,
+                    arm: currentUnitArm,
+                    fuel: currentUnitFuel
+                },
+                profile: {
+                    reg: acReg.value,
+                    type: acType.value,
+                    emptyWeight: emptyWeight.value, emptyArm: emptyArm.value,
+                    mtow: mtow.value, mlw: mlw.value, fuelCapacity: fuelCapacity.value
+                },
+                speeds: speeds,
+                range: {
+                    fuelOnBoard: fuelOnBoard.value, fuelBurn: fuelBurn.value,
+                    reserveMin: reserveMin.value, cruiseTas: cruiseTas.value, taxiFuel: taxiFuel.value
+                },
+                wbRows: wbRows,
+                limits: { fwd: fwdLimit.value, aft: aftLimit.value }
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function loadState() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+                updateUnitLabels();
+                return;
+            }
+            try {
+                const data = JSON.parse(raw);
+                
+                if (data.units) {
+                    currentUnitWeight = data.units.weight || 'kg';
+                    currentUnitArm = data.units.arm || 'cm';
+                    currentUnitFuel = data.units.fuel || 'L';
+                }
+                
+                unitWeightSelect.value = currentUnitWeight;
+                unitArmSelect.value = currentUnitArm;
+                unitFuelSelect.value = currentUnitFuel;
+                updateUnitLabels();
+
+                if (data.profile) {
+                    acReg.value = data.profile.reg ?? '';
+                    acType.value = data.profile.type ?? '';
+                    emptyWeight.value = data.profile.emptyWeight ?? emptyWeight.value;
+                    emptyArm.value = data.profile.emptyArm ?? emptyArm.value;
+                    mtow.value = data.profile.mtow ?? mtow.value;
+                    mlw.value = data.profile.mlw ?? mlw.value;
+                    fuelCapacity.value = data.profile.fuelCapacity ?? fuelCapacity.value;
+                }
+                if (Array.isArray(data.speeds) && data.speeds.length) {
+                    speeds = data.speeds.map(s => ({ ...s, type: s.type || 'normal' }));
+                }
+                if (data.range) {
+                    fuelOnBoard.value = data.range.fuelOnBoard ?? fuelOnBoard.value;
+                    fuelBurn.value = data.range.fuelBurn ?? fuelBurn.value;
+                    reserveMin.value = data.range.reserveMin ?? reserveMin.value;
+                    taxiFuel.value = data.range.taxiFuel ?? taxiFuel.value;
+                    
+                    updateCruiseDropdown();
+                    if (data.range.cruiseTas) {
+                        cruiseTas.value = data.range.cruiseTas;
+                    }
+                }
+                if (Array.isArray(data.wbRows) && data.wbRows.length) wbRows = data.wbRows;
+                
+                const fob = parseFloat(fuelOnBoard.value) || 0;
+                wbRows.forEach(r => {
+                    if (r.linkedFuel) r.weight = parseFloat((fob * getFuelDensity()).toFixed(1));
+                });
+
+                if (data.limits) {
+                    fwdLimit.value = data.limits.fwd ?? fwdLimit.value;
+                    aftLimit.value = data.limits.aft ?? aftLimit.value;
+                }
+            } catch (e) { 
+                console.warn('Failed to load performance state.', e); 
+                updateUnitLabels();
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+        
+        function updateCruiseDropdown() {
+            const currentSelection = cruiseTas.value;
+            cruiseTas.innerHTML = '';
+            
+            speeds.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.name;
+                opt.textContent = `${s.name} (${s.value} ${s.unit})`;
+                cruiseTas.appendChild(opt);
+            });
+            
+            if (speeds.some(s => s.name === currentSelection)) {
+                cruiseTas.value = currentSelection;
+            } else {
+                const defaultSpd = speeds.find(s => s.name.toLowerCase().includes('vc') || s.name.toLowerCase().includes('cruise') || s.name === 'Vno') || speeds[0];
+                if (defaultSpd) cruiseTas.value = defaultSpd.name;
+            }
+        }
+
+        // ---------- Speeds list ----------
+        function renderSpeeds() {
+            normalSpeedsList.innerHTML = '';
+            emergencySpeedsList.innerHTML = '';
+            specialSpeedsList.innerHTML = '';
+            
+            speeds.forEach((s, i) => {
+                const li = document.createElement('li');
+
+                const nameInput = document.createElement('input');
+                nameInput.className = 'name-input';
+                nameInput.value = s.name;
+                nameInput.addEventListener('input', e => { 
+                    speeds[i].name = e.target.value; 
+                    updateCruiseDropdown();
+                    computeRange();
+                    saveState(); 
+                });
+
+                const valInput = document.createElement('input');
+                valInput.className = 'val-input';
+                valInput.type = 'number';
+                valInput.value = s.value;
+                valInput.addEventListener('input', e => { 
+                    speeds[i].value = parseFloat(e.target.value) || 0; 
+                    updateCruiseDropdown();
+                    computeRange();
+                    saveState(); 
+                });
+
+                const unitTag = document.createElement('span');
+                unitTag.className = 'unit-tag';
+                unitTag.textContent = s.unit || 'kt';
+
+                const descInput = document.createElement('input');
+                descInput.className = 'desc-input';
+                descInput.value = s.desc || '';
+                descInput.placeholder = 'description';
+                descInput.addEventListener('input', e => { speeds[i].desc = e.target.value; saveState(); });
+
+                const typeSelect = document.createElement('select');
+                typeSelect.className = 'type-select';
+                typeSelect.innerHTML = `
+                    <option value="normal" ${s.type === 'normal' ? 'selected' : ''}>Normal</option>
+                    <option value="emergency" ${s.type === 'emergency' ? 'selected' : ''}>Emergency</option>
+                    <option value="special" ${s.type === 'special' ? 'selected' : ''}>Special</option>
+                `;
+                typeSelect.addEventListener('change', e => {
+                    speeds[i].type = e.target.value;
+                    saveState();
+                    renderSpeeds(); 
+                });
+
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-delete';
+                delBtn.innerHTML = '✕';
+                delBtn.title = 'Remove';
+                delBtn.onclick = () => { 
+                    speeds.splice(i, 1); 
+                    renderSpeeds(); 
+                    saveState(); 
+                };
+
+                li.appendChild(nameInput);
+                li.appendChild(valInput);
+                li.appendChild(unitTag);
+                li.appendChild(descInput);
+                li.appendChild(typeSelect);
+                li.appendChild(delBtn);
+                
+                if (s.type === 'emergency') {
+                    emergencySpeedsList.appendChild(li);
+                } else if (s.type === 'special') {
+                    specialSpeedsList.appendChild(li);
+                } else {
+                    normalSpeedsList.appendChild(li);
+                }
+            });
+            
+            if (normalSpeedsList.children.length === 0) {
+                normalSpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:12px;padding:8px;justify-content:center;background:transparent;border:none;">No normal speeds added</li>';
+            }
+            if (emergencySpeedsList.children.length === 0) {
+                emergencySpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:12px;padding:8px;justify-content:center;background:transparent;border:none;">No emergency speeds added</li>';
+            }
+            if (specialSpeedsList.children.length === 0) {
+                specialSpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:12px;padding:8px;justify-content:center;background:transparent;border:none;">No special speeds added</li>';
+            }
+            
+            updateCruiseDropdown();
+            computeRange();
+        }
+
+        addNormalSpeedBtn.addEventListener('click', () => {
+            speeds.push({ name: 'New Speed', value: 0, unit: 'kt', desc: '', type: 'normal' });
+            renderSpeeds();
+            saveState();
+        });
+        
+        addEmergencySpeedBtn.addEventListener('click', () => {
+            speeds.push({ name: 'New Limit', value: 0, unit: 'kt', desc: '', type: 'emergency' });
+            renderSpeeds();
+            saveState();
+        });
+        
+        addSpecialSpeedBtn.addEventListener('click', () => {
+            speeds.push({ name: 'New Procedure', value: 0, unit: 'kt', desc: '', type: 'special' });
+            renderSpeeds();
+            saveState();
+        });
+
+        // ---------- Range & Endurance ----------
+        function computeRange() {
+            const fob = parseFloat(fuelOnBoard.value) || 0;
+            const burn = parseFloat(fuelBurn.value) || 0;
+            const reserve = parseFloat(reserveMin.value) || 0;
+            const taxi = parseFloat(taxiFuel.value) || 0;
+            
+            const selectedSpeedName = cruiseTas.value;
+            const speedObj = speeds.find(s => s.name === selectedSpeedName);
+            const tas = speedObj ? (parseFloat(speedObj.value) || 0) : 0;
+
+            const reserveFuel = burn * (reserve / 60);
+            const usableFuel = Math.max(0, fob - taxi - reserveFuel);
+            const endurance = burn > 0 ? usableFuel / burn : 0;
+            const range = endurance * tas;
+
+            resUsableFuel.textContent = `${usableFuel.toFixed(1)} ${currentUnitFuel}`;
+            resEndurance.textContent = `${Math.floor(endurance)}h ${Math.round((endurance % 1) * 60)}m`;
+            resRange.textContent = `${Math.round(range)} nm`;
+        }
+
+        [fuelOnBoard, fuelBurn, reserveMin, cruiseTas, taxiFuel].forEach(el => {
+            el.addEventListener('input', (e) => { 
+                if (e.target === fuelOnBoard) {
+                    const fob = parseFloat(fuelOnBoard.value) || 0;
+                    wbRows.forEach(r => {
+                        if (r.linkedFuel) r.weight = parseFloat((fob * getFuelDensity()).toFixed(1));
+                    });
+                    computeWB();
+                }
+                computeRange(); 
+                saveState(); 
+            });
+        });
+
+        // Attach listeners for Callsign and Aircraft to sync globally
+        [acReg, acType].forEach(el => {
+            el.addEventListener('input', () => { 
+                syncToFlightPrep(); 
+                saveState(); 
+                computeWB(); 
+            });
+        });
+
+        fuelCapacity.addEventListener('input', () => { saveState(); computeWB(); });
+
+        [mtow, mlw, emptyWeight, emptyArm].forEach(el => {
+            el.addEventListener('input', () => { syncLinkedRows(); saveState(); computeWB(); });
+        });
+
+        function syncLinkedRows() {
+            wbRows.forEach(r => {
+                if (r.linkedEmpty) { 
+                    r.weight = parseFloat(emptyWeight.value) || 0; 
+                    r.arm = parseFloat(emptyArm.value) || r.arm; 
+                }
+            });
+            renderWB();
+        }
+
+        // ---------- Weight & Balance ----------
+        function renderWB() {
+            wbBody.innerHTML = '';
+            wbRows.forEach((row, i) => {
+                const tr = document.createElement('tr');
+
+                const tdName = document.createElement('td');
+                tdName.className = 'item-name';
+                const nameInput = document.createElement('input');
+                nameInput.value = row.name;
+                nameInput.style.textAlign = 'left';
+                nameInput.addEventListener('input', e => { wbRows[i].name = e.target.value; saveState(); });
+                tdName.appendChild(nameInput);
+
+                const tdWeight = document.createElement('td');
+                const weightInput = document.createElement('input');
+                weightInput.type = 'number';
+                weightInput.step = '0.1';
+                weightInput.value = row.weight;
+                weightInput.disabled = !!row.linkedEmpty;
+                weightInput.addEventListener('input', e => { 
+                    const w = parseFloat(e.target.value) || 0;
+                    wbRows[i].weight = w; 
+                    
+                    if (wbRows[i].linkedFuel) {
+                        fuelOnBoard.value = (w / getFuelDensity()).toFixed(1);
+                        computeRange();
+                    }
+                    
+                    computeWB(); 
+                    saveState(); 
+                });
+                tdWeight.appendChild(weightInput);
+
+                const tdArm = document.createElement('td');
+                const armInput = document.createElement('input');
+                armInput.type = 'number';
+                armInput.step = '0.1';
+                armInput.value = row.arm;
+                armInput.addEventListener('input', e => { wbRows[i].arm = parseFloat(e.target.value) || 0; computeWB(); saveState(); });
+                tdArm.appendChild(armInput);
+
+                const tdMoment = document.createElement('td');
+                tdMoment.className = 'moment-cell';
+                tdMoment.id = `moment-${i}`;
+
+                const tdDel = document.createElement('td');
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-delete';
+                delBtn.innerHTML = '✕';
+                delBtn.onclick = () => { wbRows.splice(i, 1); renderWB(); computeWB(); saveState(); };
+                tdDel.appendChild(delBtn);
+
+                tr.appendChild(tdName);
+                tr.appendChild(tdWeight);
+                tr.appendChild(tdArm);
+                tr.appendChild(tdMoment);
+                tr.appendChild(tdDel);
+                wbBody.appendChild(tr);
+            });
+            computeWB();
+        }
+
+        addRowBtn.addEventListener('click', () => {
+            wbRows.push({ name: 'New Item', weight: 0, arm: 0 });
+            renderWB();
+            saveState();
+        });
+
+        function computeWB() {
+            let fuelWeight = 0;
+            let totalWeight = 0;
+            let totalMoment = 0;
+            let fuelMoment = 0;
+
+            wbRows.forEach((row, i) => {
+                const w = parseFloat(row.weight) || 0;
+                const a = parseFloat(row.arm) || 0;
+                const m = w * a;
+                
+                totalWeight += w;
+                totalMoment += m;
+                if (row.linkedFuel) {
+                    fuelWeight += w;
+                    fuelMoment += m;
+                }
+
+                const cell = document.getElementById(`moment-${i}`);
+                if (cell) cell.textContent = Math.round(m).toLocaleString();
+                
+                const wInput = wbBody.children[i]?.querySelector('td:nth-child(2) input');
+                if (wInput && document.activeElement !== wInput) wInput.value = w.toFixed(1);
+                
+                const aInput = wbBody.children[i]?.querySelector('td:nth-child(3) input');
+                if (aInput && document.activeElement !== aInput) aInput.value = a.toFixed(1);
+            });
+
+            const cg = totalWeight > 0 ? totalMoment / totalWeight : 0;
+            const zfw = totalWeight - fuelWeight;
+            const zfMoment = totalMoment - fuelMoment;
+            const zfCg = zfw > 0 ? zfMoment / zfw : 0;
+
+            const mtowVal = parseFloat(mtow.value) || 0;
+            const margin = mtowVal - totalWeight;
+            const fwd = parseFloat(fwdLimit.value) || 0;
+            const aft = parseFloat(aftLimit.value) || 0;
+
+            totWeight.textContent = `${totalWeight.toFixed(1)} ${currentUnitWeight}`;
+            totMoment.textContent = Math.round(totalMoment).toLocaleString();
+            totCg.textContent = `${cg.toFixed(1)} ${currentUnitArm}`;
+            totMargin.textContent = `${margin.toFixed(1)} ${currentUnitWeight}`;
+            totMargin.style.color = margin < 0 ? 'var(--danger)' : 'var(--text-color)';
+
+            const towOk = totalWeight <= mtowVal && totalWeight > 0 && cg >= fwd && cg <= aft;
+            const zfOk = zfw <= mtowVal && zfw > 0 && zfCg >= fwd && zfCg <= aft;
+            const ok = towOk && (zfOk || fuelWeight === 0);
+
+            statusBanner.classList.toggle('ok', ok);
+            statusBanner.classList.toggle('bad', !ok);
+            
+            if (totalWeight === 0) {
+                statusBanner.textContent = 'Enter data to check envelope';
+                statusBanner.classList.remove('bad'); statusBanner.classList.add('ok');
+            } else if (ok) {
+                statusBanner.textContent = `Within limits — TOW: ${totalWeight.toFixed(1)} ${currentUnitWeight} @ ${cg.toFixed(1)} ${currentUnitArm}`;
+            } else {
+                const reasons = [];
+                if (totalWeight > mtowVal) reasons.push('TOW exceeds MTOW');
+                if (cg < fwd) reasons.push('TOW CG too far forward');
+                if (cg > aft) reasons.push('TOW CG too far aft');
+                
+                if (fuelWeight > 0) {
+                    if (zfCg < fwd) reasons.push('Zero Fuel CG too far forward');
+                    if (zfCg > aft) reasons.push('Zero Fuel CG too far aft');
+                }
+                
+                statusBanner.textContent = `Out of limits — ${reasons.join(', ')}`;
+            }
+
+            drawCgGraph(totalWeight, cg, zfw, zfCg, mtowVal, fwd, aft, fuelWeight);
+        }
+
+        [fwdLimit, aftLimit].forEach(el => el.addEventListener('input', () => { computeWB(); saveState(); }));
+
+        // ---------- CG envelope graph ----------
+        function drawCgGraph(weight, cg, zfw, zfCg, mtowVal, fwd, aft, fuelWeight) {
+            const W = 440, H = 260;
+            const padL = 55, padR = 20, padT = 20, padB = 35;
+            const plotW = W - padL - padR;
+            const plotH = H - padT - padB;
+
+            const validArms = [fwd, aft, cg, (fuelWeight > 0 ? zfCg : cg)].filter(a => a > 0);
+            const minArmFound = validArms.length > 0 ? Math.min(...validArms) : fwd;
+            const maxArmFound = validArms.length > 0 ? Math.max(...validArms) : aft;
+
+            const armMin = minArmFound - Math.max(5, (aft - fwd) * 0.25 || 5);
+            const armMax = maxArmFound + Math.max(5, (aft - fwd) * 0.25 || 5);
+            const wMax = Math.max(mtowVal * 1.05, weight * 1.05, 100);
+
+            const xForArm = a => padL + ((a - armMin) / (armMax - armMin || 1)) * plotW;
+            const yForW = w => padT + plotH - (w / wMax) * plotH;
+
+            const rectX1 = xForArm(fwd), rectX2 = xForArm(aft);
+            const rectY1 = yForW(mtowVal), rectY2 = yForW(0);
+
+            const styleVars = getComputedStyle(document.documentElement);
+            const borderColor = styleVars.getPropertyValue('--border-color').trim();
+            const mutedColor = styleVars.getPropertyValue('--muted-text').trim();
+            const greenColor = styleVars.getPropertyValue('--accent-green').trim();
+            const dangerColor = styleVars.getPropertyValue('--danger').trim();
+            const hoverBg = styleVars.getPropertyValue('--hover-bg').trim();
+
+            const towOk = weight <= mtowVal && weight > 0 && cg >= fwd && cg <= aft;
+            const zfOk = zfw <= mtowVal && zfw > 0 && zfCg >= fwd && zfCg <= aft;
+            
+            const pointColorTow = weight === 0 ? mutedColor : (towOk ? greenColor : dangerColor);
+            const pointColorZfw = zfw === 0 ? mutedColor : (zfOk ? greenColor : dangerColor);
+            const lineColor = (towOk && zfOk) ? greenColor : dangerColor;
+
+            let svg = '';
+            
+            // axes
+            svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="${borderColor}" stroke-width="2"/>`;
+            svg += `<line x1="${padL}" y1="${padT+plotH}" x2="${padL+plotW}" y2="${padT+plotH}" stroke="${borderColor}" stroke-width="2"/>`;
+
+            // envelope rectangle
+            svg += `<rect x="${Math.min(rectX1,rectX2)}" y="${rectY1}" width="${Math.abs(rectX2-rectX1)}" height="${rectY2-rectY1}" fill="${greenColor}" fill-opacity="0.12" stroke="${greenColor}" stroke-width="2" stroke-dasharray="5,4"/>`;
+
+            // y-axis labels
+            [0, mtowVal].forEach(w => {
+                const y = yForW(w);
+                svg += `<text x="${padL-8}" y="${y+4}" font-size="10" fill="${mutedColor}" text-anchor="end">${Math.round(w)}</text>`;
+                svg += `<line x1="${padL-4}" y1="${y}" x2="${padL}" y2="${y}" stroke="${borderColor}" stroke-width="1"/>`;
+            });
+            svg += `<text x="14" y="${padT+plotH/2}" font-size="10" fill="${mutedColor}" text-anchor="middle" transform="rotate(-90 14 ${padT+plotH/2})">Weight (${currentUnitWeight})</text>`;
+
+            // x-axis labels
+            [fwd, aft].forEach(a => {
+                const x = xForArm(a);
+                svg += `<text x="${x}" y="${padT+plotH+16}" font-size="10" fill="${mutedColor}" text-anchor="middle">${a.toFixed(0)}</text>`;
+                svg += `<line x1="${x}" y1="${padT+plotH}" x2="${x}" y2="${padT+plotH+4}" stroke="${borderColor}" stroke-width="1"/>`;
+            });
+            svg += `<text x="${padL+plotW/2}" y="${H-6}" font-size="10" fill="${mutedColor}" text-anchor="middle">Arm (${currentUnitArm})</text>`;
+
+            // CG points and line
+            if (weight > 0) {
+                const px1 = xForArm(cg);
+                const py1 = yForW(weight);
+                const px2 = xForArm(zfCg);
+                const py2 = yForW(zfw);
+
+                if (fuelWeight > 0 && weight > zfw) {
+                    svg += `<line x1="${px1}" y1="${py1}" x2="${px2}" y2="${py2}" stroke="${lineColor}" stroke-width="2" stroke-dasharray="4,4" opacity="0.8"/>`;
+                    
+                    svg += `<circle cx="${px2}" cy="${py2}" r="5" fill="${hoverBg}" stroke="${pointColorZfw}" stroke-width="2"/>`;
+                    svg += `<text x="${px2}" y="${py2+14}" font-size="10" font-weight="600" fill="${pointColorZfw}" text-anchor="middle">ZFW: ${zfw.toFixed(0)}${currentUnitWeight}</text>`;
+                }
+
+                svg += `<line x1="${px1}" y1="${padT}" x2="${px1}" y2="${padT+plotH}" stroke="${hoverBg}" stroke-width="1"/>`;
+                
+                svg += `<circle cx="${px1}" cy="${py1}" r="6" fill="${pointColorTow}" stroke="${borderColor}" stroke-width="2"/>`;
+                svg += `<text x="${px1}" y="${py1-10}" font-size="11" font-weight="700" fill="${pointColorTow}" text-anchor="middle">TOW: ${weight.toFixed(0)}${currentUnitWeight} / ${cg.toFixed(1)}${currentUnitArm}</text>`;
+            }
+
+            cgGraph.innerHTML = svg;
+        }
+
+        // ---------- Cross-Tab Event Listeners ----------
+        window.addEventListener('focus', syncFromFlightPrep);
+        window.addEventListener('storage', (e) => {
+            if (e.key === BRIEFING_STORAGE_KEY) {
+                syncFromFlightPrep();
+            }
+        });
+
+
+        // ---------- PDF export ----------
+        document.getElementById('exportPdfBtn').addEventListener('click', () => {
+            const rootClassList = document.documentElement.classList;
+            const wasDark = rootClassList.contains('dark-mode');
+            if (wasDark) {
+                rootClassList.remove('dark-mode');
+                computeWB(); 
+            }
+
+            let svgContent = document.getElementById('cgGraph').outerHTML;
+            svgContent = svgContent.replace('width="100%"', 'width="440"');
+
+            if (wasDark) {
+                rootClassList.add('dark-mode');
+                computeWB();
+            }
+            
+            const printElement = document.createElement('div');
+            printElement.style.padding = '40px';
+            printElement.style.fontFamily = 'Inter, sans-serif';
+            printElement.style.color = '#111';
+            printElement.style.backgroundColor = '#FFF';
+
+            const normalRows = speeds.filter(s => s.type === 'normal').map(s => `
+                <tr>
+                    <td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(s.name)}</td>
+                    <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">${s.value} ${escapeHtml(s.unit||'kt')}</td>
+                    <td style="padding:8px;border-bottom:1px solid #ddd;color:#555;">${escapeHtml(s.desc||'')}</td>
+                </tr>`).join('');
+
+            const emergencyRows = speeds.filter(s => s.type === 'emergency').map(s => `
+                <tr style="background-color: rgba(176, 64, 47, 0.1);">
+                    <td style="padding:8px;border-bottom:1px solid rgba(176, 64, 47, 0.2); color:#B0402F; font-weight:700;">${escapeHtml(s.name)}</td>
+                    <td style="padding:8px;border-bottom:1px solid rgba(176, 64, 47, 0.2); text-align:right; color:#B0402F; font-weight:700;">${s.value} ${escapeHtml(s.unit||'kt')}</td>
+                    <td style="padding:8px;border-bottom:1px solid rgba(176, 64, 47, 0.2); color:#B0402F;">${escapeHtml(s.desc||'')}</td>
+                </tr>`).join('');
+
+            const specialRows = speeds.filter(s => s.type === 'special').map(s => `
+                <tr style="background-color: rgba(58, 107, 136, 0.08);">
+                    <td style="padding:8px;border-bottom:1px solid rgba(58, 107, 136, 0.2); color:#3A6B88; font-weight:700;">${escapeHtml(s.name)}</td>
+                    <td style="padding:8px;border-bottom:1px solid rgba(58, 107, 136, 0.2); text-align:right; color:#3A6B88; font-weight:700;">${s.value} ${escapeHtml(s.unit||'kt')}</td>
+                    <td style="padding:8px;border-bottom:1px solid rgba(58, 107, 136, 0.2); color:#3A6B88;">${escapeHtml(s.desc||'')}</td>
+                </tr>`).join('');
+
+            const aircraftLabel = [acReg.value, acType.value].filter(Boolean).join(' — ') || 'Aircraft';
+
+            printElement.innerHTML = `
+                <div style="border-bottom: 2px solid #111; padding-bottom: 15px; margin-bottom: 25px;">
+                    <h1 style="font-size: 24px; font-weight: 700; margin: 0; text-transform: uppercase;">Aircraft Performance &amp; Weight/Balance</h1>
+                    <p style="margin: 8px 0 0 0; font-size: 14px; color: #555;">${escapeHtml(aircraftLabel)} — Generated by FlightPrep Solution — Units: ${currentUnitWeight.toUpperCase()}, ${currentUnitArm.toUpperCase()}, ${currentUnitFuel.toUpperCase()} — ${new Date().toLocaleDateString()}</p>
+                </div>
+
+                <h2 style="font-size:16px;margin-bottom:10px;">Speeds</h2>
+                <table style="width:100%;border-collapse:collapse;margin-bottom:25px;">
+                    <tbody>
+                        ${normalRows}
+                        ${emergencyRows}
+                        ${specialRows}
+                    </tbody>
+                </table>
+
+                <h2 style="font-size:16px;margin-bottom:10px;">Weight &amp; Balance</h2>
+                <div style="margin-bottom: 15px; font-size: 13px; color: #555;">
+                    <strong>Basic Empty Weight:</strong> ${emptyWeight.value} ${currentUnitWeight} @ ${emptyArm.value} ${currentUnitArm} &nbsp; | &nbsp; 
+                    <strong>MTOW:</strong> ${mtow.value} ${currentUnitWeight} &nbsp; | &nbsp; 
+                    <strong>MLW:</strong> ${mlw.value} ${currentUnitWeight}
+                </div>
+                <table style="width:100%;border-collapse:collapse;margin-bottom:15px;">
+                    <thead>
+                        <tr>
+                            <th style="width:34%;border-bottom:2px solid #111;padding:8px;font-size:11px;text-transform:uppercase;color:#555;text-align:left;">Item</th>
+                            <th style="border-bottom:2px solid #111;padding:8px;font-size:11px;text-transform:uppercase;color:#555;text-align:right;">Weight (${currentUnitWeight})</th>
+                            <th style="border-bottom:2px solid #111;padding:8px;font-size:11px;text-transform:uppercase;color:#555;text-align:right;">Arm (${currentUnitArm})</th>
+                            <th style="border-bottom:2px solid #111;padding:8px;font-size:11px;text-transform:uppercase;color:#555;text-align:right;">Moment</th>
+                        </tr>
+                    </thead>
+                    <tbody>${wbRows.map(r => `
+                        <tr>
+                            <td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(r.name)}</td>
+                            <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">${(parseFloat(r.weight)||0).toFixed(1)}</td>
+                            <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">${(parseFloat(r.arm)||0).toFixed(1)}</td>
+                            <td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">${Math.round((parseFloat(r.weight)||0)*(parseFloat(r.arm)||0)).toLocaleString()}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+
+                <div style="border-top: 2px solid #111; padding-top: 12px; font-size:14px; margin-bottom: 25px;">
+                    <div style="display:flex;justify-content:space-between;padding:3px 0;"><span>Total Weight</span><strong>${totWeight.textContent}</strong></div>
+                    <div style="display:flex;justify-content:space-between;padding:3px 0;"><span>Resulting CG</span><strong>${totCg.textContent}</strong></div>
+                    <div style="display:flex;justify-content:space-between;padding:3px 0;"><span>Margin vs MTOW</span><strong>${totMargin.textContent}</strong></div>
+                    <div style="display:flex;justify-content:space-between;padding:3px 0;"><span>Envelope Status</span><strong>${escapeHtml(statusBanner.textContent)}</strong></div>
+                </div>
+
+                <h2 style="font-size:16px;margin:25px 0 10px 0;">Center of Gravity Envelope</h2>
+                <div style="text-align: center; margin-bottom: 30px; background-color: #fafafa; border: 1px solid #eee; padding: 15px 0; border-radius: 6px;">
+                    ${svgContent}
+                </div>
+
+                <h2 style="font-size:16px;margin:25px 0 10px 0;">Range &amp; Endurance</h2>
+                <div style="display:flex;gap:30px;font-size:14px;">
+                    <div><strong>Usable Fuel:</strong> ${resUsableFuel.textContent}</div>
+                    <div><strong>Endurance:</strong> ${resEndurance.textContent}</div>
+                    <div><strong>Still-Air Range:</strong> ${resRange.textContent}</div>
+                </div>
+            `;
+
+            const opt = {
+                margin: 0.5,
+                filename: `${(acReg.value || 'FlightPrep')}_Performance_WB.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(printElement).save();
+        });
+
+        // ---------- Dark mode ----------
+        const toggleBtn = document.getElementById('themeToggle');
+        const root = document.documentElement;
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            root.classList.add('dark-mode');
+        }
+        toggleBtn.addEventListener('click', () => {
+            root.classList.toggle('dark-mode');
+            computeWB();
+        });
+
+        // ---------- Init ----------
+        loadState();
+        syncFromFlightPrep(); // Apply cross-tab sync state immediately on load
+        renderSpeeds(); 
+        renderWB();
+        computeWB();
+    </script>
+    <script src="flight_dossier.js"></script>
+</body>
+</html>
