@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schnurrbart</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:#1a0a0d;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Trebuchet MS,Comic Sans MS,sans-serif;color:#fff8e7;user-select:none;overflow:hidden}
+h1{margin-bottom:8px;text-shadow:3px 3px 0 #000}
+.hint{background:#111;color:#ffe27a;padding:6px 12px;border-radius:999px;margin-bottom:12px}
+.stage{position:relative;width:min(380px,92vw);height:440px}
+svg{width:100%;height:100%;overflow:visible}
+#stache{cursor:grab}
+#stache:active{cursor:grabbing}
+.bubble{position:absolute;left:56%;top:4%;max-width:170px;background:#fff;color:#111;padding:8px 10px;border-radius:14px 14px 14px 4px;font-weight:700;box-shadow:3px 3px 0 #000;opacity:0;transform:scale(.8);transition:.15s;pointer-events:none}
+.bubble.on{opacity:1;transform:scale(1)}
+</style>
+</head>
+<body>
+<h1>YANK THE 'STACHE</h1>
+<p class="hint">Stretch it. It stays on. He just grimaces.</p>
+<div class="stage" id="stage">
+  <div class="bubble" id="bubble">Unhand the rectangle.</div>
+  <svg viewBox="0 0 320 400">
+    <defs>
+      <g id="hx">
+        <rect x="-12" y="-3" width="24" height="6" fill="#111"/>
+        <rect x="-3" y="-12" width="6" height="24" fill="#111"/>
+        <rect x="6" y="-12" width="6" height="6" fill="#111"/>
+        <rect x="-12" y="6" width="6" height="6" fill="#111"/>
+        <rect x="-12" y="-12" width="6" height="6" fill="#111"/>
+        <rect x="6" y="6" width="6" height="6" fill="#111"/>
+      </g>
+    </defs>
+    <rect x="70" y="318" width="180" height="70" rx="6" fill="#4a2a16"/>
+    <circle cx="160" cy="360" r="16" fill="#fff"/>
+    <use href="#hx" transform="translate(160 360) rotate(45) scale(.7)"/>
+    <path d="M86 248 Q160 230 234 248 L248 328 Q160 308 72 328 Z" fill="#3b322b"/>
+    <path d="M150 246 L160 308 L170 246" fill="#27221c"/>
+    <rect x="212" y="264" width="34" height="22" rx="2" fill="#c41212"/>
+    <circle cx="229" cy="275" r="9" fill="#fff"/>
+    <use href="#hx" transform="translate(229 275) rotate(45) scale(.4)"/>
+    <ellipse cx="90" cy="168" rx="13" ry="19" fill="#efc09a"/>
+    <ellipse cx="230" cy="168" rx="13" ry="19" fill="#efc09a"/>
+    <rect x="140" y="228" width="40" height="26" fill="#d59a72"/>
+    <ellipse cx="160" cy="166" rx="78" ry="92" fill="#efc09a"/>
+    <path d="M88 146 C92 84 126 54 162 52 C204 50 236 78 238 126 C239 148 228 150 220 134 C212 96 188 82 164 84 C132 88 112 112 106 148 C102 168 94 170 88 146 Z" fill="#16110d"/>
+    <path id="bL" d="M108 134 Q128 122 146 134" fill="none" stroke="#16110d" stroke-width="8" stroke-linecap="round"/>
+    <path id="bR" d="M174 134 Q194 120 214 136" fill="none" stroke="#16110d" stroke-width="8" stroke-linecap="round"/>
+    <ellipse cx="128" cy="158" rx="16" ry="13" fill="#fff"/>
+    <ellipse cx="192" cy="158" rx="16" ry="13" fill="#fff"/>
+    <g id="pupils">
+      <circle cx="130" cy="161" r="6" fill="#1b120c"/>
+      <circle cx="194" cy="161" r="6" fill="#1b120c"/>
+    </g>
+    <path d="M160 158 L172 196 Q160 206 148 196 Z" fill="#e2ad81"/>
+    <path id="mouth" d="M144 226 Q160 230 176 226" fill="none" stroke="#8a3d3d" stroke-width="3.2" stroke-linecap="round"/>
+    <g id="teeth" opacity="0">
+      <rect x="148" y="228" width="24" height="8" rx="2" fill="#fffaf0"/>
+    </g>
+    <g id="sweat" opacity="0">
+      <ellipse cx="100" cy="124" rx="4" ry="7" fill="#7ec8ff"/>
+      <ellipse cx="228" cy="138" rx="3.5" ry="6" fill="#7ec8ff"/>
+    </g>
+    <g id="stache">
+      <rect x="136" y="204" width="48" height="16" rx="3" fill="#16110d"/>
+    </g>
+  </svg>
+</div>
+<script>
+const stache=document.getElementById("stache");
+const mouth=document.getElementById("mouth");
+const teeth=document.getElementById("teeth");
+const pupils=document.getElementById("pupils");
+const sweat=document.getElementById("sweat");
+const bubble=document.getElementById("bubble");
+const bL=document.getElementById("bL");
+const bR=document.getElementById("bR");
+const lines=["NEIN","Not an accordion","Classified grimace","Warranty void if stretched","The rectangle stays"];
+let drag=false,startY=0,pull=0;
+function say(t){bubble.textContent=t;bubble.classList.add("on");clearTimeout(say.x);say.x=setTimeout(()=>bubble.classList.remove("on"),1400)}
+function face(p){
+  stache.style.transformOrigin="160px 204px";
+  stache.style.transform="translateY("+(p*0.2)+"px) scaleY("+(1+p/50)+")";
+  mouth.setAttribute("d","M140 "+(226+p*0.04)+" Q160 "+(230+Math.min(24,p*0.15))+" 180 "+(226+p*0.04));
+  teeth.setAttribute("opacity",p>50?Math.min(1,(p-50)/40):0);
+  pupils.style.transform="translateY("+Math.min(7,p/14)+"px)";
+  bL.setAttribute("d","M108 "+(134-p/16)+" Q128 "+(122-p/9)+" 146 "+(134-p/20));
+  bR.setAttribute("d","M174 "+(134-p/20)+" Q194 "+(120-p/9)+" 214 "+(136-p/16));
+  sweat.setAttribute("opacity",p>30?Math.min(1,(p-30)/50):0);
+}
+stache.addEventListener("pointerdown",e=>{drag=true;startY=e.clientY;stache.setPointerCapture(e.pointerId);say(lines[Math.floor(Math.random()*lines.length)])});
+window.addEventListener("pointermove",e=>{if(!drag)return;pull=Math.max(0,Math.min(150,e.clientY-startY));face(pull)});
+window.addEventListener("pointerup",()=>{if(!drag)return;drag=false;(function snap(){pull*=0.68;if(pull<1){pull=0;face(0);return}face(pull);requestAnimationFrame(snap)})()});
+say("Grab the mustache. Pull down.");
+</script>
+</body>
+</html>
