@@ -9,12 +9,17 @@
 body{min-height:100vh;background:#1a0a0d;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Trebuchet MS,Comic Sans MS,sans-serif;color:#fff8e7;user-select:none;overflow:hidden}
 h1{margin-bottom:8px;text-shadow:3px 3px 0 #000}
 .hint{background:#111;color:#ffe27a;padding:6px 12px;border-radius:999px;margin-bottom:12px}
-.stage{position:relative;width:min(380px,92vw);height:440px}
+.stage{position:relative;width:min(380px,92vw);height:420px}
 svg{width:100%;height:100%;overflow:visible}
 #stache{cursor:grab}
 #stache:active{cursor:grabbing}
 .bubble{position:absolute;left:56%;top:4%;max-width:170px;background:#fff;color:#111;padding:8px 10px;border-radius:14px 14px 14px 4px;font-weight:700;box-shadow:3px 3px 0 #000;opacity:0;transform:scale(.8);transition:.15s;pointer-events:none}
 .bubble.on{opacity:1;transform:scale(1)}
+.trump-wrap{margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#ffe27a}
+.trump-btn{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#f3b27a;box-shadow:0 4px 0 #000,0 0 0 3px #ffd24a;overflow:hidden}
+.trump-wrap:hover .trump-btn{transform:scale(1.08)}
+.trump-btn svg{width:64px;height:64px}
+.trump-label{font-weight:800;font-size:1.05rem;text-shadow:2px 2px 0 #000}
 </style>
 </head>
 <body>
@@ -56,18 +61,32 @@ svg{width:100%;height:100%;overflow:visible}
     </g>
     <path d="M160 158 L172 196 Q160 206 148 196 Z" fill="#e2ad81"/>
     <path id="mouth" d="M144 226 Q160 230 176 226" fill="none" stroke="#8a3d3d" stroke-width="3.2" stroke-linecap="round"/>
-    <g id="teeth" opacity="0">
-      <rect x="148" y="228" width="24" height="8" rx="2" fill="#fffaf0"/>
-    </g>
+    <g id="teeth" opacity="0"><rect x="148" y="228" width="24" height="8" rx="2" fill="#fffaf0"/></g>
     <g id="sweat" opacity="0">
       <ellipse cx="100" cy="124" rx="4" ry="7" fill="#7ec8ff"/>
       <ellipse cx="228" cy="138" rx="3.5" ry="6" fill="#7ec8ff"/>
     </g>
-    <g id="stache">
-      <rect x="136" y="204" width="48" height="16" rx="3" fill="#16110d"/>
-    </g>
+    <g id="stache"><rect x="136" y="204" width="48" height="16" rx="3" fill="#16110d"/></g>
   </svg>
 </div>
+
+<a class="trump-wrap" href="https://giannimzd.github.io/dodo_slap.html">
+  <span class="trump-btn">
+    <svg viewBox="0 0 80 80" aria-hidden="true">
+      <circle cx="40" cy="40" r="40" fill="#f0a36b"/>
+      <path d="M6 36 C10 6 28 2 40 6 C58 12 74 18 76 38 C72 16 56 10 40 10 C24 10 12 20 6 36 Z" fill="#f4d35e"/>
+      <path d="M10 32 C22 18 34 14 42 16 C60 20 70 28 72 40 C64 22 50 16 40 16 C26 16 16 24 10 32 Z" fill="#e7c14a"/>
+      <rect x="24" y="36" width="10" height="7" rx="3" fill="#fff"/>
+      <rect x="46" y="36" width="10" height="7" rx="3" fill="#fff"/>
+      <circle cx="30" cy="40" r="2.2" fill="#2b1c12"/>
+      <circle cx="52" cy="40" r="2.2" fill="#2b1c12"/>
+      <ellipse cx="40" cy="50" rx="8" ry="6" fill="#e08b55"/>
+      <path d="M28 60 Q40 68 52 60" fill="none" stroke="#b85a3a" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+  </span>
+  <span class="trump-label">Slap Trump</span>
+</a>
+
 <script>
 const stache=document.getElementById("stache");
 const mouth=document.getElementById("mouth");
