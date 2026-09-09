@@ -512,14 +512,173 @@
             z-index: 1; 
         }
 
-        html.dark-mode #map { background: #15171a; }
-        html.dark-mode .leaflet-tile-pane { filter: brightness(0.72) contrast(1.1) saturate(0.85); }
-        html.dark-mode .leaflet-bar a { 
-            background-color: var(--card-bg); 
-            color: var(--text-color); 
-            border-bottom-color: var(--line); 
+        /* Aeronautical Nautical Miles Scale Bar */
+        .leaflet-control-scale {
+            margin-left: 18px !important;
+            margin-bottom: 92px !important;
+            z-index: 900;
+            transition: margin-bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        html.dark-mode .leaflet-bar a:hover { background-color: var(--hover-bg); }
+        .leaflet-control-scale-line {
+            background: rgba(15, 23, 42, 0.82) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.85) !important;
+            border-top: none !important;
+            color: #ffffff !important;
+            font-family: 'IBM Plex Mono', monospace !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            padding: 2px 7px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.05em;
+        }
+        html:not(.dark-mode) .leaflet-control-scale-line {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border-color: #0f172a !important;
+            color: #0f172a !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* -------------------------------------------------------------
+           AVIONICS CHART CONTROLS & BASEMAP PILL
+        ------------------------------------------------------------- */
+        .chart-ctrl-cluster {
+            position: absolute;
+            z-index: 1000;
+            pointer-events: auto;
+        }
+        .chart-ctrl-cluster.topleft {
+            top: 16px;
+            left: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .chart-ctrl-cluster.topcenter {
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .chart-nav-controls {
+            display: flex;
+            flex-direction: column;
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .chart-ctrl-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.15s ease;
+            user-select: none;
+            padding: 0;
+        }
+        .chart-ctrl-btn:hover {
+            background: var(--hover-bg);
+            color: var(--accent-blue);
+        }
+        .chart-ctrl-btn:active {
+            background: var(--border-color);
+        }
+        .chart-ctrl-divider {
+            height: 1px;
+            background: var(--line);
+            margin: 0 4px;
+        }
+        .compass-arrow {
+            color: #ef4444;
+            font-size: 8px;
+            line-height: 1;
+            margin-bottom: 1px;
+        }
+        .compass-n {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-color);
+        }
+
+        /* Glassmorphic Basemap Segmented Pill (OpenStreetMap | Satellite) */
+        .chart-basemap-pill {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+            gap: 2px;
+        }
+        .basemap-pill-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 16px;
+            background: transparent;
+            border: none;
+            color: var(--muted-text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            user-select: none;
+        }
+        .basemap-pill-btn:hover {
+            color: var(--text-color);
+            background: rgba(125, 125, 125, 0.08);
+        }
+        .basemap-pill-btn.active {
+            background: var(--accent-blue);
+            color: #ffffff !important;
+            box-shadow: 0 2px 8px rgba(25, 103, 210, 0.4);
+        }
+        .basemap-pill-btn.active svg {
+            stroke: #ffffff;
+        }
+
+        /* Satellite Mode Enhancements */
+        .map-section.satellite-active #map {
+            background: #090d12 !important;
+        }
+        .map-section.satellite-active .leaflet-tile-pane {
+            filter: contrast(1.1) brightness(0.95) saturate(1.06) !important;
+        }
+        .map-section.satellite-active .airspace-map-badge {
+            background: rgba(15, 23, 42, 0.94) !important;
+            border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8) !important;
+        }
+        .map-section.satellite-active .flight-deck-hud {
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        /* Dark Mode Night VFR Chart for OpenStreetMap */
+        html.dark-mode #map { background: #15171a; }
+        html.dark-mode .map-section:not(.satellite-active) .leaflet-tile-pane {
+            filter: brightness(0.68) invert(1) contrast(3.2) hue-rotate(200deg) saturate(0.35) !important;
+        }
 
         /* Floating Toolbars on Map (Bottom-Right) */
         .floating-chart-tools {
@@ -1121,6 +1280,316 @@
         .btn-popup-action:hover { opacity: 0.85; }
         .btn-popup-action.accent { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
 
+        /* Aeronautical Airspace High-Readability Avionics Tooltip */
+        .leaflet-tooltip.aero-airspace-tooltip {
+            background: rgba(15, 23, 42, 0.94) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #f8fafc !important;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 10px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            padding: 12px 14px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 11.5px;
+            line-height: 1.35;
+            pointer-events: none;
+            width: 320px;
+            max-width: 90vw;
+            transition: none;
+        }
+        html:not(.dark-mode) .leaflet-tooltip.aero-airspace-tooltip {
+            background: rgba(255, 255, 255, 0.96) !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 34px rgba(15, 23, 42, 0.22);
+        }
+        .aero-airspace-tooltip::before {
+            display: none !important;
+        }
+        .aero-tooltip-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .aero-country-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1.5px 7px;
+            border-radius: 4px;
+            background: rgba(25, 103, 210, 0.18);
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        html:not(.dark-mode) .aero-country-pill {
+            background: rgba(25, 103, 210, 0.10);
+            color: #1967d2;
+            border-color: rgba(25, 103, 210, 0.25);
+        }
+        .aero-tooltip-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+        html:not(.dark-mode) .aero-tooltip-title {
+            color: #0f172a;
+        }
+        .aero-tooltip-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .aero-badge-ctr { background: #1967d2; color: #fff; }
+        .aero-badge-tma { background: #1a237e; color: #fff; }
+        .aero-badge-prohibited { background: #c5221f; color: #fff; }
+        .aero-badge-restricted { background: #e65100; color: #fff; }
+        .aero-badge-danger { background: #d84315; color: #fff; }
+        .aero-badge-rmz { background: #7b1fa2; color: #fff; }
+        .aero-badge-drop { background: #00796b; color: #fff; }
+
+        .aero-tooltip-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr 1.2fr;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            padding: 7px 10px;
+            margin-bottom: 8px;
+        }
+        html:not(.dark-mode) .aero-tooltip-grid {
+            background: rgba(241, 245, 249, 0.9);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        .aero-grid-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .aero-grid-lbl {
+            font-size: 8px;
+            font-weight: 800;
+            color: #94a3b8;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        html:not(.dark-mode) .aero-grid-lbl {
+            color: #64748b;
+        }
+        .aero-grid-val {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        html:not(.dark-mode) .aero-grid-val {
+            color: #0f172a;
+        }
+        .aero-grid-arrow {
+            color: #64748b;
+            font-size: 11px;
+            padding: 0 4px;
+        }
+        .aero-cruise-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.02em;
+        }
+        .aero-cruise-badge.active {
+            background: rgba(230, 81, 0, 0.22);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.45);
+        }
+        html:not(.dark-mode) .aero-cruise-badge.active {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #ffb74d;
+        }
+        .aero-cruise-badge.clear {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.35);
+        }
+        html:not(.dark-mode) .aero-cruise-badge.clear {
+            background: #f0fdf4;
+            color: #16a34a;
+            border-color: #86efac;
+        }
+        .aero-tooltip-rule-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 5px;
+            padding: 7px 9px;
+            margin-bottom: 8px;
+        }
+        html:not(.dark-mode) .aero-tooltip-rule-box {
+            background: rgba(248, 250, 252, 0.95);
+        }
+        .aero-rule-hdr {
+            font-size: 8.5px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 3px;
+        }
+        html:not(.dark-mode) .aero-rule-hdr {
+            color: #64748b;
+        }
+        .aero-rule-txt {
+            font-size: 11px;
+            line-height: 1.4;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+        html:not(.dark-mode) .aero-rule-txt {
+            color: #1e293b;
+        }
+        .aero-tooltip-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 10.5px;
+            color: #94a3b8;
+            padding: 5px 0 3px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 4px;
+        }
+        html:not(.dark-mode) .aero-tooltip-meta {
+            color: #64748b;
+            border-top-color: rgba(0, 0, 0, 0.08);
+        }
+        .aero-meta-freq {
+            color: #38bdf8;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+        html:not(.dark-mode) .aero-meta-freq {
+            color: #0284c7;
+        }
+        .aero-tooltip-hint {
+            font-size: 9.5px;
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            padding-top: 2px;
+        }
+        html:not(.dark-mode) .aero-tooltip-hint {
+            color: #94a3b8;
+        }
+
+        /* Airspace Polygon Center Name Badges (Zoom >= 8) */
+        .aero-airspace-badge-icon {
+            width: 0 !important;
+            height: 0 !important;
+            border: none !important;
+            background: transparent !important;
+            overflow: visible !important;
+        }
+        .airspace-map-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            width: max-content;
+            min-width: 48px;
+            max-width: 170px;
+            background: rgba(15, 23, 42, 0.88);
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+            padding: 3px 8px;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+            pointer-events: none;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            text-align: center;
+            user-select: none;
+        }
+        .airspace-map-badge.ctr {
+            border-color: #3b82f6;
+            background: rgba(15, 23, 42, 0.90);
+        }
+        .airspace-map-badge.prohibited {
+            border-color: #ef4444;
+            background: rgba(153, 27, 27, 0.92);
+        }
+        .airspace-map-badge.restricted {
+            border-color: #f59e0b;
+            background: rgba(120, 53, 15, 0.92);
+        }
+        .airspace-badge-name {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            font-size: 9.5px;
+            font-weight: 800;
+            font-family: 'IBM Plex Mono', monospace;
+            line-height: 1.2;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .airspace-badge-alt {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            font-size: 8px;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+            opacity: 0.9;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+            margin-top: 1.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        html:not(.dark-mode) .airspace-map-badge {
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
+            border-color: rgba(15, 23, 42, 0.45);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+        }
+        html:not(.dark-mode) .airspace-map-badge.ctr {
+            border-color: #2563eb;
+            color: #1e3a8a;
+        }
+        html:not(.dark-mode) .airspace-map-badge.prohibited {
+            border-color: #dc2626;
+            background: rgba(254, 226, 226, 0.96);
+            color: #991b1b;
+        }
+        html:not(.dark-mode) .airspace-map-badge.restricted {
+            border-color: #d97706;
+            background: rgba(254, 243, 199, 0.96);
+            color: #92400e;
+        }
+
         /* Responsive Styles */
         @media (max-width: 1024px) {
             .navlog-dock { width: 320px; }
@@ -1244,6 +1713,52 @@
                 <div class="map-wrapper">
                     <div id="map"></div>
 
+                    <!-- Top-Left Avionics Control Cluster -->
+                    <div class="chart-ctrl-cluster topleft">
+                        <div class="chart-nav-controls">
+                            <button class="chart-ctrl-btn" id="btnZoomIn" title="Zoom In (+)" aria-label="Zoom in">+</button>
+                            <div class="chart-ctrl-divider"></div>
+                            <button class="chart-ctrl-btn" id="btnZoomOut" title="Zoom Out (-)" aria-label="Zoom out">−</button>
+                            <div class="chart-ctrl-divider"></div>
+                            <button class="chart-ctrl-btn" id="btnResetNorth" title="Reset North / Align View" aria-label="Reset North">
+                                <span class="compass-arrow">▲</span>
+                                <span class="compass-n">N</span>
+                            </button>
+                            <div class="chart-ctrl-divider"></div>
+                            <button class="chart-ctrl-btn" id="btnCenterRoute" title="Center on Flight Track" aria-label="Center flight track">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="7"></circle>
+                                    <line x1="12" y1="2" x2="12" y2="5"></line>
+                                    <line x1="12" y1="19" x2="12" y2="22"></line>
+                                    <line x1="2" y1="12" x2="5" y2="12"></line>
+                                    <line x1="19" y1="12" x2="22" y2="12"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top-Center Glassmorphic Basemap Switcher -->
+                    <div class="chart-ctrl-cluster topcenter">
+                        <div class="chart-basemap-pill" role="radiogroup" aria-label="Base Chart Selection">
+                            <button class="basemap-pill-btn active" id="btnBaseOsm" data-layer="osm" title="OpenStreetMap Vector Base">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                                    <line x1="8" y1="2" x2="8" y2="18"></line>
+                                    <line x1="16" y1="6" x2="16" y2="22"></line>
+                                </svg>
+                                <span>OpenStreetMap</span>
+                            </button>
+                            <button class="basemap-pill-btn" id="btnBaseSatellite" data-layer="satellite" title="High-Resolution Satellite Imagery">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                                <span>Satellite</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Bottom-Left Flight Deck HUD Card -->
                     <div class="flight-deck-hud" id="flightDeckHud">
                         <div class="hud-top-row">
@@ -1317,29 +1832,25 @@
                                 <div class="aero-layer-heading" style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border-color);">Airspaces &amp; Limits</div>
                                 <label class="aero-layer-item">
                                     <input type="checkbox" id="chkLayerCtrlAirspaces" checked>
-                                    <span>Controlled (CTR / TMA)</span>
+                                    <span>Controlled (CTR, TMA, CTA)</span>
                                 </label>
                                 <label class="aero-layer-item">
                                     <input type="checkbox" id="chkLayerSpecialAirspaces" checked>
-                                    <span>Prohibited &amp; Restricted (P/R)</span>
+                                    <span>Prohibited &amp; Restricted (P, R)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerDangerAirspaces" checked>
+                                    <span>Danger &amp; Special (D, RMZ, TMZ)</span>
                                 </label>
 
                                 <div class="aero-layer-heading" style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border-color);">Base Chart</div>
                                 <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="openflightmaps" checked>
-                                    <span>Aero (OpenFlightMaps)</span>
-                                </label>
-                                <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="carto_light">
-                                    <span>Carto Light (Clean)</span>
-                                </label>
-                                <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="osm">
-                                    <span>OpenStreetMap</span>
+                                    <input type="radio" name="baseLayerRadio" value="osm" checked>
+                                    <span>🗺️ OpenStreetMap</span>
                                 </label>
                                 <label class="aero-layer-item">
                                     <input type="radio" name="baseLayerRadio" value="satellite">
-                                    <span>Satellite Imagery</span>
+                                    <span>🛰️ Satellite Imagery</span>
                                 </label>
                             </div>
                         </div>
@@ -1485,8 +1996,10 @@
 
         // Initialize Map
         const map = L.map('map', { zoomControl: false, preferCanvas: true, attributionControl: false }).setView([48.83, 2.35], 9);
-        L.control.zoom({ position: 'topleft' }).addTo(map);
         L.control.attribution({ position: 'bottomright', prefix: false }).addTo(map);
+
+        // Nautical Miles Aeronautical Scale Bar
+        const chartScale = L.control.scale({ imperial: true, metric: false, position: 'bottomleft', maxWidth: 120 }).addTo(map);
 
         // Custom Leaflet Layer Panes for Strict Visual Hierarchy
         map.createPane('airspacesPane');
@@ -1498,63 +2011,93 @@
         map.createPane('routeMarkersPane');
         map.getPane('routeMarkersPane').style.zIndex = 650;
 
-        // Center Track Button in Leaflet control
-        const CenterControl = L.Control.extend({
-            options: { position: 'topleft' },
-            onAdd: function() {
-                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-                const btn = L.DomUtil.create('a', '', container);
-                btn.href = '#';
-                btn.title = 'Center map on flight track';
-                btn.setAttribute('role', 'button');
-                btn.style.display = 'flex';
-                btn.style.alignItems = 'center';
-                btn.style.justifyContent = 'center';
-                btn.style.width = '30px';
-                btn.style.height = '30px';
-                btn.style.cursor = 'pointer';
-                btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>`;
-                L.DomEvent.disableClickPropagation(container);
-                L.DomEvent.disableScrollPropagation(container);
-                L.DomEvent.on(btn, 'click', function(e) {
-                    L.DomEvent.stop(e);
-                    centerOnRoute();
-                });
-                return container;
-            }
-        });
-        map.addControl(new CenterControl());
-
         setTimeout(() => { map.invalidateSize(); }, 200);
 
         // =========================================================================
-        // BASE MAP LAYERS
+        // BASE MAP LAYERS (Strictly OpenStreetMap & High-Res Satellite)
         // =========================================================================
         const baseLayers = {
-            openflightmaps: L.layerGroup([
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap', crossOrigin: true }),
-                L.tileLayer('https://{s}.tile.openflightmaps.org/tiles/default/{z}/{x}/{y}.png', { maxZoom: 14, subdomains: ['a', 'b', 'c'], opacity: 0.95, crossOrigin: true })
-            ]),
-            carto_light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', crossOrigin: true }),
-            osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', crossOrigin: true }),
-            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri &bull; Earthstar Geographics', crossOrigin: true })
+            osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                crossOrigin: true,
+                maxZoom: 19
+            }),
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+                crossOrigin: true,
+                maxZoom: 19
+            })
         };
 
-        baseLayers.openflightmaps.addTo(map);
+        function setBaseLayer(layerKey) {
+            if (!baseLayers[layerKey]) return;
+            Object.values(baseLayers).forEach(layer => map.removeLayer(layer));
+            baseLayers[layerKey].addTo(map);
 
+            // Toggle satellite-active class on map-section for tactical contrast
+            const mapSection = document.querySelector('.map-section');
+            if (mapSection) {
+                if (layerKey === 'satellite') {
+                    mapSection.classList.add('satellite-active');
+                } else {
+                    mapSection.classList.remove('satellite-active');
+                }
+            }
+
+            // Sync Glassmorphic Basemap Segmented Pill
+            const btnOsm = document.getElementById('btnBaseOsm');
+            const btnSat = document.getElementById('btnBaseSatellite');
+            if (btnOsm && btnSat) {
+                if (layerKey === 'osm') {
+                    btnOsm.classList.add('active');
+                    btnSat.classList.remove('active');
+                } else {
+                    btnSat.classList.add('active');
+                    btnOsm.classList.remove('active');
+                }
+            }
+
+            // Sync Aero Layers popover radio
+            const radio = document.querySelector(`input[name="baseLayerRadio"][value="${layerKey}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        // Initialize with OpenStreetMap
+        setBaseLayer('osm');
+
+        // Basemap Segmented Pill Listeners
+        const btnBaseOsm = document.getElementById('btnBaseOsm');
+        const btnBaseSatellite = document.getElementById('btnBaseSatellite');
+        if (btnBaseOsm) btnBaseOsm.addEventListener('click', () => setBaseLayer('osm'));
+        if (btnBaseSatellite) btnBaseSatellite.addEventListener('click', () => setBaseLayer('satellite'));
+
+        // Aero Layers popover radio listeners
         document.querySelectorAll('input[name="baseLayerRadio"]').forEach(radio => {
             radio.addEventListener('change', (e) => {
-                Object.values(baseLayers).forEach(layer => map.removeLayer(layer));
-                const selected = baseLayers[e.target.value];
-                if (selected) selected.addTo(map);
+                setBaseLayer(e.target.value);
             });
         });
+
+        // Avionics Navigation Cluster Controls
+        const btnZoomIn = document.getElementById('btnZoomIn');
+        const btnZoomOut = document.getElementById('btnZoomOut');
+        const btnResetNorth = document.getElementById('btnResetNorth');
+        const btnCenterRoute = document.getElementById('btnCenterRoute');
+
+        if (btnZoomIn) btnZoomIn.addEventListener('click', () => map.zoomIn());
+        if (btnZoomOut) btnZoomOut.addEventListener('click', () => map.zoomOut());
+        if (btnResetNorth) btnResetNorth.addEventListener('click', () => {
+            const center = map.getCenter();
+            map.setView(center, map.getZoom(), { animate: true });
+        });
+        if (btnCenterRoute) btnCenterRoute.addEventListener('click', () => centerOnRoute());
 
         // =========================================================================
         // OVERLAY LAYERS
         // =========================================================================
         const ctrlAirspacesLayer = L.layerGroup().addTo(map);
         const specialAirspacesLayer = L.layerGroup().addTo(map);
+        const dangerAirspacesLayer = L.layerGroup().addTo(map);
         const airportsLayer = L.layerGroup().addTo(map);
         const vfrPointsLayer = L.layerGroup().addTo(map);
         const navaidsLayer = L.layerGroup().addTo(map);
@@ -1570,6 +2113,10 @@
         document.getElementById('chkLayerSpecialAirspaces').addEventListener('change', e => {
             if (e.target.checked) specialAirspacesLayer.addTo(map);
             else map.removeLayer(specialAirspacesLayer);
+        });
+        document.getElementById('chkLayerDangerAirspaces').addEventListener('change', e => {
+            if (e.target.checked) dangerAirspacesLayer.addTo(map);
+            else map.removeLayer(dangerAirspacesLayer);
         });
         document.getElementById('chkLayerAirports').addEventListener('change', e => {
             if (e.target.checked) airportsLayer.addTo(map);
@@ -1613,78 +2160,401 @@
         });
 
         // =========================================================================
-        // AIRSPACE RENDERING
+        // AIRSPACE RENDERING & INTERACTIVE INSPECTOR
         // =========================================================================
         const airspacePolygonRefs = [];
+        const airspaceLabelsLayer = L.layerGroup();
+
+        function updateAirspaceLabelsVisibility() {
+            if (map.getZoom() >= 8) {
+                if (!map.hasLayer(airspaceLabelsLayer)) map.addLayer(airspaceLabelsLayer);
+            } else {
+                if (map.hasLayer(airspaceLabelsLayer)) map.removeLayer(airspaceLabelsLayer);
+            }
+        }
+        map.on('zoomend', updateAirspaceLabelsVisibility);
+
+        function openAirspaceDetailsPopup(sp, latlng) {
+            const isProhibited = sp.type === 'Prohibited';
+            const isRestricted = sp.type === 'Restricted';
+
+            let ruleText = "VFR flight permitted under Visual Meteorological Conditions (VMC).";
+            let ruleTag = "VFR STANDARD";
+            let ruleColor = "var(--accent-green)";
+
+            if (isProhibited) {
+                ruleText = "⛔ Penetration strictly forbidden without prior special defense/security clearance.";
+                ruleTag = "VFR PROHIBITED";
+                ruleColor = "var(--danger)";
+            } else if (sp.class === 'A') {
+                ruleText = "⛔ Class A Airspace: IFR only. VFR flights are strictly not permitted.";
+                ruleTag = "IFR ONLY (NO VFR)";
+                ruleColor = "var(--danger)";
+            } else if (sp.type === 'CTR' && sp.class === 'D') {
+                ruleText = "📡 Mandatory two-way radio contact and ATC clearance prior to entering.";
+                ruleTag = "ATC CLEARANCE REQUIRED";
+                ruleColor = "var(--accent-blue)";
+            } else if (isRestricted) {
+                ruleText = "⚠ Restricted area: Penetration subject to conditions or activation NOTAM.";
+                ruleTag = "RESTRICTED / NOTAM";
+                ruleColor = "var(--accent-orange)";
+            } else if (sp.type === 'RMZ') {
+                ruleText = "📡 Radio Mandatory Zone: Initial radio call required prior to entry.";
+                ruleTag = "RADIO MANDATORY";
+                ruleColor = "#9c27b0";
+            } else if (sp.type === 'TMZ') {
+                ruleText = "📡 Transponder Mandatory Zone: Operative Mode S transponder required.";
+                ruleTag = "TRANSPONDER REQUIRED";
+                ruleColor = "#9c27b0";
+            } else if (sp.type === 'Danger') {
+                ruleText = "⚠ Exercise extreme caution: Potential live firing or military activity.";
+                ruleTag = "DANGER AREA";
+                ruleColor = "#d84315";
+            }
+
+            const popupHtml = `
+                <div class="aero-popup-header">
+                    <div>
+                        <div class="aero-popup-title">${escapeHtml(sp.name)}</div>
+                        <div style="font-size:10.5px; color:var(--muted-text); margin-top:2px;">
+                            ${sp.country ? `<span style="display:inline-block; padding:1px 5px; border-radius:3px; font-weight:800; font-size:9.5px; background:rgba(25,103,210,0.15); color:var(--accent-blue); margin-right:4px;">${escapeHtml(sp.country)}</span>` : ''}
+                            ${escapeHtml(sp.type)} &bull; Class ${escapeHtml(sp.class)}
+                        </div>
+                    </div>
+                    <span class="spotlight-badge badge-airspace" style="color:${ruleColor}; font-weight:800;">${ruleTag}</span>
+                </div>
+                <div class="aero-popup-body">
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Floor Altitude</span>
+                        <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace;">${escapeHtml(sp.floor)}</span>
+                    </div>
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Ceiling Altitude</span>
+                        <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace;">${escapeHtml(sp.ceiling)}</span>
+                    </div>
+                    ${sp.freq ? `
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Radio Frequency</span>
+                        <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue); font-weight:800;">
+                            ${escapeHtml(sp.freq)}
+                        </span>
+                    </div>` : ''}
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Activation / Hours</span>
+                        <span class="aero-popup-val">${sp.byNotam ? '⚠ Subject to NOTAM' : 'H24 / Continuous'}</span>
+                    </div>
+
+                    <div style="margin-top:10px; padding:8px 10px; background:var(--bg-color); border-radius:6px; border-left:3px solid ${ruleColor};">
+                        <div style="font-weight:800; font-size:10px; text-transform:uppercase; color:var(--muted-text); margin-bottom:2px;">VFR Flight Procedures</div>
+                        <div style="font-size:11.5px; line-height:1.4;">${ruleText}</div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="aero-popup-actions" style="margin-top:12px;">
+                        <button class="btn-popup-action accent" onclick="handleMapWaypointAdd({lat: ${latlng.lat.toFixed(5)}, lng: ${latlng.lng.toFixed(5)}}); map.closePopup();">
+                            ➕ Add Waypoint Here
+                        </button>
+                        <button class="btn-popup-action" onclick="focusAirspace('${escapeHtml(sp.id)}'); map.closePopup();">
+                            🎯 Focus Airspace
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            L.popup({ maxWidth: 330 })
+                .setLatLng(latlng)
+                .setContent(popupHtml)
+                .openOn(map);
+        }
+
+        function focusAirspace(id) {
+            const ref = airspacePolygonRefs.find(r => r.sp.id === id);
+            if (ref && ref.polygon) {
+                map.fitBounds(ref.polygon.getBounds(), { padding: [50, 50], maxZoom: 11 });
+                ref.polygon.setStyle({ weight: 4.5, fillOpacity: 0.28 });
+                setTimeout(() => {
+                    applyAltitudeFilterToPolygon(ref.polygon, ref.sp);
+                }, 2500);
+            }
+        }
+
+        const COUNTRY_META = {
+            'FR': { name: 'France', flag: '🇫🇷' },
+            'CH': { name: 'Switzerland', flag: '🇨🇭' },
+            'GB': { name: 'United Kingdom', flag: '🇬🇧' },
+            'DE': { name: 'Germany', flag: '🇩🇪' },
+            'BE': { name: 'Belgium', flag: '🇧🇪' },
+            'NL': { name: 'Netherlands', flag: '🇳🇱' },
+            'ES': { name: 'Spain', flag: '🇪🇸' },
+            'IT': { name: 'Italy', flag: '🇮🇹' }
+        };
+
+        function buildAirspaceTooltipHtml(sp) {
+            const country = COUNTRY_META[sp.country] || { name: sp.country || 'Europe', flag: '🌐' };
+            const floorFt = sp.floorFt !== undefined ? sp.floorFt : 0;
+            const ceilFt = sp.ceilingFt !== undefined ? sp.ceilingFt : 99999;
+
+            let spanText = '—';
+            if (ceilFt < 90000) {
+                const diff = Math.max(0, ceilFt - floorFt);
+                spanText = diff.toLocaleString() + ' ft';
+            } else {
+                spanText = 'UNLIMITED';
+            }
+
+            let badgeClass = 'aero-badge-ctr';
+            let categoryBorderColor = '#1967d2';
+
+            if (sp.type === 'Prohibited' || sp.class === 'A') {
+                badgeClass = 'aero-badge-prohibited';
+                categoryBorderColor = '#c5221f';
+            } else if (sp.type === 'Restricted') {
+                badgeClass = 'aero-badge-restricted';
+                categoryBorderColor = '#e65100';
+            } else if (sp.type === 'Danger') {
+                badgeClass = 'aero-badge-danger';
+                categoryBorderColor = '#d84315';
+            } else if (sp.type === 'TMA' || sp.type === 'CTA') {
+                badgeClass = 'aero-badge-tma';
+                categoryBorderColor = '#1a237e';
+            } else if (sp.type === 'RMZ' || sp.type === 'TMZ') {
+                badgeClass = 'aero-badge-rmz';
+                categoryBorderColor = '#7b1fa2';
+            } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
+                badgeClass = 'aero-badge-drop';
+                categoryBorderColor = '#00796b';
+            }
+
+            // Cruising altitude conflict comparison
+            const cruiseAlt = parseInt(document.getElementById('altFilterSelect')?.value, 10) || 0;
+            let cruiseHtml = '';
+            if (cruiseAlt > 0) {
+                if (cruiseAlt >= floorFt && cruiseAlt <= ceilFt) {
+                    cruiseHtml = `<div class="aero-cruise-badge active">⚠️ ACTIVE AT YOUR CRUISING LEVEL (${cruiseAlt.toLocaleString()} FT)</div>`;
+                } else if (cruiseAlt < floorFt) {
+                    const margin = floorFt - cruiseAlt;
+                    cruiseHtml = `<div class="aero-cruise-badge clear">✓ CLEAR: ${margin.toLocaleString()} FT ABOVE YOUR CRUISE</div>`;
+                } else {
+                    const margin = cruiseAlt - ceilFt;
+                    cruiseHtml = `<div class="aero-cruise-badge clear">✓ CLEAR: ${margin.toLocaleString()} FT BELOW YOUR CRUISE</div>`;
+                }
+            }
+
+            // Detailed VFR Flight Rules
+            let detailedRule = "VFR flight permitted under standard Visual Meteorological Conditions (VMC).";
+            if (sp.type === 'Prohibited') {
+                detailedRule = "⛔ STRICT NO-FLY ZONE — Flight strictly forbidden to civil aircraft. Active defense, security, or nuclear installation.";
+            } else if (sp.class === 'A') {
+                detailedRule = "⛔ IFR ONLY (NO VFR) — Airspace is exclusively reserved for IFR traffic. VFR entry is strictly forbidden.";
+            } else if (sp.type === 'CTR') {
+                detailedRule = "📡 TWO-WAY RADIO & ATC CLEARANCE REQUIRED — Establish 2-way contact with Tower prior to crossing CTR boundary. Continuous listening watch.";
+            } else if (sp.type === 'TMA' || sp.type === 'CTA') {
+                if (sp.class === 'C' || sp.class === 'D') {
+                    detailedRule = "📡 RADAR CLEARANCE REQUIRED — Contact Approach/Radar control before entering. Transponder Mode S and continuous 2-way radio mandatory.";
+                } else if (sp.class === 'E') {
+                    detailedRule = "✓ CONTROLLED ENROUTE (CLASS E) — VFR entry free without ATC clearance. Transponder Mode S and radar listening watch recommended.";
+                } else if (sp.class === 'A') {
+                    detailedRule = "⛔ IFR ONLY — No VFR entry permitted.";
+                } else {
+                    detailedRule = "📡 CONTROLLED AIRSPACE — Radio contact and clearance required prior to entering.";
+                }
+            } else if (sp.type === 'Restricted') {
+                detailedRule = "⚠ RESTRICTED AIRSPACE — Entry subject to specific conditions or activation NOTAM (military firing, low-level flights). Check status before entry.";
+            } else if (sp.type === 'Danger') {
+                detailedRule = "⚠ DANGER AREA — Live firing, ordnance, or military exercises. Exercise extreme caution; navigation through area is at pilot's own risk.";
+            } else if (sp.type === 'RMZ') {
+                detailedRule = "📻 RADIO MANDATORY ZONE (RMZ) — Mandatory initial call on frequency prior to entry: Callsign, Aircraft Type, Position, Altitude, and Flight Intentions.";
+            } else if (sp.type === 'TMZ') {
+                detailedRule = "📡 TRANSPONDER MANDATORY ZONE (TMZ) — Operative Mode S transponder with automatic pressure altitude reporting (Mode C) required at all times.";
+            } else if (sp.type === 'Drop Zone') {
+                detailedRule = "🪂 PARACHUTE DROP ZONE — Intense skydiving activity. Avoid overflying drop zone while parachute operations are active.";
+            } else if (sp.type === 'Glider Sector') {
+                detailedRule = "🪂 GLIDER SOARING SECTOR — High concentration of unpowered sailplanes in thermals and ridge waves. Maintain vigilant lookout.";
+            }
+
+            return `
+                <div class="aero-tooltip-card">
+                    <div class="aero-tooltip-topbar">
+                        <span class="aero-country-pill">${country.flag} ${escapeHtml(country.name)}</span>
+                        <span class="aero-tooltip-badge ${badgeClass}">${escapeHtml(sp.type)}${sp.class && sp.class !== 'UNC' ? ' Class ' + escapeHtml(sp.class) : ''}</span>
+                    </div>
+                    <div class="aero-tooltip-title">${escapeHtml(sp.name)}</div>
+                    
+                    <div class="aero-tooltip-grid">
+                        <div class="aero-grid-item">
+                            <span class="aero-grid-lbl">Floor</span>
+                            <span class="aero-grid-val">${escapeHtml(sp.floor)}</span>
+                        </div>
+                        <div class="aero-grid-arrow">➔</div>
+                        <div class="aero-grid-item">
+                            <span class="aero-grid-lbl">Ceiling</span>
+                            <span class="aero-grid-val">${escapeHtml(sp.ceiling)}</span>
+                        </div>
+                        <div class="aero-grid-item" style="text-align:right;">
+                            <span class="aero-grid-lbl">Vertical Span</span>
+                            <span class="aero-grid-val" style="color:var(--accent-blue); font-weight:800;">${spanText}</span>
+                        </div>
+                    </div>
+
+                    ${cruiseHtml}
+
+                    <div class="aero-tooltip-rule-box" style="border-left: 3px solid ${categoryBorderColor};">
+                        <div class="aero-rule-hdr">VFR Operational Requirements</div>
+                        <div class="aero-rule-txt">${detailedRule}</div>
+                    </div>
+
+                    <div class="aero-tooltip-meta">
+                        ${sp.freq ? `<span class="aero-meta-freq">📻 ${escapeHtml(sp.freq)}</span>` : '<span style="font-size:10px; opacity:0.8;">📻 Refer to Airfield Card</span>'}
+                        <span>⏰ ${sp.byNotam ? '⚠ Subject to NOTAM' : 'H24 Continuous'}</span>
+                    </div>
+
+                    <div class="aero-tooltip-hint">
+                        💡 Click to inspect &bull; Right-click for vertical profile
+                    </div>
+                </div>
+            `;
+        }
 
         function renderAirspaces() {
             ctrlAirspacesLayer.clearLayers();
             specialAirspacesLayer.clearLayers();
+            dangerAirspacesLayer.clearLayers();
+            airspaceLabelsLayer.clearLayers();
             airspacePolygonRefs.length = 0;
 
             AeroData.AIRSPACES.forEach(sp => {
-                const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted' || sp.type === 'Danger';
+                const isControlled = sp.type === 'CTR' || sp.type === 'TMA' || sp.type === 'CTA';
+                const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted';
                 
                 let strokeColor = '#1967d2';
                 let fillColor = '#1967d2';
                 let fillOpacity = 0.08;
                 let dashArray = '6, 4';
+                let weight = 2.0;
+                let badgeClass = 'aero-badge-ctr';
 
-                if (sp.class === 'A' || sp.type === 'Prohibited') {
+                if (sp.type === 'Prohibited' || sp.class === 'A') {
                     strokeColor = '#c5221f';
                     fillColor = '#c5221f';
-                    fillOpacity = 0.12;
+                    fillOpacity = 0.14;
                     dashArray = '5, 3';
+                    weight = 2.2;
+                    badgeClass = 'aero-badge-prohibited';
                 } else if (sp.type === 'Restricted') {
                     strokeColor = '#e65100';
                     fillColor = '#e65100';
-                    fillOpacity = 0.12;
+                    fillOpacity = 0.11;
+                    dashArray = '6, 4';
+                    weight = 2.0;
+                    badgeClass = 'aero-badge-restricted';
                 } else if (sp.type === 'Danger') {
-                    strokeColor = '#f57c00';
-                    fillColor = '#f57c00';
-                    fillOpacity = 0.10;
-                } else if (sp.type === 'TMA') {
+                    strokeColor = '#d84315';
+                    fillColor = '#d84315';
+                    fillOpacity = 0.09;
+                    dashArray = '4, 4';
+                    weight = 1.8;
+                    badgeClass = 'aero-badge-danger';
+                } else if (sp.type === 'TMA' || sp.type === 'CTA') {
                     strokeColor = '#1a237e';
                     fillColor = '#1a237e';
-                    fillOpacity = 0.06;
+                    fillOpacity = 0.05;
                     dashArray = '8, 5';
+                    weight = 1.8;
+                    badgeClass = 'aero-badge-tma';
+                } else if (sp.type === 'RMZ' || sp.type === 'TMZ') {
+                    strokeColor = '#7b1fa2';
+                    fillColor = '#7b1fa2';
+                    fillOpacity = 0.08;
+                    dashArray = '4, 6';
+                    weight = 1.8;
+                    badgeClass = 'aero-badge-rmz';
+                } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
+                    strokeColor = '#00796b';
+                    fillColor = '#00796b';
+                    fillOpacity = 0.05;
+                    dashArray = '3, 4';
+                    weight = 1.5;
+                    badgeClass = 'aero-badge-drop';
                 }
 
                 const polygon = L.polygon(sp.coordinates, {
                     pane: 'airspacesPane',
                     color: strokeColor,
-                    weight: 2,
+                    weight: weight,
                     opacity: 0.85,
                     fillColor: fillColor,
                     fillOpacity: fillOpacity,
                     dashArray: dashArray
                 });
 
-                polygon.bindTooltip(`<strong>${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)})<br>Limits: ${escapeHtml(sp.floor)} ➔ ${escapeHtml(sp.ceiling)} &bull; ${escapeHtml(sp.freq)}`, {
+                polygon.bindTooltip(() => buildAirspaceTooltipHtml(sp), {
+                    className: 'aero-airspace-tooltip',
                     sticky: true,
                     direction: 'top',
-                    opacity: 0.95
+                    opacity: 0.99,
+                    offset: [0, -10]
                 });
 
                 polygon.on('mouseover', function () {
-                    this.setStyle({ weight: 3.5, fillOpacity: fillOpacity * 1.8 });
+                    this.setStyle({ weight: weight + 1.5, fillOpacity: Math.min(0.45, fillOpacity * 2.2) });
+                    this.setTooltipContent(buildAirspaceTooltipHtml(sp));
                 });
                 polygon.on('mouseout', function () {
                     applyAltitudeFilterToPolygon(polygon, sp);
                 });
 
-                // Directly allow dropping waypoints across any airspace
+                // Clicking airspace opens informative Details Popup with "Add Waypoint Here" option
                 polygon.on('click', function(e) {
                     if (isRulerActive) return;
                     L.DomEvent.stopPropagation(e);
-                    handleMapWaypointAdd(e.latlng);
+                    openAirspaceDetailsPopup(sp, e.latlng);
                 });
 
-                if (isSpecial) specialAirspacesLayer.addLayer(polygon);
-                else ctrlAirspacesLayer.addLayer(polygon);
+                if (isControlled) {
+                    ctrlAirspacesLayer.addLayer(polygon);
+                } else if (isSpecial) {
+                    specialAirspacesLayer.addLayer(polygon);
+                } else {
+                    dangerAirspacesLayer.addLayer(polygon);
+                }
 
-                airspacePolygonRefs.push({ polygon, sp, originalStyle: { color: strokeColor, weight: 2, fillOpacity, opacity: 0.85 } });
+                // Add center map badges for CTR, Prohibited, and major Restricted zones
+                if (sp.type === 'CTR' || sp.type === 'Prohibited' || (sp.type === 'Restricted' && (!sp.country || sp.country === 'FR') && !sp.name.includes('ZRT'))) {
+                    const centerLat = sp.bbox ? (sp.bbox[0] + sp.bbox[2]) / 2 : sp.coordinates[0][0];
+                    const centerLng = sp.bbox ? (sp.bbox[1] + sp.bbox[3]) / 2 : sp.coordinates[0][1];
+                    
+                    // Format badge name cleanly (strip frequency and parentheticals to prevent truncation)
+                    let shortName = sp.name
+                        .replace(/^(CTR|TMA|LF-)\s*/i, '')
+                        .split('(')[0]
+                        .replace(/\b\d{3}\.\d{1,3}\b/g, '')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    if (shortName.length > 20) {
+                        shortName = shortName.slice(0, 20).trim();
+                    }
+
+                    // Format altitudes cleanly (e.g. SFC / 2500')
+                    const cleanFloor = (sp.floor || 'SFC').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
+                    const cleanCeil = (sp.ceiling || 'UNL').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
+                    const altText = `${cleanFloor} / ${cleanCeil}`;
+
+                    const badgeType = sp.type === 'Prohibited' ? 'prohibited' : (sp.type === 'Restricted' ? 'restricted' : 'ctr');
+
+                    const labelIcon = L.divIcon({
+                        className: 'aero-airspace-badge-icon',
+                        html: `<div class="airspace-map-badge ${badgeType}"><span class="airspace-badge-name">${escapeHtml(shortName)}</span><span class="airspace-badge-alt">${escapeHtml(altText)}</span></div>`,
+                        iconSize: null,
+                        iconAnchor: null
+                    });
+                    const labelMarker = L.marker([centerLat, centerLng], { icon: labelIcon, interactive: false });
+                    airspaceLabelsLayer.addLayer(labelMarker);
+                }
+
+                airspacePolygonRefs.push({ polygon, sp, originalStyle: { color: strokeColor, weight, fillOpacity, opacity: 0.85 } });
             });
+
+            updateAirspaceLabelsVisibility();
         }
 
         // =========================================================================
@@ -1886,10 +2756,11 @@
             const selectVal = parseInt(document.getElementById('altFilterSelect').value, 10) || 0;
             if (selectVal === 0) {
                 const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted' || sp.type === 'Danger';
+                const baseWeight = (sp.type === 'Prohibited' || sp.class === 'A') ? 2.2 : (sp.type === 'Restricted' ? 2.0 : 1.8);
                 polygon.setStyle({
                     opacity: 0.85,
-                    weight: 2,
-                    fillOpacity: isSpecial ? 0.12 : (sp.type === 'TMA' ? 0.06 : 0.08)
+                    weight: baseWeight,
+                    fillOpacity: isSpecial ? 0.12 : (sp.type === 'TMA' || sp.type === 'CTA' ? 0.06 : 0.08)
                 });
                 return;
             }
@@ -2169,7 +3040,7 @@
             if (airspacesHere.length > 0) {
                 const spListHtml = airspacesHere.map(sp => `
                     <div style="border-bottom:1px solid var(--line); padding:5px 0; font-size:11.5px;">
-                        <strong style="color:var(--text-color);">${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)})<br>
+                        <strong style="color:var(--text-color);">${sp.country ? '[' + escapeHtml(sp.country) + '] ' : ''}${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)})<br>
                         <span style="color:var(--muted-text); font-size:10px;">Limits: ${escapeHtml(sp.floor)} - ${escapeHtml(sp.ceiling)} &bull; ${escapeHtml(sp.freq)}</span>
                     </div>
                 `).join('');
@@ -2518,16 +3389,26 @@
                 const ceil = sp.ceilingFt || 99999;
                 const penetratesCruising = cruiseAlt >= floor && cruiseAlt <= ceil;
 
+                let tagClass = 'aero-badge-ctr';
+                if (sp.type === 'TMA' || sp.type === 'CTA') tagClass = 'aero-badge-tma';
+                else if (sp.type === 'Prohibited') tagClass = 'aero-badge-prohibited';
+                else if (sp.type === 'Restricted') tagClass = 'aero-badge-restricted';
+                else if (sp.type === 'Danger') tagClass = 'aero-badge-danger';
+                else if (sp.type === 'RMZ' || sp.type === 'TMZ') tagClass = 'aero-badge-rmz';
+                else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') tagClass = 'aero-badge-drop';
+
                 html += `
-                    <div class="airspace-brief-card ${penetratesCruising ? 'active-cruising' : ''}">
+                    <div class="airspace-brief-card ${penetratesCruising ? 'active-cruising' : ''}" style="cursor:pointer;" onclick="focusAirspace('${escapeHtml(sp.id)}')" title="Click to locate on chart">
                         <div class="airspace-brief-card-title">
-                            <span>${escapeHtml(sp.name)}</span>
-                            <span class="spotlight-badge badge-airspace">${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)}</span>
+                            <span>${sp.country ? '<span style="font-size:10px; color:var(--accent-blue); font-weight:800; margin-right:4px;">[' + escapeHtml(sp.country) + ']</span>' : ''}${escapeHtml(sp.name)}</span>
+                            <span class="aero-tooltip-badge ${tagClass}">${escapeHtml(sp.type)}${sp.class && sp.class !== 'UNC' ? ' ' + escapeHtml(sp.class) : ''}</span>
                         </div>
-                        <div style="font-size:12px; color:var(--muted-text); margin-top:2px;">
+                        <div style="font-size:11.5px; color:var(--muted-text); margin-top:3px; font-family:'IBM Plex Mono',monospace;">
                             <span>Vertical: <strong>${escapeHtml(sp.floor)}</strong> ➔ <strong>${escapeHtml(sp.ceiling)}</strong></span>
                         </div>
-                        ${penetratesCruising ? '<div style="font-size:11px; font-weight:800; color:var(--accent-orange); text-transform:uppercase; margin-top:4px;">⚠ Active at your cruising level</div>' : ''}
+                        ${sp.freq ? `<div style="font-size:11px; color:var(--accent-blue); font-weight:700; margin-top:3px;">📻 ${escapeHtml(sp.freq)}</div>` : ''}
+                        ${sp.byNotam ? `<div style="font-size:10.5px; color:var(--danger); font-weight:700; margin-top:2px;">⚠ Subject to NOTAM activation</div>` : ''}
+                        ${penetratesCruising ? '<div style="font-size:11px; font-weight:800; color:var(--accent-orange); text-transform:uppercase; margin-top:5px;">⚠ Active at your cruising level (' + cruiseAlt + ' ft)</div>' : ''}
                     </div>
                 `;
             });
@@ -2554,6 +3435,10 @@
             }
             if (flightDeckHud) {
                 flightDeckHud.style.bottom = isProfileOpen ? '215px' : '24px';
+            }
+            const scaleCtrl = document.querySelector('.leaflet-control-scale');
+            if (scaleCtrl) {
+                scaleCtrl.style.marginBottom = isProfileOpen ? '280px' : '92px';
             }
             if (isProfileOpen) {
                 setTimeout(renderVerticalProfile, 100);
@@ -2651,7 +3536,10 @@
                     let fill = 'rgba(25, 103, 210, 0.12)';
                     if (sp.type === 'Prohibited' || sp.class === 'A') fill = 'rgba(197, 34, 31, 0.22)';
                     else if (sp.type === 'Restricted') fill = 'rgba(230, 81, 0, 0.20)';
-                    else if (sp.type === 'TMA') fill = 'rgba(26, 35, 126, 0.12)';
+                    else if (sp.type === 'Danger') fill = 'rgba(216, 67, 21, 0.18)';
+                    else if (sp.type === 'TMA' || sp.type === 'CTA') fill = 'rgba(26, 35, 126, 0.12)';
+                    else if (sp.type === 'RMZ' || sp.type === 'TMZ') fill = 'rgba(123, 31, 162, 0.14)';
+                    else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') fill = 'rgba(0, 121, 107, 0.12)';
 
                     ctx.fillStyle = fill;
                     ctx.fillRect(x1, yCeil, x2 - x1, slabH);
