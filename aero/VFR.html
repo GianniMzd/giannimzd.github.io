@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlightPrep Solution — VFR Chart & Navlog</title>
+    <title>FlightPrep Solution — Interactive VFR Aeronautical Map</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     
     <!-- PDF & Canvas Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
@@ -20,58 +20,306 @@
             --border-color: #111111;
             --text-color: #111111;
             --hover-bg: #E4DFD3;
-            --accent-green: #4A7C59;
+            --accent-green: #188038;
             --accent-orange: #C16E56;
-            --accent-blue: #3A6B88;
+            --accent-blue: #1967d2;
             --card-bg: #FFFFFF;
+            --card-bg-glass: rgba(255, 255, 255, 0.90);
             --muted-text: #6B6558;
             --danger: #B0402F;
+            --magenta: #d81b60;
+            --line: #E0DDD5;
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-lg: 0 16px 36px rgba(0,0,0,0.18);
         }
 
         html.dark-mode {
-            --bg-color: #15171A;
+            --bg-color: #121417;
             --border-color: #EDEBE6;
             --text-color: #EDEBE6;
-            --hover-bg: #23262B;
+            --hover-bg: #22262C;
             --accent-green: #6FBE86;
             --accent-orange: #E08A6D;
             --accent-blue: #5B9BBF;
-            --card-bg: #1D2024;
+            --card-bg: #1B1E23;
+            --card-bg-glass: rgba(27, 30, 35, 0.92);
             --muted-text: #A6A197;
             --danger: #E0725E;
+            --magenta: #f06292;
+            --line: #2D323A;
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 16px 36px rgba(0,0,0,0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { transition: background-color 0.25s ease; }
 
-        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 30px; height: 80px; border-bottom: 2px solid var(--border-color); background-color: var(--bg-color); }
-        .brand { display: flex; align-items: center; gap: 15px; font-size: 24px; font-weight: 700; letter-spacing: -0.03em; }
+        /* -------------------------------------------------------------
+           TOP COCKPIT BAR
+        ------------------------------------------------------------- */
+        .top-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0 30px; 
+            height: 80px; 
+            border-bottom: 2px solid var(--border-color); 
+            background-color: var(--bg-color); 
+            flex-shrink: 0;
+            z-index: 100;
+            gap: 20px;
+        }
+
+        .brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            font-size: 24px; 
+            font-weight: 700; 
+            letter-spacing: -0.03em; 
+            text-decoration: none;
+            color: var(--text-color);
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
         .brand svg { width: 40px; height: 40px; }
-        
-        .theme-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 2px solid var(--border-color); border-radius: 50%; background-color: var(--bg-color); color: var(--text-color); cursor: pointer; transition: transform 0.2s ease; }
-        .theme-toggle:hover { background-color: var(--hover-bg); transform: scale(1.05); }
-        .theme-toggle svg { width: 20px; height: 20px; stroke: var(--text-color); }
+
+        /* Spotlight Search Bar */
+        .spotlight-search-wrap {
+            position: relative;
+            flex: 1;
+            max-width: 480px;
+            min-width: 260px;
+        }
+
+        .spotlight-input-box {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 7px 12px;
+            gap: 10px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .spotlight-input-box:focus-within {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(25, 103, 210, 0.15);
+        }
+        .spotlight-input-box svg { flex-shrink: 0; color: var(--muted-text); }
+        .spotlight-input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            width: 100%;
+        }
+        .spotlight-input::placeholder { color: var(--muted-text); opacity: 0.8; }
+        .kbd-shortcut {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            background: var(--hover-bg);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            padding: 2px 6px;
+            color: var(--muted-text);
+            user-select: none;
+        }
+
+        .spotlight-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: var(--shadow-lg);
+            max-height: 380px;
+            overflow-y: auto;
+            z-index: 2500;
+            display: none;
+        }
+        .spotlight-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--line);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            transition: background 0.1s ease;
+        }
+        .spotlight-item:hover, .spotlight-item.selected {
+            background-color: var(--hover-bg);
+        }
+        .spotlight-item:last-child { border-bottom: none; }
+        .spotlight-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid currentColor;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .badge-airport { background: rgba(25, 103, 210, 0.1); color: var(--accent-blue); }
+        .badge-airspace { background: rgba(197, 34, 31, 0.1); color: var(--danger); }
+        .badge-vor { background: rgba(24, 128, 56, 0.1); color: var(--accent-green); }
+        .badge-vfr { background: rgba(193, 110, 86, 0.1); color: var(--accent-orange); }
+
+        /* Top Bar Controls */
+        .top-bar-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cockpit-select-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted-text);
+        }
+        .cockpit-select {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.15s ease;
+        }
+        .cockpit-select:focus { border-color: var(--accent-blue); }
+
+        .btn-cockpit {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .btn-cockpit:hover {
+            background: var(--hover-bg);
+        }
+        .btn-cockpit.active {
+            background: var(--border-color);
+            color: var(--bg-color);
+        }
+        .btn-cockpit.danger:hover {
+            background: var(--danger);
+            color: #ffffff;
+            border-color: var(--danger);
+        }
+
+        .theme-toggle { 
+            background: none;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+        .theme-toggle:hover { background-color: var(--hover-bg); }
+        .theme-toggle svg { width: 20px; height: 20px; stroke: currentColor; }
         .theme-toggle .icon-moon { display: none; }
         html.dark-mode .theme-toggle .icon-sun { display: none; }
         html.dark-mode .theme-toggle .icon-moon { display: block; }
 
-        .main-layout { display: flex; flex: 1; overflow: hidden; }
+        /* -------------------------------------------------------------
+           MAIN LAYOUT: SIDEBAR + WORKSPACE
+        ------------------------------------------------------------- */
+        .main-layout { 
+            display: flex; 
+            flex: 1; 
+            min-height: 0; 
+            overflow: hidden; 
+            position: relative;
+        }
         
-        .sidebar { width: 260px; flex: 0 0 260px; border-right: 2px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; background-color: var(--bg-color); z-index: 10;}
-        .sidebar a { padding: 25px; text-decoration: none; color: var(--text-color); font-size: 16px; font-weight: 500; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 10px; white-space: nowrap; transition: background-color 0.2s ease;}
+        .sidebar { 
+            width: 260px; 
+            min-width: 260px;
+            max-width: 260px;
+            flex: 0 0 260px; 
+            border-right: 2px solid var(--border-color); 
+            display: flex; 
+            flex-direction: column; 
+            flex-shrink: 0; 
+            background-color: var(--bg-color); 
+            z-index: 20;
+            overflow-y: auto;
+        }
+        .sidebar a { 
+            padding: 25px; 
+            text-decoration: none; 
+            color: var(--text-color); 
+            font-size: 16px; 
+            font-weight: 500; 
+            border-bottom: 2px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 10px; 
+            white-space: nowrap; 
+            transition: background-color 0.2s ease; 
+        }
         .sidebar a::after { content: '→'; flex-shrink: 0; opacity: 0; transform: translateX(-6px); transition: opacity 0.2s ease, transform 0.2s ease; }
         .sidebar a:hover { background-color: var(--hover-bg); }
         .sidebar a:hover::after { opacity: 1; transform: translateX(0); }
         .sidebar a.highlight { background-color: var(--border-color); color: var(--bg-color); }
+        .sidebar a.highlight:hover { background-color: var(--sidebar-highlight-hover); }
+
+        .sidebar-export-wrap { padding: 25px; }
 
         .btn-export-bw {
             background-color: var(--text-color);
             color: var(--bg-color);
             border: 2px solid var(--text-color);
-            padding: 16px 20px;
-            font-size: 14px;
+            padding: 14px 18px;
+            font-size: 13px;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
             text-transform: uppercase;
@@ -92,88 +340,879 @@
         .btn-export-bw:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background-color: var(--text-color);
-            color: var(--bg-color);
         }
 
-        .workspace { flex: 1; display: grid; grid-template-columns: 1fr 480px; }
+        /* -------------------------------------------------------------
+           WORKSPACE (MAP VIEW + COLLAPSIBLE NAVLOG DOCK)
+        ------------------------------------------------------------- */
+        .workspace { 
+            flex: 1; 
+            display: flex; 
+            position: relative; 
+            min-width: 0; 
+            overflow: hidden; 
+        }
 
-        .map-section { display: flex; flex-direction: column; border-right: 2px solid var(--border-color); }
-        .map-header { padding: 15px 20px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-color); z-index: 2; }
-        .map-header h2 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        .btn-action { background: var(--border-color); color: var(--bg-color); border: 2px solid var(--border-color); padding: 8px 16px; font-weight: 700; font-family: 'Inter'; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: opacity 0.15s ease; border-radius: 4px; }
-        .btn-action:hover { opacity: 0.85; }
-        .btn-action.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+        /* Map Section */
+        .map-section { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            min-width: 0;
+            overflow: hidden;
+        }
 
-        .map-wrapper { position: relative; flex: 1; width: 100%; }
-        #map { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: #e5e3df; z-index: 1; }
-        html.dark-mode .leaflet-tile-pane { filter: brightness(0.7) invert(0) contrast(1.1) saturate(0.8); }
-        html.dark-mode .leaflet-bar a { background-color: var(--card-bg); color: var(--text-color); border-bottom-color: var(--border-color); }
+        /* -------------------------------------------------------------
+           FLIGHT DECK HUD & ROUTE RIBBON (FLOATING GLASS DOCK)
+        ------------------------------------------------------------- */
+        .flight-deck-hud {
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid var(--border-color);
+            border-radius: 32px;
+            box-shadow: var(--shadow-md);
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            max-width: 90%;
+            pointer-events: auto;
+            transition: all 0.2s ease;
+        }
+
+        .hud-route-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 13.5px;
+            letter-spacing: -0.01em;
+        }
+        .hud-airport-pill {
+            background: var(--border-color);
+            color: var(--bg-color);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .hud-route-arrow {
+            color: var(--magenta);
+            font-weight: 900;
+        }
+
+        .hud-metrics {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-left: 1.5px solid var(--line);
+            border-right: 1.5px solid var(--line);
+            padding: 0 14px;
+        }
+        .hud-metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.1;
+        }
+        .hud-metric-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted-text);
+        }
+        .hud-metric-val {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-color);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .hud-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hud-btn {
+            background: transparent;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.15s ease;
+        }
+        .hud-btn:hover {
+            background: var(--border-color);
+            color: var(--bg-color);
+        }
+        .hud-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        /* -------------------------------------------------------------
+           MAP WRAPPER & LEAFLET CANVAS
+        ------------------------------------------------------------- */
+        .map-wrapper { 
+            position: relative; 
+            flex: 1; 
+            width: 100%; 
+            min-height: 0;
+            overflow: hidden;
+        }
+        #map { 
+            position: absolute; 
+            top: 0; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            background: #e5e3df; 
+            z-index: 1; 
+        }
+
+        html.dark-mode #map { background: #15171a; }
+        html.dark-mode .leaflet-tile-pane { filter: brightness(0.72) contrast(1.1) saturate(0.85); }
+        html.dark-mode .leaflet-bar a { 
+            background-color: var(--card-bg); 
+            color: var(--text-color); 
+            border-bottom-color: var(--line); 
+        }
         html.dark-mode .leaflet-bar a:hover { background-color: var(--hover-bg); }
 
-        .wp-custom-marker { background-color: var(--accent-orange); border: 2px solid var(--border-color); border-radius: 50%; width: 14px; height: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: grab; }
-        .wp-custom-marker:active { cursor: grabbing; }
+        /* Floating Toolbars on Map (Bottom-Right) */
+        .floating-chart-tools {
+            position: absolute;
+            bottom: 24px;
+            right: 18px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            transition: bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-        .navlog-panel { background-color: var(--card-bg); display: flex; flex-direction: column; overflow-y: auto; }
-        .navlog-header { padding: 15px 20px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-color); }
-        .navlog-header h2 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Layers Popover Box */
+        .aero-layer-box {
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            font-size: 11px;
+            width: 230px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .aero-layer-header {
+            padding: 9px 12px;
+            background: var(--bg-color);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            order: 2; /* Header at bottom of card */
+        }
+        .aero-layer-box.open .aero-layer-header {
+            border-top: 1.5px solid var(--border-color);
+        }
+        .aero-layer-content { 
+            padding: 10px 12px; 
+            max-height: 380px; 
+            overflow-y: auto; 
+            order: 1; /* Content above header */
+        }
+        .aero-layer-heading { 
+            font-weight: 800; 
+            font-size: 9.5px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+            color: var(--muted-text); 
+            margin: 8px 0 4px 0; 
+        }
+        .aero-layer-heading:first-child { margin-top: 0; }
+        .aero-layer-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 4px 0; 
+            cursor: pointer; 
+            font-weight: 500;
+        }
+        .aero-layer-item input { cursor: pointer; accent-color: var(--accent-blue); }
 
-        .perf-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; border-bottom: 2px solid var(--border-color); }
-        .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group label { font-size: 11px; font-weight: 700; color: var(--muted-text); text-transform: uppercase; }
-        .form-group input { border: 2px solid var(--hover-bg); background: transparent; padding: 8px; font-family: 'Inter'; font-size: 14px; color: var(--text-color); outline: none; width: 100%; }
+        /* Measurement Ruler Display Banner */
+        .ruler-banner {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(14px);
+            border: 2px solid var(--accent-orange);
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: var(--shadow-md);
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        .ruler-banner-text {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+        }
+
+        /* Empty State Map Instruction */
+        .empty-map-state { 
+            position: absolute; 
+            bottom: 24px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--card-bg-glass); 
+            backdrop-filter: blur(12px);
+            border: 2px solid var(--border-color); 
+            padding: 10px 20px; 
+            font-weight: 600; 
+            font-size: 13px; 
+            z-index: 990; 
+            pointer-events: none; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-sm); 
+            white-space: nowrap;
+        }
+
+        /* -------------------------------------------------------------
+           BOTTOM VERTICAL AIRSPACE PROFILE DRAWER
+        ------------------------------------------------------------- */
+        .vertical-profile-drawer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 190px;
+            background: var(--card-bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 2px solid var(--border-color);
+            z-index: 995;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+        }
+        .vertical-profile-drawer.open {
+            transform: translateY(0);
+        }
+
+        .profile-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 16px;
+            background: var(--bg-color);
+            border-bottom: 1.5px solid var(--border-color);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .profile-canvas-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 8px 16px;
+        }
+        #profileCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* -------------------------------------------------------------
+           COLLAPSIBLE NAVLOG & FLIGHT PLAN DOCK
+        ------------------------------------------------------------- */
+        .navlog-dock { 
+            width: 360px; 
+            background-color: var(--card-bg); 
+            border-left: 2px solid var(--border-color); 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            z-index: 30; 
+            flex-shrink: 0;
+            transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .navlog-dock.collapsed {
+            width: 0px;
+            border-left: none;
+        }
+
+        /* Dock Toggle Button on Divider */
+        .dock-collapse-btn {
+            position: absolute;
+            top: 16px;
+            left: -32px;
+            width: 32px;
+            height: 42px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: -2px 4px 10px rgba(0,0,0,0.1);
+            color: var(--text-color);
+            transition: background 0.15s ease;
+            font-size: 13px;
+        }
+        .dock-collapse-btn:hover { background: var(--hover-bg); }
+
+        .dock-header { 
+            padding: 14px 16px; 
+            border-bottom: 2px solid var(--border-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background-color: var(--bg-color); 
+            flex-shrink: 0;
+        }
+        .dock-header h2 { 
+            font-size: 14.5px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+
+        /* Navigation Tabs in Dock */
+        .dock-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-color);
+            flex-shrink: 0;
+        }
+        .dock-tab {
+            flex: 1;
+            padding: 12px 6px;
+            text-align: center;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted-text);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-right: 1px solid var(--line);
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        .dock-tab:last-child { border-right: none; }
+        .dock-tab:hover { background: var(--hover-bg); color: var(--text-color); }
+        .dock-tab.active {
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-weight: 800;
+            box-shadow: inset 0 -3px 0 var(--border-color);
+        }
+
+        /* Tab Content Panes */
+        .dock-pane {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        .dock-pane.active { display: flex; }
+
+        /* Performance & Winds Settings Ribbon */
+        .perf-settings-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--card-bg);
+            flex-shrink: 0;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { 
+            font-size: 10.5px; 
+            font-weight: 800; 
+            color: var(--muted-text); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        .form-group input { 
+            border: 2px solid var(--line); 
+            background: var(--bg-color); 
+            padding: 8px 10px; 
+            height: 38px;
+            font-family: 'IBM Plex Mono', monospace; 
+            font-size: 13px; 
+            font-weight: 600;
+            color: var(--text-color); 
+            outline: none; 
+            width: 100%; 
+            border-radius: 6px; 
+            transition: border-color 0.15s ease;
+        }
         .form-group input:focus { border-color: var(--border-color); }
 
-        .wp-edit-section { display: flex; flex-direction: column; border-bottom: 2px solid var(--border-color); max-height: 250px; }
-        .section-heading { padding: 10px 20px; font-size: 11px; font-weight: 700; color: var(--muted-text); text-transform: uppercase; background-color: var(--bg-color); border-bottom: 1px solid var(--hover-bg); }
-        .wp-edit-list { list-style: none; overflow-y: auto; margin: 0; padding: 0; }
-        .wp-edit-list li { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px; border-bottom: 1px solid var(--hover-bg); gap: 10px; }
-        
-        .wp-name-input { flex: 1; border: 2px solid transparent; background: transparent; padding: 6px 10px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; }
-        .wp-alt-input { width: 85px; border: 2px solid var(--hover-bg); background: transparent; padding: 6px 10px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; text-align: right; }
-        .wp-name-input:focus, .wp-alt-input:focus { border-color: var(--border-color); background: var(--bg-color); }
-        
-        .btn-delete-wp { background: none; border: none; color: var(--muted-text); cursor: pointer; font-size: 16px; padding: 4px; }
-        .btn-delete-wp:hover { color: var(--danger); }
-        .empty-state-text { padding: 15px 20px; font-size: 13px; color: var(--muted-text); text-align: center; }
-
-        .log-table-wrapper { flex: 1; overflow-y: auto; }
-        table.ui-table { width: 100%; border-collapse: collapse; text-align: left; }
-        table.ui-table th, table.ui-table td { padding: 12px 10px; border-bottom: 1px solid var(--hover-bg); font-size: 13px; }
-        table.ui-table th { font-size: 11px; text-transform: uppercase; color: var(--muted-text); border-bottom: 2px solid var(--border-color); position: sticky; top: 0; background-color: var(--card-bg); z-index: 2; }
+        /* Navlog Table */
+        .log-table-wrapper { 
+            flex: 1; 
+            overflow-y: auto; 
+            min-height: 0; 
+        }
+        table.ui-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            text-align: left; 
+        }
+        table.ui-table th, table.ui-table td { 
+            padding: 12px 5px; 
+            border-bottom: 1px solid var(--line); 
+            font-size: 11.5px; 
+            line-height: 1.35;
+            vertical-align: middle;
+        }
+        table.ui-table th { 
+            padding: 10px 5px; 
+            font-size: 9.5px; 
+            font-weight: 800;
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            color: var(--muted-text); 
+            border-bottom: 2px solid var(--border-color); 
+            position: sticky; 
+            top: 0; 
+            background-color: var(--card-bg); 
+            z-index: 2; 
+        }
         table.ui-table tr:hover td { background-color: var(--hover-bg); }
-        
-        .totals-bar { padding: 20px; border-top: 2px solid var(--border-color); background-color: var(--bg-color); font-weight: 700; display: flex; justify-content: space-between; font-size: 14px; }
-        .empty-map-state { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--card-bg); border: 2px solid var(--border-color); padding: 10px 20px; font-weight: 500; font-size: 14px; z-index: 1000; pointer-events: none; }
+        .td-mono { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+
+        .totals-bar { 
+            padding: 14px 16px; 
+            border-top: 2px solid var(--border-color); 
+            background-color: var(--bg-color); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .total-metric {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .total-metric-lbl {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            color: var(--muted-text);
+            text-transform: uppercase;
+        }
+        .total-metric-val {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        /* Waypoint Cards in Waypoint Manager Tab */
+        .wp-manager-list {
+            list-style: none;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+        .wp-card {
+            border: 2px solid var(--border-color);
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .wp-card:hover {
+            box-shadow: var(--shadow-sm);
+        }
+        .wp-num-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border-color);
+            color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .wp-card-fields {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .wp-card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .wp-name-input {
+            border: 1px solid transparent;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-color);
+            outline: none;
+            padding: 4px 6px;
+            border-radius: 4px;
+        }
+        .wp-name-input:focus {
+            border-color: var(--border-color);
+            background: var(--card-bg);
+        }
+        .wp-alt-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted-text);
+        }
+        .wp-alt-input {
+            width: 80px;
+            border: 1.5px solid var(--line);
+            background: var(--card-bg);
+            padding: 4px 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-color);
+            outline: none;
+            border-radius: 5px;
+            text-align: right;
+        }
+        .btn-card-del {
+            background: none;
+            border: none;
+            color: var(--muted-text);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+        }
+        .btn-card-del:hover {
+            color: var(--danger);
+            background: rgba(197, 34, 31, 0.1);
+        }
+
+        /* Airspace Brief Tab */
+        .airspace-brief-list {
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+        .airspace-brief-card {
+            border: 1.5px solid var(--line);
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .airspace-brief-card.active-cruising {
+            border-color: var(--accent-orange);
+            background: rgba(193, 110, 86, 0.05);
+        }
+        .airspace-brief-card-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* -------------------------------------------------------------
+           LEAFLET ICONS, PINS & POLYLINE CASINGS
+        ------------------------------------------------------------- */
+        .wp-route-pin {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #1967d2;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            font-family: 'IBM Plex Mono', monospace;
+            cursor: grab;
+            transition: transform 0.15s ease;
+        }
+        .wp-route-pin:active { cursor: grabbing; }
+        .wp-route-pin.start { background: #188038; }
+        .wp-route-pin.end { background: #c5221f; }
+
+        .leg-track-pill {
+            background: #ffffff;
+            color: #111111;
+            border: 1.5px solid #111111;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 800;
+            font-family: 'IBM Plex Mono', monospace;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            pointer-events: none;
+            letter-spacing: 0.5px;
+        }
+
+        .aero-icon-airport {
+            background: #1967d2;
+            color: #fff;
+            border: 1.5px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 900;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.35);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+        .aero-icon-airport:hover { transform: scale(1.25); }
+        .aero-icon-airport.intl { background: #0d47a1; }
+        .aero-icon-airport.uncontrolled { background: #8e24aa; }
+        .aero-icon-airport.mil { background: #37474f; }
+
+        .aero-icon-vfr {
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 13px solid #1967d2;
+            cursor: pointer;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4));
+            transition: transform 0.15s ease;
+        }
+        .aero-icon-vfr:hover { transform: scale(1.25); }
+        .aero-icon-vfr.on-request { border-bottom-color: #555; }
+
+        .aero-icon-vor {
+            background: #ffffff;
+            border: 2px solid #0d47a1;
+            border-radius: 3px;
+            color: #0d47a1;
+            font-size: 9.5px;
+            font-weight: 900;
+            font-family: 'IBM Plex Mono', monospace;
+            padding: 1px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: transform 0.15s ease;
+        }
+        .aero-icon-vor:hover { transform: scale(1.15); background: #e8f0fe; }
+
+        /* Leaflet Popup Styling */
+        .leaflet-popup-content-wrapper {
+            background: var(--card-bg) !important;
+            color: var(--text-color) !important;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 0;
+            overflow: hidden;
+        }
+        .leaflet-popup-content { margin: 0 !important; line-height: 1.4; width: 320px !important; }
+        .leaflet-popup-tip { background: var(--border-color) !important; }
+
+        .aero-popup-header {
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border-color);
+            background: var(--bg-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .aero-popup-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.01em; }
+        .aero-popup-body { padding: 12px 16px; font-size: 12px; max-height: 400px; overflow-y: auto; }
+        .aero-popup-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--line); }
+        .aero-popup-label { color: var(--muted-text); font-weight: 700; text-transform: uppercase; font-size: 10px; }
+        .aero-popup-val { font-weight: 700; text-align: right; }
+        .aero-popup-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .btn-popup-action {
+            background: var(--border-color);
+            color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 7px 10px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: opacity 0.15s ease;
+        }
+        .btn-popup-action:hover { opacity: 0.85; }
+        .btn-popup-action.accent { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .navlog-dock { width: 320px; }
+            .flight-deck-hud { max-width: 95%; padding: 6px 12px; gap: 10px; }
+        }
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .sidebar { 
+                width: 100%; 
+                min-width: 0;
+                max-width: none;
+                flex-basis: auto; 
+                border-right: none; 
+                border-bottom: 2px solid var(--border-color); 
+            }
+            .top-bar {
+                flex-direction: column;
+                height: auto;
+                padding: 20px;
+                gap: 15px;
+            }
+        }
+        @media (max-width: 768px) {
+            .workspace { flex-direction: column; }
+            .navlog-dock { width: 100% !important; height: 50vh; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- 1. TOP COCKPIT BAR -->
     <header class="top-bar">
-        <div class="brand">
+        <a href="homepage.html" class="brand">
             <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
                 <path d="M50 10 L90 85 L50 70 L10 85 Z" fill="var(--border-color)" />
                 <path d="M50 10 L50 70" stroke="var(--bg-color)" stroke-width="4" />
             </svg>
             FlightPrep Solution
+        </a>
+
+        <!-- Global Spotlight Search Bar -->
+        <div class="spotlight-search-wrap">
+            <div class="spotlight-input-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="spotlightInput" class="spotlight-input" placeholder="Search 2,000+ airfields, CTRs, TMAs, VORs..." autocomplete="off">
+                <span class="kbd-shortcut">/</span>
+            </div>
+            <div id="spotlightDropdown" class="spotlight-dropdown"></div>
         </div>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
-            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        </button>
+
+        <!-- Right Quick Controls -->
+        <div class="top-bar-controls">
+            <!-- Altitude Slicer Filter -->
+            <div class="cockpit-select-wrap" title="Filter airspaces active at cruising level">
+                <span>Cruising Alt:</span>
+                <select id="altFilterSelect" class="cockpit-select">
+                    <option value="0">All Altitudes</option>
+                    <option value="500">SFC / 500 ft</option>
+                    <option value="1500">1,500 ft</option>
+                    <option value="2500">2,500 ft</option>
+                    <option value="3500" selected>3,500 ft</option>
+                    <option value="4500">4,500 ft</option>
+                    <option value="5500">5,500 ft</option>
+                    <option value="6500">FL 065 (6,500 ft)</option>
+                    <option value="8500">FL 085 (8,500 ft)</option>
+                    <option value="11500">FL 115 (11,500 ft)</option>
+                </select>
+            </div>
+
+            <!-- Quick Measure Ruler Button -->
+            <button class="btn-cockpit" id="btnRulerToggle" title="Interactive nautical distance & bearing ruler">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3l-6.6 6.6c-.4.4-1 .4-1.4 0l-11-11c-.4-.4-.4-1 0-1.4l6.6-6.6c.4-.4 1-.4 1.4 0l11 11c.4.4.4 1 0 1.4z"></path><path d="m7 13 2 2"></path><path d="m11 9 2 2"></path><path d="m15 5 2 2"></path></svg>
+                Ruler
+            </button>
+
+            <!-- NavLog Dock Toggle -->
+            <button class="btn-cockpit active" id="btnDockToggle" title="Toggle Navlog & Waypoint Panel">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                NavLog
+            </button>
+
+            <!-- Dark Mode Toggle -->
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
     </header>
 
+    <!-- 2. MAIN LAYOUT -->
     <main class="main-layout">
+        <!-- Sidebar Navigation -->
         <nav class="sidebar">
             <a href="flg_prep.html">Flight Preparation</a>
-            <a href="#" class="highlight">Interactive Route Map</a>
+            <a href="VFR.html" class="highlight">Interactive Route Map</a>
             <a href="perfo.html">Aircraft Performance</a>
             <a href="checklists.html">Checklists</a>
-            <a href="#">Emergency Procedures</a>
+            <a href="emergency.html">Emergency Procedures</a>
             
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
-            <div class="sidebar-export-wrap" style="padding: 25px;">
+            <div class="sidebar-export-wrap">
                 <button class="btn-export-bw btn-export-dossier" id="exportFlightDocBtn" title="Export complete flight dossier (Navlog, Minimap, Performance, Checklists & Emergency)">
                     <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -185,96 +1224,287 @@
             </div>
         </nav>
 
+        <!-- WORKSPACE: MAP + COLLAPSIBLE DOCK -->
         <div class="workspace">
+            
+            <!-- Map Area -->
             <div class="map-section">
-                <div class="map-header">
-                    <h2>VFR Aeronautical Chart</h2>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <button class="btn-action" id="centerRouteBtn" disabled style="padding: 6px 12px; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; opacity: 0.5; cursor: not-allowed;" title="Center map on flight track">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>
-                            Center Track
+                
+                <!-- FLIGHT DECK HUD RIBBON -->
+                <div class="flight-deck-hud" id="flightDeckHud">
+                    <div class="hud-route-summary" id="hudRouteSummary">
+                        <span style="color: var(--muted-text); font-weight:600; font-size:12px;">NO FLIGHT PLAN</span>
+                    </div>
+
+                    <div class="hud-metrics">
+                        <div class="hud-metric-item">
+                            <span class="hud-metric-label">Dist</span>
+                            <span class="hud-metric-val" id="hudDistVal">0.0 nm</span>
+                        </div>
+                        <div class="hud-metric-item">
+                            <span class="hud-metric-label">ETE</span>
+                            <span class="hud-metric-val" id="hudEteVal">00:00</span>
+                        </div>
+                        <div class="hud-metric-item">
+                            <span class="hud-metric-label">Avg GS</span>
+                            <span class="hud-metric-val" id="hudGsVal">110 kt</span>
+                        </div>
+                        <div class="hud-metric-item">
+                            <span class="hud-metric-label">Est Fuel</span>
+                            <span class="hud-metric-val" id="hudFuelVal">0.0 L</span>
+                        </div>
+                    </div>
+
+                    <div class="hud-actions">
+                        <button class="hud-btn" id="hudFitBtn" title="Fit flight route to screen">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>
+                            Fit
                         </button>
-                        <button class="btn-action danger" id="clearRouteBtn" style="padding: 6px 12px; font-size: 11px;">Clear</button>
+                        <button class="hud-btn" id="hudReverseBtn" title="Reverse route direction">
+                            ⇄ Invert
+                        </button>
+                        <button class="hud-btn" id="hudProfileToggleBtn" title="Toggle vertical airspace cross-section">
+                            ▲ Profile
+                        </button>
+                        <button class="hud-btn" id="hudClearBtn" style="color: var(--danger);" title="Clear entire route">
+                            ✕ Clear
+                        </button>
                     </div>
                 </div>
+
+                <!-- Leaflet Map Container -->
                 <div class="map-wrapper">
                     <div id="map"></div>
-                    <div id="mapInstruction" class="empty-map-state">Click anywhere on the map to drop a waypoint.</div>
+
+                    <!-- Floating Aeronautical Layers Control -->
+                    <div class="floating-chart-tools">
+                        <div class="aero-layer-box" id="aeroLayerBox">
+                            <div class="aero-layer-header" id="aeroLayerHeader">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                        <polyline points="2 17 12 22 22 17"></polyline>
+                                        <polyline points="2 12 12 17 22 12"></polyline>
+                                    </svg>
+                                    <span>Aero Layers</span>
+                                </div>
+                                <span id="layerToggleIcon">▴</span>
+                            </div>
+                            <div class="aero-layer-content" id="aeroLayerContent">
+                                <div class="aero-layer-heading">Base Chart</div>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="openflightmaps" checked>
+                                    <span>Aero (OpenFlightMaps)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="carto_light">
+                                    <span>Carto Light (Clean)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="osm">
+                                    <span>OpenStreetMap</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="satellite">
+                                    <span>Satellite Imagery</span>
+                                </label>
+
+                                <div class="aero-layer-heading">Airspaces & Limits</div>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerCtrlAirspaces" checked>
+                                    <span>Controlled (CTR / TMA)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerSpecialAirspaces" checked>
+                                    <span>Prohibited &amp; Restricted (P/R)</span>
+                                </label>
+
+                                <div class="aero-layer-heading">Airfields & Nav</div>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerAirports" checked>
+                                    <span>Airports (All French &amp; Hubs)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerVfrPoints" checked>
+                                    <span>VFR Reporting Points</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerNavaids" checked>
+                                    <span>Radio Navaids (VOR/DME)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerRoute" checked>
+                                    <span>Flight Track &amp; Navlog</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Measurement Ruler Readout Banner -->
+                    <div class="ruler-banner" id="rulerBanner">
+                        <span>📏 Measuring:</span>
+                        <span class="ruler-banner-text" id="rulerBannerText">Click chart to start measuring...</span>
+                        <button class="btn-cockpit" id="rulerCloseBtn" style="padding: 2px 8px; font-size:11px;">Done</button>
+                    </div>
+
+                    <!-- Empty state click instruction -->
+                    <div id="mapInstruction" class="empty-map-state">Click anywhere on chart or search aerodromes to plot flight track.</div>
+
+                    <!-- BOTTOM VERTICAL PROFILE DRAWER -->
+                    <div class="vertical-profile-drawer" id="verticalProfileDrawer">
+                        <div class="profile-drawer-header">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <span>Vertical Profile &amp; Airspace Cross-Section</span>
+                                <span style="color:var(--muted-text); font-weight:600; font-size:10px;">Altitude vs Airspace Floors/Ceilings</span>
+                            </div>
+                            <button class="btn-cockpit" id="profileCloseBtn" style="padding: 2px 8px; font-size:10px;">✕ Close</button>
+                        </div>
+                        <div class="profile-canvas-wrap">
+                            <canvas id="profileCanvas"></canvas>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <div class="navlog-panel">
-                <div class="navlog-header">
-                    <h2>Navigation Log</h2>
+            <!-- COLLAPSIBLE NAVLOG & PERFORMANCE DOCK -->
+            <aside class="navlog-dock" id="navlogDock">
+                <!-- Divider Toggle Handle -->
+                <button class="dock-collapse-btn" id="dockCollapseHandle" title="Collapse/Expand Dock">
+                    <span id="dockHandleIcon">▶</span>
+                </button>
+
+                <div class="dock-header">
+                    <h2>Flight Deck Dispatch</h2>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:700; color:var(--muted-text);" id="dockRouteHeaderTitle">VFR PLAN</span>
                 </div>
 
-                <div class="perf-inputs">
-                    <div class="form-group">
-                        <label>Global TAS (kt)</label>
-                        <input type="number" id="tasInput" value="110">
+                <!-- Dock Navigation Tabs -->
+                <div class="dock-tabs">
+                    <button class="dock-tab active" data-tab="tab-navlog">NavLog</button>
+                    <button class="dock-tab" data-tab="tab-waypoints">Waypoints (<span id="wpCountBadge">0</span>)</button>
+                    <button class="dock-tab" data-tab="tab-airspaces">Airspaces</button>
+                </div>
+
+                <!-- TAB 1: NAVIGATION LOG -->
+                <div class="dock-pane active" id="tab-navlog">
+                    <div class="perf-settings-bar">
+                        <div class="form-group">
+                            <label>Cruise TAS (kt)</label>
+                            <input type="number" id="tasInput" value="110" min="40" max="350">
+                        </div>
+                        <div class="form-group">
+                            <label>Wind Aloft (Dir / Spd)</label>
+                            <div style="display:flex; gap: 6px;">
+                                <input type="number" id="windDirInput" value="0" placeholder="°" style="width:55%;" min="0" max="360">
+                                <input type="number" id="windSpdInput" value="0" placeholder="kt" style="width:45%;" min="0" max="150">
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Winds Aloft Dir/Spd</label>
-                        <div style="display:flex; gap: 5px;">
-                            <input type="number" id="windDirInput" value="0" placeholder="°" style="width:55%;">
-                            <input type="number" id="windSpdInput" value="0" placeholder="kt" style="width:45%;">
+
+                    <div class="log-table-wrapper">
+                        <table class="ui-table" id="navlogTableElement">
+                            <thead>
+                                <tr>
+                                    <th style="width: 25%;">Leg</th>
+                                    <th style="width: 12.5%; text-align:center;">ALT</th>
+                                    <th style="width: 12.5%; text-align:center;">TC</th>
+                                    <th style="width: 12.5%; text-align:center;">Dist</th>
+                                    <th style="width: 12.5%; text-align:center;">TH</th>
+                                    <th style="width: 12.5%; text-align:center;">GS</th>
+                                    <th style="width: 12.5%; text-align:center;">ETE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="navlogBody">
+                                <tr><td colspan="7" style="text-align: center; color: var(--muted-text); padding: 50px 20px;">Click chart or search airfields to build navlog.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="totals-bar" id="totalsBar">
+                        <div class="total-metric">
+                            <span class="total-metric-lbl">DIST</span>
+                            <span class="total-metric-val" id="totalDistTxt">0.0 nm</span>
+                        </div>
+                        <div class="total-metric">
+                            <span class="total-metric-lbl">EST. TIME</span>
+                            <span class="total-metric-val" id="totalEteTxt">0 min</span>
+                        </div>
+                        <div class="total-metric">
+                            <span class="total-metric-lbl">FUEL BURN</span>
+                            <span class="total-metric-val" id="totalFuelTxt">0.0 L</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="wp-edit-section">
-                    <div class="section-heading">Waypoints & Leg Altitudes</div>
-                    <ul class="wp-edit-list" id="waypointEditList">
-                        <li class="empty-state-text">No waypoints plotted.</li>
+                <!-- TAB 2: WAYPOINT MANAGER -->
+                <div class="dock-pane" id="tab-waypoints">
+                    <div style="padding: 12px 16px; background: var(--bg-color); border-bottom: 1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:11.5px; font-weight:800; text-transform:uppercase; color:var(--muted-text); letter-spacing:0.5px;">Route Waypoint Sequence</span>
+                        <button class="btn-cockpit" id="btnAddWpModal" style="padding: 6px 12px; font-size:11.5px;">+ Add Point</button>
+                    </div>
+                    <ul class="wp-manager-list" id="wpManagerList">
+                        <li style="text-align:center; color:var(--muted-text); padding:50px 16px; font-size:13.5px; line-height:1.5;">No waypoints currently plotted.</li>
                     </ul>
                 </div>
 
-                <div class="log-table-wrapper">
-                    <table class="ui-table" id="navlogTableElement">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%;">Leg</th>
-                                <th style="width: 12.5%; text-align:center;">ALT</th>
-                                <th style="width: 12.5%; text-align:center;">TC</th>
-                                <th style="width: 12.5%; text-align:center;">Dist</th>
-                                <th style="width: 12.5%; text-align:center;">TH</th>
-                                <th style="width: 12.5%; text-align:center;">GS</th>
-                                <th style="width: 12.5%; text-align:center;">ETE</th>
-                            </tr>
-                        </thead>
-                        <tbody id="navlogBody">
-                            <tr><td colspan="7" style="text-align: center; color: var(--muted-text); padding: 40px 20px;">Start plotting to generate navlog.</td></tr>
-                        </tbody>
-                    </table>
+                <!-- TAB 3: AIRSPACE BRIEF -->
+                <div class="dock-pane" id="tab-airspaces">
+                    <div style="padding: 12px 16px; background: var(--bg-color); border-bottom: 1px solid var(--line); font-size:11.5px; font-weight:800; text-transform:uppercase; color:var(--muted-text); letter-spacing:0.5px;">
+                        Enroute Airspace Penetrations
+                    </div>
+                    <div class="airspace-brief-list" id="airspaceBriefList">
+                        <div style="text-align:center; color:var(--muted-text); padding:50px 16px; font-size:13.5px; line-height:1.5;">Plot at least 2 waypoints to analyze intersected airspaces.</div>
+                    </div>
                 </div>
+            </aside>
 
-                <div class="totals-bar" id="totalsBar">
-                    <span>Total Dist: 0.0 nm</span>
-                    <span>Total ETE: 0 min</span>
-                </div>
-            </div>
         </div>
     </main>
 
+    <!-- Leaflet JS & Aeronautical Database -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    
+    <script src="aero_data.js"></script>
+
     <script>
+        // =========================================================================
+        // CONSTANTS & STATE KEYS
+        // =========================================================================
         const NAV_STORAGE_KEY = 'flightprep_map_data_v11';
         const PERF_STORAGE_KEY = 'flightprep_perf_data_v10';
         const CHK_STORAGE_KEY = 'flightprep_checklists_data_v2';
         
-        const map = L.map('map', { zoomControl: false, preferCanvas: true }).setView([48.83, 2.75], 9);
-        L.control.zoom({ position: 'topright' }).addTo(map);
+        let waypoints = [];
+        let markers = [];
+        let isRulerActive = false;
+        let rulerStartLatLng = null;
+        let rulerLine = null;
+        let isProfileOpen = false;
 
+        // Initialize Map
+        const map = L.map('map', { zoomControl: false, preferCanvas: true, attributionControl: false }).setView([48.83, 2.35], 9);
+        L.control.zoom({ position: 'topleft' }).addTo(map);
+        L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+
+        // Custom Leaflet Layer Panes for Strict Visual Hierarchy
+        map.createPane('airspacesPane');
+        map.getPane('airspacesPane').style.zIndex = 350;
+
+        map.createPane('routeTrackPane');
+        map.getPane('routeTrackPane').style.zIndex = 550;
+
+        map.createPane('routeMarkersPane');
+        map.getPane('routeMarkersPane').style.zIndex = 650;
+
+        // Center Track Button in Leaflet control
         const CenterControl = L.Control.extend({
-            options: { position: 'topright' },
+            options: { position: 'topleft' },
             onAdd: function() {
                 const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
                 const btn = L.DomUtil.create('a', '', container);
                 btn.href = '#';
                 btn.title = 'Center map on flight track';
                 btn.setAttribute('role', 'button');
-                btn.setAttribute('aria-label', 'Center map on flight track');
                 btn.style.display = 'flex';
                 btn.style.alignItems = 'center';
                 btn.style.justifyContent = 'center';
@@ -294,129 +1524,796 @@
         map.addControl(new CenterControl());
 
         setTimeout(() => { map.invalidateSize(); }, 200);
+
+        // =========================================================================
+        // BASE MAP LAYERS
+        // =========================================================================
+        const baseLayers = {
+            openflightmaps: L.layerGroup([
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap', crossOrigin: true }),
+                L.tileLayer('https://{s}.tile.openflightmaps.org/tiles/default/{z}/{x}/{y}.png', { maxZoom: 14, subdomains: ['a', 'b', 'c'], opacity: 0.95, crossOrigin: true })
+            ]),
+            carto_light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap &copy; CARTO', crossOrigin: true }),
+            osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', crossOrigin: true }),
+            satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri &bull; Earthstar Geographics', crossOrigin: true })
+        };
+
+        baseLayers.openflightmaps.addTo(map);
+
+        document.querySelectorAll('input[name="baseLayerRadio"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                Object.values(baseLayers).forEach(layer => map.removeLayer(layer));
+                const selected = baseLayers[e.target.value];
+                if (selected) selected.addTo(map);
+            });
+        });
+
+        // =========================================================================
+        // OVERLAY LAYERS
+        // =========================================================================
+        const ctrlAirspacesLayer = L.layerGroup().addTo(map);
+        const specialAirspacesLayer = L.layerGroup().addTo(map);
+        const airportsLayer = L.layerGroup().addTo(map);
+        const vfrPointsLayer = L.layerGroup().addTo(map);
+        const navaidsLayer = L.layerGroup().addTo(map);
         
-        const baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OpenStreetMap', crossOrigin: true });
-        const vfrLayer = L.tileLayer('https://{s}.tile.openflightmaps.org/tiles/default/{z}/{x}/{y}.png', { maxZoom: 14, subdomains: ['a', 'b', 'c'], opacity: 0.95, crossOrigin: true });
-        
-        baseLayer.addTo(map);
-        vfrLayer.addTo(map);
+        const routeTrackLayer = L.layerGroup().addTo(map);
+        const routeMarkersLayer = L.layerGroup().addTo(map);
+        const legBadgesLayer = L.layerGroup().addTo(map);
 
-        let waypoints = [];
-        let routeLine = null;
-        let markers = [];
-
-        const navlogBody = document.getElementById('navlogBody');
-        const totalsBar = document.getElementById('totalsBar');
-        const tasInput = document.getElementById('tasInput');
-        const windDirInput = document.getElementById('windDirInput');
-        const windSpdInput = document.getElementById('windSpdInput');
-        const instruction = document.getElementById('mapInstruction');
-        const waypointEditList = document.getElementById('waypointEditList');
-        const customWpIcon = L.divIcon({ className: 'wp-custom-marker', iconSize: [14, 14], iconAnchor: [7, 7] });
-
-        function saveState() {
-            const data = { waypoints, tas: tasInput.value, windDir: windDirInput.value, windSpd: windSpdInput.value };
-            localStorage.setItem(NAV_STORAGE_KEY, JSON.stringify(data));
-        }
-
-        function loadState() {
-            const rawData = localStorage.getItem(NAV_STORAGE_KEY);
-            if (rawData) {
-                try {
-                    const data = JSON.parse(rawData);
-                    if (data.tas) tasInput.value = data.tas;
-                    if (data.windDir) windDirInput.value = data.windDir;
-                    if (data.windSpd) windSpdInput.value = data.windSpd;
-                    if (Array.isArray(data.waypoints) && data.waypoints.length > 0) {
-                        waypoints = data.waypoints;
-                        updateUI();
-                    }
-                } catch (e) { console.warn("Failed to load nav state.", e); }
-            }
-        }
-
-        function centerOnRoute() {
-            if (!waypoints || waypoints.length === 0) return;
-            if (waypoints.length === 1) {
-                map.setView([parseFloat(waypoints[0].lat), parseFloat(waypoints[0].lng)], 11, { animate: true });
+        document.getElementById('chkLayerCtrlAirspaces').addEventListener('change', e => {
+            if (e.target.checked) ctrlAirspacesLayer.addTo(map);
+            else map.removeLayer(ctrlAirspacesLayer);
+        });
+        document.getElementById('chkLayerSpecialAirspaces').addEventListener('change', e => {
+            if (e.target.checked) specialAirspacesLayer.addTo(map);
+            else map.removeLayer(specialAirspacesLayer);
+        });
+        document.getElementById('chkLayerAirports').addEventListener('change', e => {
+            if (e.target.checked) airportsLayer.addTo(map);
+            else map.removeLayer(airportsLayer);
+        });
+        document.getElementById('chkLayerVfrPoints').addEventListener('change', e => {
+            if (e.target.checked) vfrPointsLayer.addTo(map);
+            else map.removeLayer(vfrPointsLayer);
+        });
+        document.getElementById('chkLayerNavaids').addEventListener('change', e => {
+            if (e.target.checked) navaidsLayer.addTo(map);
+            else map.removeLayer(navaidsLayer);
+        });
+        document.getElementById('chkLayerRoute').addEventListener('change', e => {
+            if (e.target.checked) {
+                routeTrackLayer.addTo(map);
+                routeMarkersLayer.addTo(map);
+                legBadgesLayer.addTo(map);
             } else {
-                const bounds = L.latLngBounds(waypoints.map(wp => [parseFloat(wp.lat), parseFloat(wp.lng)]));
-                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13, animate: true });
+                map.removeLayer(routeTrackLayer);
+                map.removeLayer(routeMarkersLayer);
+                map.removeLayer(legBadgesLayer);
+            }
+        });
+
+        // Toggle Layer Box Collapse (Bottom Docked, Expanding Upward)
+        const aeroLayerBox = document.getElementById('aeroLayerBox');
+        const layerHeader = document.getElementById('aeroLayerHeader');
+        const layerContent = document.getElementById('aeroLayerContent');
+        const layerIcon = document.getElementById('layerToggleIcon');
+        let layerBoxOpen = false; // Start collapsed
+        layerContent.style.display = 'none';
+        layerIcon.textContent = '▴';
+
+        layerHeader.addEventListener('click', () => {
+            layerBoxOpen = !layerBoxOpen;
+            layerContent.style.display = layerBoxOpen ? 'block' : 'none';
+            layerIcon.textContent = layerBoxOpen ? '▾' : '▴';
+            aeroLayerBox.classList.toggle('open', layerBoxOpen);
+        });
+
+        // =========================================================================
+        // AIRSPACE RENDERING
+        // =========================================================================
+        const airspacePolygonRefs = [];
+
+        function renderAirspaces() {
+            ctrlAirspacesLayer.clearLayers();
+            specialAirspacesLayer.clearLayers();
+            airspacePolygonRefs.length = 0;
+
+            AeroData.AIRSPACES.forEach(sp => {
+                const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted' || sp.type === 'Danger';
+                
+                let strokeColor = '#1967d2';
+                let fillColor = '#1967d2';
+                let fillOpacity = 0.08;
+                let dashArray = '6, 4';
+
+                if (sp.class === 'A' || sp.type === 'Prohibited') {
+                    strokeColor = '#c5221f';
+                    fillColor = '#c5221f';
+                    fillOpacity = 0.12;
+                    dashArray = '5, 3';
+                } else if (sp.type === 'Restricted') {
+                    strokeColor = '#e65100';
+                    fillColor = '#e65100';
+                    fillOpacity = 0.12;
+                } else if (sp.type === 'Danger') {
+                    strokeColor = '#f57c00';
+                    fillColor = '#f57c00';
+                    fillOpacity = 0.10;
+                } else if (sp.type === 'TMA') {
+                    strokeColor = '#1a237e';
+                    fillColor = '#1a237e';
+                    fillOpacity = 0.06;
+                    dashArray = '8, 5';
+                }
+
+                const polygon = L.polygon(sp.coordinates, {
+                    pane: 'airspacesPane',
+                    color: strokeColor,
+                    weight: 2,
+                    opacity: 0.85,
+                    fillColor: fillColor,
+                    fillOpacity: fillOpacity,
+                    dashArray: dashArray
+                });
+
+                polygon.bindTooltip(`<strong>${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)})<br>Limits: ${escapeHtml(sp.floor)} ➔ ${escapeHtml(sp.ceiling)} &bull; ${escapeHtml(sp.freq)}`, {
+                    sticky: true,
+                    direction: 'top',
+                    opacity: 0.95
+                });
+
+                polygon.on('mouseover', function () {
+                    this.setStyle({ weight: 3.5, fillOpacity: fillOpacity * 1.8 });
+                });
+                polygon.on('mouseout', function () {
+                    applyAltitudeFilterToPolygon(polygon, sp);
+                });
+
+                // Directly allow dropping waypoints across any airspace
+                polygon.on('click', function(e) {
+                    if (isRulerActive) return;
+                    L.DomEvent.stopPropagation(e);
+                    handleMapWaypointAdd(e.latlng);
+                });
+
+                if (isSpecial) specialAirspacesLayer.addLayer(polygon);
+                else ctrlAirspacesLayer.addLayer(polygon);
+
+                airspacePolygonRefs.push({ polygon, sp, originalStyle: { color: strokeColor, weight: 2, fillOpacity, opacity: 0.85 } });
+            });
+        }
+
+        // =========================================================================
+        // AIRPORT RENDERING WITH ZOOM LOD
+        // =========================================================================
+        let allAirportMarkers = [];
+
+        function initAirportsData() {
+            allAirportMarkers = AeroData.AIRPORTS.map(apt => {
+                let badgeClass = 'ga';
+                let iconSymbol = '✈';
+                if (apt.type === 'intl') { badgeClass = 'intl'; iconSymbol = '🛫'; }
+                else if (apt.type === 'mil') { badgeClass = 'mil'; iconSymbol = '★'; }
+                else if (apt.type === 'uncontrolled') { badgeClass = 'uncontrolled'; iconSymbol = '🛩'; }
+
+                const icon = L.divIcon({
+                    className: 'aero-div-icon',
+                    html: `<div class="aero-icon-airport ${badgeClass}" style="width:22px; height:22px;" title="${escapeHtml(apt.icao)} - ${escapeHtml(apt.name)}">${iconSymbol}</div>`,
+                    iconSize: [22, 22],
+                    iconAnchor: [11, 11]
+                });
+
+                const marker = L.marker([apt.lat, apt.lng], { icon: icon });
+
+                const rwyHtml = (apt.runways || []).map(r => `
+                    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 0;">
+                        <strong>RWY ${escapeHtml(r.name)}</strong> &bull; ${escapeHtml(r.length)} &bull; ${escapeHtml(r.surface)}
+                    </div>
+                `).join('');
+
+                const freqHtml = (apt.frequencies || []).map(f => `
+                    <div style="display:flex; justify-content:space-between; font-size:11px; padding:2px 0;">
+                        <span style="font-weight:700;">${escapeHtml(f.type)} (${escapeHtml(f.name || apt.name)})</span>
+                        <strong style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue);">${escapeHtml(f.freq)}</strong>
+                    </div>
+                `).join('');
+
+                const popupContent = `
+                    <div class="aero-popup-header">
+                        <div>
+                            <div class="aero-popup-title">${escapeHtml(apt.icao)} — ${escapeHtml(apt.name)}</div>
+                            <div style="font-size:10px; color:var(--muted-text);">${escapeHtml(apt.city)} &bull; Elev: ${apt.alt} ft AMSL</div>
+                        </div>
+                        <span class="spotlight-badge badge-airport">${escapeHtml(apt.type.toUpperCase())}</span>
+                    </div>
+                    <div class="aero-popup-body">
+                        <div style="font-weight:800; text-transform:uppercase; font-size:10px; color:var(--muted-text); margin-bottom:4px;">Runways</div>
+                        <div style="background:var(--bg-color); padding:6px 8px; border-radius:4px; margin-bottom:8px;">${rwyHtml || 'Standard'}</div>
+
+                        <div style="font-weight:800; text-transform:uppercase; font-size:10px; color:var(--muted-text); margin-bottom:4px;">Communications &amp; Frequencies</div>
+                        <div style="background:var(--bg-color); padding:6px 8px; border-radius:4px; margin-bottom:8px;">${freqHtml || '123.500 MHz A/A'}</div>
+
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Circuit</span>
+                            <span class="aero-popup-val">${escapeHtml(apt.circuit?.alt || '1000 ft AGL')}</span>
+                        </div>
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Fuel</span>
+                            <span class="aero-popup-val">${escapeHtml(apt.fuel || '100LL')}</span>
+                        </div>
+
+                        <!-- Quick Add Actions -->
+                        <div class="aero-popup-actions">
+                            <button class="btn-popup-action accent" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'departure')">🛫 Set Departure</button>
+                            <button class="btn-popup-action" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'waypoint')">➕ Add Waypoint</button>
+                            <button class="btn-popup-action accent" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'arrival')">🛬 Set Arrival</button>
+                            <button class="btn-popup-action" onclick="window.open('flg_prep.html', '_blank')">🌤️ Weather Brief</button>
+                        </div>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                marker.bindTooltip(`<strong>${apt.icao}</strong> &bull; ${apt.name}`, { direction: 'top', offset: [0, -10] });
+
+                return { marker, apt };
+            });
+
+            updateAirportsVisibility();
+        }
+
+        function updateAirportsVisibility() {
+            airportsLayer.clearLayers();
+            const z = map.getZoom();
+            const bounds = map.getBounds();
+
+            allAirportMarkers.forEach(item => {
+                const apt = item.apt;
+                let visible = false;
+                if (z <= 5) visible = apt.type === 'intl';
+                else if (z <= 7) visible = apt.type === 'intl' || apt.type === 'ga';
+                else visible = true;
+
+                if (visible && bounds.contains([apt.lat, apt.lng])) {
+                    airportsLayer.addLayer(item.marker);
+                }
+            });
+        }
+
+        map.on('zoomend moveend', updateAirportsVisibility);
+
+        // =========================================================================
+        // VFR REPORTING POINTS & NAVAIDS
+        // =========================================================================
+        function renderVfrPoints() {
+            vfrPointsLayer.clearLayers();
+            AeroData.VFR_WAYPOINTS.forEach(wp => {
+                const reqClass = wp.compulsory ? '' : 'on-request';
+                const icon = L.divIcon({
+                    className: 'aero-div-icon',
+                    html: `
+                        <div style="display:flex; flex-direction:column; align-items:center;">
+                            <div class="aero-icon-vfr ${reqClass}" title="${escapeHtml(wp.airport)} ${escapeHtml(wp.code)}"></div>
+                            <span style="font-size:9px; font-weight:800; font-family:'IBM Plex Mono',monospace; background:rgba(255,255,255,0.85); padding:0 2px; border-radius:2px; margin-top:1px;">${escapeHtml(wp.code)}</span>
+                        </div>
+                    `,
+                    iconSize: [16, 26],
+                    iconAnchor: [8, 7]
+                });
+
+                const marker = L.marker([wp.lat, wp.lng], { icon: icon });
+                const popupContent = `
+                    <div class="aero-popup-header">
+                        <div>
+                            <div class="aero-popup-title">${escapeHtml(wp.airport)} Point ${escapeHtml(wp.code)}</div>
+                            <div style="font-size:10.5px; color:var(--muted-text); font-weight:700;">${escapeHtml(wp.name)}</div>
+                        </div>
+                        <span class="spotlight-badge badge-vfr">${wp.compulsory ? 'COMPULSORY ▲' : 'ON REQUEST △'}</span>
+                    </div>
+                    <div class="aero-popup-body">
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Altitude</span>
+                            <span class="aero-popup-val" style="color:var(--accent-blue); font-weight:800;">${escapeHtml(wp.alt || 'Standard VFR')}</span>
+                        </div>
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Landmark</span>
+                            <span class="aero-popup-val">${escapeHtml(wp.desc || 'Visual checkpoint')}</span>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <button class="btn-popup-action accent" style="width:100%;" onclick="addVfrPointAsWp('${escapeHtml(wp.airport + ' ' + wp.code + ' (' + wp.name + ')')}', ${wp.lat}, ${wp.lng})">
+                                ➕ Add ${escapeHtml(wp.code)} to Route
+                            </button>
+                        </div>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                marker.bindTooltip(`<strong>${wp.airport} ${wp.code}</strong> (${wp.name})`, { direction: 'top', offset: [0, -12] });
+                vfrPointsLayer.addLayer(marker);
+            });
+        }
+
+        function renderNavaids() {
+            navaidsLayer.clearLayers();
+            AeroData.NAVAIDS.forEach(nav => {
+                const icon = L.divIcon({
+                    className: 'aero-div-icon',
+                    html: `<div class="aero-icon-vor" title="${escapeHtml(nav.ident)} (${escapeHtml(nav.freq)})">⬡ ${escapeHtml(nav.ident)}</div>`,
+                    iconSize: [45, 20],
+                    iconAnchor: [22, 10]
+                });
+
+                const marker = L.marker([nav.lat, nav.lng], { icon: icon });
+                const popupContent = `
+                    <div class="aero-popup-header">
+                        <div>
+                            <div class="aero-popup-title">${escapeHtml(nav.ident)} &bull; ${escapeHtml(nav.freq)}</div>
+                            <div style="font-size:10.5px; color:var(--muted-text); font-weight:700;">${escapeHtml(nav.name)}</div>
+                        </div>
+                        <span class="spotlight-badge badge-vor">${escapeHtml(nav.type)}</span>
+                    </div>
+                    <div class="aero-popup-body">
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Frequency / Channel</span>
+                            <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue);">${escapeHtml(nav.freq)} (${escapeHtml(nav.channel || '—')})</span>
+                        </div>
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Morse Ident</span>
+                            <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; font-size:13px;">${escapeHtml(nav.morse)}</span>
+                        </div>
+                        <div class="aero-popup-row">
+                            <span class="aero-popup-label">Elevation</span>
+                            <span class="aero-popup-val">${nav.alt} ft AMSL</span>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <button class="btn-popup-action accent" style="width:100%;" onclick="addVfrPointAsWp('${escapeHtml(nav.ident + (nav.type ? ' ' + nav.type : ''))}', ${nav.lat}, ${nav.lng})">
+                                ➕ Add ${escapeHtml(nav.ident)} to Route
+                            </button>
+                        </div>
+                    </div>
+                `;
+                marker.bindPopup(popupContent);
+                marker.bindTooltip(`<strong>${nav.ident}</strong> (${nav.freq})`, { direction: 'top', offset: [0, -10] });
+                navaidsLayer.addLayer(marker);
+            });
+        }
+
+        // =========================================================================
+        // ALTITUDE SLICER / FILTER
+        // =========================================================================
+        function applyAltitudeFilterToPolygon(polygon, sp) {
+            const selectVal = parseInt(document.getElementById('altFilterSelect').value, 10) || 0;
+            if (selectVal === 0) {
+                const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted' || sp.type === 'Danger';
+                polygon.setStyle({
+                    opacity: 0.85,
+                    weight: 2,
+                    fillOpacity: isSpecial ? 0.12 : (sp.type === 'TMA' ? 0.06 : 0.08)
+                });
+                return;
+            }
+
+            const floor = sp.floorFt || 0;
+            const ceil = sp.ceilingFt || 99999;
+            const activeAtAlt = selectVal >= floor && selectVal <= ceil;
+
+            if (activeAtAlt) {
+                polygon.setStyle({
+                    opacity: 1.0,
+                    weight: 3.5,
+                    fillOpacity: 0.22
+                });
+            } else {
+                polygon.setStyle({
+                    opacity: 0.20,
+                    weight: 0.8,
+                    fillOpacity: 0.02
+                });
             }
         }
 
-        function updateUI() {
-            const hasWaypoints = waypoints.length > 0;
-            instruction.style.display = hasWaypoints ? 'none' : 'block';
-            const centerBtn = document.getElementById('centerRouteBtn');
-            if (centerBtn) {
-                centerBtn.disabled = !hasWaypoints;
-                centerBtn.style.opacity = hasWaypoints ? '1' : '0.5';
-                centerBtn.style.cursor = hasWaypoints ? 'pointer' : 'not-allowed';
+        document.getElementById('altFilterSelect').addEventListener('change', () => {
+            airspacePolygonRefs.forEach(ref => {
+                applyAltitudeFilterToPolygon(ref.polygon, ref.sp);
+            });
+            updateAirspaceBrief();
+            renderVerticalProfile();
+        });
+
+        // =========================================================================
+        // GLOBAL SPOTLIGHT SEARCH ENGINE
+        // =========================================================================
+        const spotlightInput = document.getElementById('spotlightInput');
+        const spotlightDropdown = document.getElementById('spotlightDropdown');
+
+        window.addEventListener('keydown', (e) => {
+            if ((e.key === '/' || (e.metaKey && e.key === 'k') || (e.ctrlKey && e.key === 'k')) && document.activeElement !== spotlightInput) {
+                e.preventDefault();
+                spotlightInput.focus();
+                spotlightInput.select();
+            } else if (e.key === 'Escape' && document.activeElement === spotlightInput) {
+                spotlightDropdown.style.display = 'none';
+                spotlightInput.blur();
             }
-            renderMarkers();
-            drawRoute();
-            renderWaypointEditor();
-            generateNavlog();
-            saveState();
+        });
+
+        spotlightInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim();
+            if (val.length < 2) {
+                spotlightDropdown.style.display = 'none';
+                spotlightDropdown.innerHTML = '';
+                return;
+            }
+
+            const results = AeroData.searchAll(val);
+            if (results.length === 0) {
+                spotlightDropdown.innerHTML = `<div style="padding:12px 16px; color:var(--muted-text); font-size:12px;">No aeronautical matches for "${escapeHtml(val)}"</div>`;
+                spotlightDropdown.style.display = 'block';
+                return;
+            }
+
+            spotlightDropdown.innerHTML = results.slice(0, 10).map((r, idx) => {
+                let badgeClass = 'badge-airport';
+                if (r.type === 'airspace') badgeClass = 'badge-airspace';
+                else if (r.type === 'navaid') badgeClass = 'badge-vor';
+                else if (r.type === 'vfr_point') badgeClass = 'badge-vfr';
+
+                return `
+                    <div class="spotlight-item" data-idx="${idx}">
+                        <div>
+                            <div style="font-weight:700; font-size:13px; color:var(--text-color);">${r.title}</div>
+                            <div style="font-size:10.5px; color:var(--muted-text);">${r.subtitle}</div>
+                        </div>
+                        <span class="spotlight-badge ${badgeClass}">${r.type.toUpperCase()}</span>
+                    </div>
+                `;
+            }).join('');
+
+            spotlightDropdown.querySelectorAll('.spotlight-item').forEach(itemEl => {
+                itemEl.addEventListener('click', () => {
+                    const idx = parseInt(itemEl.dataset.idx, 10);
+                    const sel = results[idx];
+                    if (sel) {
+                        map.flyTo([sel.lat, sel.lng], 12, { animate: true });
+                        spotlightDropdown.style.display = 'none';
+                        spotlightInput.value = sel.title.split('—')[0].trim();
+
+                        setTimeout(() => {
+                            if (sel.type === 'airport') {
+                                const found = allAirportMarkers.find(m => m.apt.icao === sel.item.icao);
+                                if (found) {
+                                    if (!airportsLayer.hasLayer(found.marker)) airportsLayer.addLayer(found.marker);
+                                    found.marker.openPopup();
+                                }
+                            } else if (sel.type === 'vfr_point') {
+                                vfrPointsLayer.eachLayer(l => {
+                                    if (l.getLatLng && Math.abs(l.getLatLng().lat - sel.lat) < 0.001) l.openPopup();
+                                });
+                            } else if (sel.type === 'navaid') {
+                                navaidsLayer.eachLayer(l => {
+                                    if (l.getLatLng && Math.abs(l.getLatLng().lat - sel.lat) < 0.001) l.openPopup();
+                                });
+                            } else if (sel.type === 'airspace') {
+                                airspacePolygonRefs.forEach(ref => {
+                                    if (ref.sp.name === sel.item.name) ref.polygon.openPopup();
+                                });
+                            }
+                        }, 400);
+                    }
+                });
+            });
+
+            spotlightDropdown.style.display = 'block';
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!spotlightInput.contains(e.target) && !spotlightDropdown.contains(e.target)) {
+                spotlightDropdown.style.display = 'none';
+            }
+        });
+
+        // =========================================================================
+        // INTERACTIVE MEASURING RULER TOOL
+        // =========================================================================
+        const btnRulerToggle = document.getElementById('btnRulerToggle');
+        const rulerBanner = document.getElementById('rulerBanner');
+        const rulerBannerText = document.getElementById('rulerBannerText');
+        const rulerCloseBtn = document.getElementById('rulerCloseBtn');
+
+        function toggleRuler() {
+            isRulerActive = !isRulerActive;
+            btnRulerToggle.classList.toggle('active', isRulerActive);
+            rulerBanner.style.display = isRulerActive ? 'flex' : 'none';
+
+            if (isRulerActive) {
+                map.getContainer().style.cursor = 'crosshair';
+                rulerBannerText.textContent = 'Click first point on map to start...';
+                rulerStartLatLng = null;
+            } else {
+                map.getContainer().style.cursor = '';
+                if (rulerLine) {
+                    map.removeLayer(rulerLine);
+                    rulerLine = null;
+                }
+            }
+        }
+
+        btnRulerToggle.addEventListener('click', toggleRuler);
+        rulerCloseBtn.addEventListener('click', toggleRuler);
+
+        map.on('mousemove', function(e) {
+            if (!isRulerActive || !rulerStartLatLng) return;
+            const nav = calculateNavData(rulerStartLatLng.lat, rulerStartLatLng.lng, e.latlng.lat, e.latlng.lng);
+            const revBearing = (Math.round(nav.course) + 180) % 360;
+            rulerBannerText.textContent = `${nav.dist.toFixed(1)} NM &bull; Bearing ${Math.round(nav.course).toString().padStart(3, '0')}° (Reciprocal ${revBearing.toString().padStart(3, '0')}°)`;
+
+            if (rulerLine) {
+                rulerLine.setLatLngs([rulerStartLatLng, e.latlng]);
+            } else {
+                rulerLine = L.polyline([rulerStartLatLng, e.latlng], {
+                    color: '#e65100',
+                    weight: 3,
+                    dashArray: '8, 6',
+                    pane: 'routeTrackPane'
+                }).addTo(map);
+            }
+        });
+
+        // =========================================================================
+        // CENTRALIZED WAYPOINT CREATION & CLEANING
+        // =========================================================================
+        function cleanWaypointName(name) {
+            if (!name) return '';
+            // Removes frequencies like "(112.400)", "(114.85 MHz)", "112.400 MHz", "(112.4)", "(382 kHz)", etc.
+            return String(name)
+                .replace(/\s*\(\d{2,4}(\.\d{1,3})?\s*(MHz|kHz)?\)/gi, '')
+                .replace(/\s*\d{2,4}(\.\d{1,3})?\s*(MHz|kHz)/gi, '')
+                .trim();
+        }
+
+        window.addAirportAsWp = function(icao, role) {
+            const apt = AeroData.AIRPORTS.find(a => a.icao === icao);
+            if (!apt) return;
+
+            const wpItem = {
+                name: apt.icao,
+                lat: apt.lat,
+                lng: apt.lng,
+                alt: apt.alt || 3500
+            };
+
+            if (role === 'departure') {
+                if (waypoints.length > 0) waypoints[0] = wpItem;
+                else waypoints.push(wpItem);
+            } else if (role === 'arrival') {
+                if (waypoints.length > 1) waypoints[waypoints.length - 1] = wpItem;
+                else waypoints.push(wpItem);
+            } else {
+                waypoints.push(wpItem);
+            }
+
+            map.closePopup();
+            updateUI();
+        };
+
+        window.addVfrPointAsWp = function(name, lat, lng) {
+            waypoints.push({
+                name: cleanWaypointName(name),
+                lat: parseFloat(lat),
+                lng: parseFloat(lng),
+                alt: 3500
+            });
+            map.closePopup();
+            updateUI();
+        };
+
+        function handleMapWaypointAdd(latlng) {
+            if (isRulerActive) {
+                if (!rulerStartLatLng) {
+                    rulerStartLatLng = latlng;
+                    rulerBannerText.textContent = `Point 1 set. Move mouse to measure...`;
+                } else {
+                    // Lock ruler
+                    const nav = calculateNavData(rulerStartLatLng.lat, rulerStartLatLng.lng, latlng.lat, latlng.lng);
+                    rulerBannerText.textContent = `Pinned: ${nav.dist.toFixed(1)} NM &bull; ${Math.round(nav.course).toString().padStart(3, '0')}°`;
+                    rulerStartLatLng = null;
+                }
+                return;
+            }
+
+            const lat = roundDec(latlng.lat, 4);
+            const lng = roundDec(latlng.lng, 4);
+
+            const nearbyAirport = AeroData.AIRPORTS.find(a => 
+                Math.abs(a.lat - lat) < 0.03 && Math.abs(a.lng - lng) < 0.03
+            );
+            
+            const nearbyVfr = AeroData.VFR_WAYPOINTS.find(v => 
+                Math.abs(v.lat - lat) < 0.03 && Math.abs(v.lng - lng) < 0.03
+            );
+
+            const nearbyNav = AeroData.NAVAIDS.find(n => 
+                Math.abs(n.lat - lat) < 0.03 && Math.abs(n.lng - lng) < 0.03
+            );
+
+            let wpName = `WP ${waypoints.length + 1}`;
+            let wpAlt = parseInt(document.getElementById('altFilterSelect').value) || 3500;
+
+            if (nearbyAirport) {
+                wpName = nearbyAirport.icao;
+                wpAlt = nearbyAirport.alt || wpAlt;
+            } else if (nearbyNav) {
+                wpName = `${nearbyNav.ident} ${nearbyNav.type}`;
+            } else if (nearbyVfr) {
+                wpName = `${nearbyVfr.ident} (${nearbyVfr.name})`;
+            }
+
+            waypoints.push({
+                lat: lat,
+                lng: lng,
+                name: cleanWaypointName(wpName),
+                alt: wpAlt
+            });
+
+            updateUI();
         }
 
         map.on('click', function(e) {
-            waypoints.push({ lat: e.latlng.lat, lng: e.latlng.lng, name: `WP ${waypoints.length + 1}`, alt: 3500 });
-            updateUI();
+            handleMapWaypointAdd(e.latlng);
         });
 
-        function renderMarkers() {
-            markers.forEach(m => map.removeLayer(m));
+        // Context menu right-click for vertical airspace column
+        map.on('contextmenu', function(e) {
+            const airspacesHere = AeroData.findAirspacesAt(e.latlng.lat, e.latlng.lng);
+            if (airspacesHere.length > 0) {
+                const spListHtml = airspacesHere.map(sp => `
+                    <div style="border-bottom:1px solid var(--line); padding:5px 0; font-size:11.5px;">
+                        <strong style="color:var(--text-color);">${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)})<br>
+                        <span style="color:var(--muted-text); font-size:10px;">Limits: ${escapeHtml(sp.floor)} - ${escapeHtml(sp.ceiling)} &bull; ${escapeHtml(sp.freq)}</span>
+                    </div>
+                `).join('');
+
+                const popupHtml = `
+                    <div class="aero-popup-header">
+                        <div class="aero-popup-title">Vertical Airspace Column</div>
+                        <span class="spotlight-badge badge-airspace">${airspacesHere.length} ACTIVE</span>
+                    </div>
+                    <div class="aero-popup-body">
+                        <div>${spListHtml}</div>
+                    </div>
+                `;
+                L.popup().setLatLng(e.latlng).setContent(popupHtml).openOn(map);
+            }
+        });
+
+        function roundDec(num, dec) {
+            const factor = Math.pow(10, dec);
+            return Math.round(num * factor) / factor;
+        }
+
+        // =========================================================================
+        // FLIGHT TRACK RENDERING (High-Contrast Aeronautical Magenta)
+        // =========================================================================
+        function renderFlightTrack() {
+            routeTrackLayer.clearLayers();
+            routeMarkersLayer.clearLayers();
+            legBadgesLayer.clearLayers();
             markers = [];
+
+            if (waypoints.length === 0) return;
+
+            const latlngs = waypoints.map(wp => [parseFloat(wp.lat), parseFloat(wp.lng)]);
+
+            if (latlngs.length > 1) {
+                // 1. Crisp White underlay casing
+                L.polyline(latlngs, {
+                    pane: 'routeTrackPane',
+                    color: '#ffffff',
+                    weight: 9,
+                    opacity: 0.95,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }).addTo(routeTrackLayer);
+
+                // 2. High-visibility Magenta flight track polyline
+                L.polyline(latlngs, {
+                    pane: 'routeTrackPane',
+                    color: '#d81b60',
+                    weight: 4.5,
+                    opacity: 1.0,
+                    dashArray: '12, 8',
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }).addTo(routeTrackLayer);
+
+                // 3. Leg Magnetic Track & Distance Badges
+                for (let i = 0; i < waypoints.length - 1; i++) {
+                    const w1 = waypoints[i];
+                    const w2 = waypoints[i + 1];
+                    const nav = calculateNavData(w1.lat, w1.lng, w2.lat, w2.lng);
+                    const midLat = (w1.lat + w2.lat) / 2;
+                    const midLng = (w1.lng + w2.lng) / 2;
+
+                    const badgeIcon = L.divIcon({
+                        className: 'leg-badge-div',
+                        html: `<div class="leg-track-pill">${Math.round(nav.course).toString().padStart(3, '0')}° &bull; ${nav.dist.toFixed(1)}nm</div>`,
+                        iconSize: [84, 20],
+                        iconAnchor: [42, 10]
+                    });
+
+                    L.marker([midLat, midLng], { pane: 'routeMarkersPane', icon: badgeIcon, interactive: false }).addTo(legBadgesLayer);
+                }
+            }
+
+            // Draw Numbered Waypoint Pins
             waypoints.forEach((wp, index) => {
-                const marker = L.marker([wp.lat, wp.lng], { icon: customWpIcon, draggable: true }).addTo(map).bindTooltip(wp.name, {permanent: true, direction: 'right', className: 'wp-tooltip', offset: [5, 0]});
-                marker.on('drag', function(e) { waypoints[index].lat = e.latlng.lat; waypoints[index].lng = e.latlng.lng; drawRoute(); generateNavlog(); });
-                marker.on('dragend', function() { saveState(); });
+                const isStart = index === 0;
+                const isEnd = index === waypoints.length - 1 && waypoints.length > 1;
+                const pinClass = isStart ? 'start' : (isEnd ? 'end' : '');
+                const pinLabel = isStart ? '1' : String(index + 1);
+
+                const wpIcon = L.divIcon({
+                    className: 'wp-pin-div',
+                    html: `<div class="wp-route-pin ${pinClass}"><span>${pinLabel}</span></div>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
+                const marker = L.marker([wp.lat, wp.lng], { pane: 'routeMarkersPane', icon: wpIcon, draggable: true })
+                    .bindTooltip(`<strong>${wp.name}</strong> (${wp.alt}ft)`, { permanent: true, direction: 'right', className: 'wp-tooltip', offset: [8, 0] });
+
+                marker.on('drag', function(e) {
+                    waypoints[index].lat = roundDec(e.latlng.lat, 4);
+                    waypoints[index].lng = roundDec(e.latlng.lng, 4);
+                    renderFlightTrackOnly();
+                    generateNavlog();
+                    renderVerticalProfile();
+                });
+                marker.on('dragend', function() { 
+                    saveState(); 
+                    updateUI(); 
+                });
+
+                routeMarkersLayer.addLayer(marker);
                 markers.push(marker);
             });
         }
 
-        function drawRoute() {
-            const latlngs = waypoints.map(wp => [wp.lat, wp.lng]);
+        function renderFlightTrackOnly() {
+            routeTrackLayer.clearLayers();
+            legBadgesLayer.clearLayers();
+            const latlngs = waypoints.map(wp => [parseFloat(wp.lat), parseFloat(wp.lng)]);
             if (latlngs.length > 1) {
-                if (routeLine) routeLine.setLatLngs(latlngs);
-                else routeLine = L.polyline(latlngs, { color: '#3A6B88', weight: 5, opacity: 0.9, dashArray: '10, 10' }).addTo(map);
-            } else if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
-        }
+                L.polyline(latlngs, { pane: 'routeTrackPane', color: '#ffffff', weight: 9, opacity: 0.95 }).addTo(routeTrackLayer);
+                L.polyline(latlngs, { pane: 'routeTrackPane', color: '#d81b60', weight: 4.5, opacity: 1.0, dashArray: '12, 8' }).addTo(routeTrackLayer);
 
-        function renderWaypointEditor() {
-            waypointEditList.innerHTML = '';
-            if (waypoints.length === 0) {
-                waypointEditList.innerHTML = '<li class="empty-state-text">No waypoints plotted.</li>';
-                return;
+                for (let i = 0; i < waypoints.length - 1; i++) {
+                    const nav = calculateNavData(waypoints[i].lat, waypoints[i].lng, waypoints[i + 1].lat, waypoints[i + 1].lng);
+                    const midLat = (waypoints[i].lat + waypoints[i + 1].lat) / 2;
+                    const midLng = (waypoints[i].lng + waypoints[i + 1].lng) / 2;
+                    const badgeIcon = L.divIcon({
+                        className: 'leg-badge-div',
+                        html: `<div class="leg-track-pill">${Math.round(nav.course).toString().padStart(3, '0')}° &bull; ${nav.dist.toFixed(1)}nm</div>`,
+                        iconSize: [84, 20],
+                        iconAnchor: [42, 10]
+                    });
+                    L.marker([midLat, midLng], { pane: 'routeMarkersPane', icon: badgeIcon, interactive: false }).addTo(legBadgesLayer);
+                }
             }
-            waypoints.forEach((wp, index) => {
-                const li = document.createElement('li');
-                const nameInput = document.createElement('input');
-                nameInput.type = 'text'; nameInput.className = 'wp-name-input'; nameInput.value = wp.name;
-                nameInput.addEventListener('input', (e) => {
-                    waypoints[index].name = e.target.value.trim() || `WP ${index + 1}`;
-                    if (markers[index]) markers[index].setTooltipContent(waypoints[index].name);
-                    generateNavlog(); saveState();
-                });
-
-                const altInput = document.createElement('input');
-                altInput.type = 'number'; altInput.className = 'wp-alt-input'; altInput.value = wp.alt !== undefined ? wp.alt : 3500; altInput.step = 500;
-                if (index === waypoints.length - 1) altInput.style.visibility = 'hidden';
-                altInput.addEventListener('input', (e) => { waypoints[index].alt = parseInt(e.target.value) || 0; generateNavlog(); saveState(); });
-
-                const delBtn = document.createElement('button');
-                delBtn.className = 'btn-delete-wp'; delBtn.innerHTML = '✕';
-                delBtn.onclick = () => { waypoints.splice(index, 1); updateUI(); };
-
-                li.appendChild(nameInput); li.appendChild(altInput); li.appendChild(delBtn);
-                waypointEditList.appendChild(li);
-            });
         }
+
+        // =========================================================================
+        // NAVIGATION LOG & PERFORMANCE COMPUTATION
+        // =========================================================================
+        const tasInput = document.getElementById('tasInput');
+        const windDirInput = document.getElementById('windDirInput');
+        const windSpdInput = document.getElementById('windSpdInput');
+        const navlogBody = document.getElementById('navlogBody');
+        const instruction = document.getElementById('mapInstruction');
+        const wpCountBadge = document.getElementById('wpCountBadge');
 
         function calculateNavData(lat1, lon1, lat2, lon2) {
-            const R = 3440.065; const toRad = Math.PI / 180; const toDeg = 180 / Math.PI;
+            const R = 3440.065; 
+            const toRad = Math.PI / 180; 
+            const toDeg = 180 / Math.PI;
             const φ1 = lat1 * toRad; const φ2 = lat2 * toRad;
             const Δφ = (lat2 - lat1) * toRad; const Δλ = (lon2 - lon1) * toRad;
             const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
@@ -441,13 +2338,24 @@
         }
 
         function generateNavlog() {
-            if (waypoints.length < 2) {
-                navlogBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted-text); padding: 40px 20px;">Add at least 2 points to generate legs.</td></tr>`;
-                totalsBar.innerHTML = `<span>Total Dist: 0.0 nm</span><span>Total ETE: 0 min</span>`;
+            const hasWaypoints = waypoints.length >= 2;
+            wpCountBadge.textContent = waypoints.length;
+
+            if (!hasWaypoints) {
+                navlogBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--muted-text); padding: 60px 20px; font-size: 13.5px; line-height: 1.5;">Click chart or search airfields to build navlog.</td></tr>`;
+                document.getElementById('totalDistTxt').textContent = '0.0 nm';
+                document.getElementById('totalEteTxt').textContent = '0 min';
+                document.getElementById('totalFuelTxt').textContent = '0.0 L';
+                
+                // Update HUD
+                document.getElementById('hudRouteSummary').innerHTML = `<span style="color: var(--muted-text); font-weight:600; font-size:12px;">NO FLIGHT PLAN</span>`;
+                document.getElementById('hudDistVal').textContent = '0.0 nm';
+                document.getElementById('hudEteVal').textContent = '00:00';
+                document.getElementById('hudFuelVal').textContent = '0.0 L';
                 return;
             }
 
-            const tas = parseFloat(tasInput.value) || 0;
+            const tas = parseFloat(tasInput.value) || 110;
             const windDir = parseFloat(windDirInput.value) || 0;
             const windSpd = parseFloat(windSpdInput.value) || 0;
             let html = '', totalDist = 0, totalETE = 0;
@@ -458,37 +2366,463 @@
                 const geo = calculateNavData(p1.lat, p1.lng, p2.lat, p2.lng);
                 const perf = calculateLegPerformance(geo.course, geo.dist, tas, windDir, windSpd);
 
-                totalDist += geo.dist; totalETE += perf.ete;
+                totalDist += geo.dist; 
+                totalETE += perf.ete;
 
                 html += `
                     <tr>
-                        <td style="font-weight: 500;">${escapeHtml(p1.name)} ➔ ${escapeHtml(p2.name)}</td>
-                        <td style="text-align: center;">${legAlt}</td>
-                        <td style="text-align: center;">${Math.round(geo.course).toString().padStart(3, '0')}°</td>
-                        <td style="text-align: center;">${geo.dist.toFixed(1)}</td>
-                        <td style="font-weight: 700; color: var(--accent-blue); text-align: center;">${Math.round(perf.th).toString().padStart(3, '0')}°</td>
-                        <td style="text-align: center;">${Math.round(perf.gs)}</td>
-                        <td style="text-align: center;">${Math.round(perf.ete)} m</td>
+                        <td style="font-weight: 700; line-height: 1.35;">${escapeHtml(cleanWaypointName(p1.name))} ➔ ${escapeHtml(cleanWaypointName(p2.name))}</td>
+                        <td style="text-align: center;" class="td-mono">${legAlt}</td>
+                        <td style="text-align: center;" class="td-mono">${Math.round(geo.course).toString().padStart(3, '0')}°</td>
+                        <td style="text-align: center; font-weight:700;" class="td-mono">${geo.dist.toFixed(1)}</td>
+                        <td style="font-weight: 800; color: var(--accent-blue); text-align: center;" class="td-mono">${Math.round(perf.th).toString().padStart(3, '0')}°</td>
+                        <td style="text-align: center;" class="td-mono">${Math.round(perf.gs)}</td>
+                        <td style="text-align: center; font-weight: 800;" class="td-mono">${Math.round(perf.ete)}m</td>
                     </tr>
                 `;
             }
+
             navlogBody.innerHTML = html;
-            totalsBar.innerHTML = `<span>Total Dist: ${totalDist.toFixed(1)} nm</span><span>Total ETE: ${Math.round(totalETE)} min</span>`;
+
+            // Fuel Calculation (Standard 24 L/h or from perf)
+            const fuelRateLph = 24.0;
+            const totalFuel = (totalETE / 60) * fuelRateLph;
+
+            document.getElementById('totalDistTxt').textContent = `${totalDist.toFixed(1)} nm`;
+            document.getElementById('totalEteTxt').textContent = `${Math.round(totalETE)} min`;
+            document.getElementById('totalFuelTxt').textContent = `${totalFuel.toFixed(1)} L`;
+
+            // Update HUD
+            const firstWp = cleanWaypointName(waypoints[0].name);
+            const lastWp = cleanWaypointName(waypoints[waypoints.length - 1].name);
+            document.getElementById('hudRouteSummary').innerHTML = `
+                <span class="hud-airport-pill">${escapeHtml(firstWp)}</span>
+                <span class="hud-route-arrow">➔</span>
+                <span class="hud-airport-pill">${escapeHtml(lastWp)}</span>
+            `;
+            document.getElementById('hudDistVal').textContent = `${totalDist.toFixed(1)} nm`;
+            const hrs = Math.floor(totalETE / 60);
+            const mins = Math.round(totalETE % 60);
+            document.getElementById('hudEteVal').textContent = `${hrs > 0 ? hrs + 'h ' : ''}${mins}m`;
+            document.getElementById('hudGsVal').textContent = `${Math.round(tas)} kt`;
+            document.getElementById('hudFuelVal').textContent = `${totalFuel.toFixed(1)} L`;
+
+            document.getElementById('dockRouteHeaderTitle').textContent = `${escapeHtml(firstWp)} / ${escapeHtml(lastWp)}`;
         }
 
-        function escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+        // =========================================================================
+        // WAYPOINT MANAGER LIST (TAB 2)
+        // =========================================================================
+        const wpManagerList = document.getElementById('wpManagerList');
 
+        function renderWaypointManager() {
+            wpManagerList.innerHTML = '';
+            if (waypoints.length === 0) {
+                wpManagerList.innerHTML = '<li style="text-align:center; color:var(--muted-text); padding:50px 16px; font-size:13.5px; line-height:1.5;">No waypoints currently plotted.</li>';
+                return;
+            }
 
-        // ==========================================
-        // PERFORMANCE SYNC LOGIC (TAS <-> Cruise Speed)
-        // ==========================================
+            waypoints.forEach((wp, index) => {
+                const li = document.createElement('li');
+                li.className = 'wp-card';
+
+                li.innerHTML = `
+                    <div class="wp-num-badge">${index + 1}</div>
+                    <div class="wp-card-fields">
+                        <div class="wp-card-title-row">
+                            <input type="text" class="wp-name-input" value="${escapeHtml(cleanWaypointName(wp.name))}" data-idx="${index}">
+                            <button class="btn-card-del" data-idx="${index}" title="Remove waypoint">✕</button>
+                        </div>
+                        <div class="wp-alt-row">
+                            <span>Altitude:</span>
+                            <input type="number" class="wp-alt-input" value="${wp.alt !== undefined ? wp.alt : 3500}" step="500" data-idx="${index}">
+                            <span>ft &bull; ${wp.lat.toFixed(3)}N, ${wp.lng.toFixed(3)}E</span>
+                        </div>
+                    </div>
+                `;
+
+                li.querySelector('.wp-name-input').addEventListener('input', (e) => {
+                    const idx = parseInt(e.target.dataset.idx, 10);
+                    waypoints[idx].name = e.target.value.trim() || `WP ${idx + 1}`;
+                    if (markers[idx]) markers[idx].setTooltipContent(`<strong>${waypoints[idx].name}</strong> (${waypoints[idx].alt}ft)`);
+                    generateNavlog();
+                    saveState();
+                });
+
+                li.querySelector('.wp-alt-input').addEventListener('input', (e) => {
+                    const idx = parseInt(e.target.dataset.idx, 10);
+                    waypoints[idx].alt = parseInt(e.target.value, 10) || 0;
+                    if (markers[idx]) markers[idx].setTooltipContent(`<strong>${waypoints[idx].name}</strong> (${waypoints[idx].alt}ft)`);
+                    generateNavlog();
+                    renderVerticalProfile();
+                    saveState();
+                });
+
+                li.querySelector('.btn-card-del').addEventListener('click', (e) => {
+                    const idx = parseInt(e.target.dataset.idx, 10);
+                    waypoints.splice(idx, 1);
+                    updateUI();
+                });
+
+                wpManagerList.appendChild(li);
+            });
+        }
+
+        // =========================================================================
+        // AIRSPACE PENETRATION BRIEF (TAB 3)
+        // =========================================================================
+        const airspaceBriefList = document.getElementById('airspaceBriefList');
+
+        function updateAirspaceBrief() {
+            if (waypoints.length < 2) {
+                airspaceBriefList.innerHTML = '<div style="text-align:center; color:var(--muted-text); padding:50px 16px; font-size:13.5px; line-height:1.5;">Plot at least 2 waypoints to analyze intersected airspaces.</div>';
+                return;
+            }
+
+            // Sample points along route legs every 3 NM
+            const penetratedAirspaces = new Map();
+            const cruiseAlt = parseInt(document.getElementById('altFilterSelect').value) || 3500;
+
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                const p1 = waypoints[i];
+                const p2 = waypoints[i+1];
+                const legDist = calculateNavData(p1.lat, p1.lng, p2.lat, p2.lng).dist;
+                const steps = Math.max(3, Math.ceil(legDist / 3));
+
+                for (let s = 0; s <= steps; s++) {
+                    const frac = s / steps;
+                    const sampleLat = p1.lat + (p2.lat - p1.lat) * frac;
+                    const sampleLng = p1.lng + (p2.lng - p1.lng) * frac;
+                    const airspacesHere = AeroData.findAirspacesAt(sampleLat, sampleLng);
+
+                    airspacesHere.forEach(sp => {
+                        if (!penetratedAirspaces.has(sp.name)) {
+                            penetratedAirspaces.set(sp.name, sp);
+                        }
+                    });
+                }
+            }
+
+            if (penetratedAirspaces.size === 0) {
+                airspaceBriefList.innerHTML = '<div style="padding:24px; color:var(--accent-green); font-weight:700; text-align:center; font-size:13.5px;">✓ Route remains entirely in Uncontrolled Airspace (Class G).</div>';
+                return;
+            }
+
+            let html = '';
+            penetratedAirspaces.forEach(sp => {
+                const floor = sp.floorFt || 0;
+                const ceil = sp.ceilingFt || 99999;
+                const penetratesCruising = cruiseAlt >= floor && cruiseAlt <= ceil;
+
+                html += `
+                    <div class="airspace-brief-card ${penetratesCruising ? 'active-cruising' : ''}">
+                        <div class="airspace-brief-card-title">
+                            <span>${escapeHtml(sp.name)}</span>
+                            <span class="spotlight-badge badge-airspace">${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--muted-text); margin-top:2px;">
+                            <span>Vertical: <strong>${escapeHtml(sp.floor)}</strong> ➔ <strong>${escapeHtml(sp.ceiling)}</strong></span>
+                        </div>
+                        ${penetratesCruising ? '<div style="font-size:11px; font-weight:800; color:var(--accent-orange); text-transform:uppercase; margin-top:4px;">⚠ Active at your cruising level</div>' : ''}
+                    </div>
+                `;
+            });
+
+            airspaceBriefList.innerHTML = html;
+        }
+
+        // =========================================================================
+        // BOTTOM VERTICAL PROFILE CANVAS
+        // =========================================================================
+        const profileCanvas = document.getElementById('profileCanvas');
+        const verticalProfileDrawer = document.getElementById('verticalProfileDrawer');
+        const hudProfileToggleBtn = document.getElementById('hudProfileToggleBtn');
+        const profileCloseBtn = document.getElementById('profileCloseBtn');
+
+        function toggleVerticalProfile() {
+            isProfileOpen = !isProfileOpen;
+            verticalProfileDrawer.classList.toggle('open', isProfileOpen);
+            hudProfileToggleBtn.classList.toggle('active', isProfileOpen);
+            const chartTools = document.querySelector('.floating-chart-tools');
+            if (chartTools) {
+                chartTools.style.bottom = isProfileOpen ? '215px' : '24px';
+            }
+            if (isProfileOpen) {
+                setTimeout(renderVerticalProfile, 100);
+            }
+        }
+
+        hudProfileToggleBtn.addEventListener('click', toggleVerticalProfile);
+        profileCloseBtn.addEventListener('click', toggleVerticalProfile);
+
+        function renderVerticalProfile() {
+            if (!isProfileOpen) return;
+            const ctx = profileCanvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = profileCanvas.getBoundingClientRect();
+            profileCanvas.width = rect.width * dpr;
+            profileCanvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = rect.height;
+            const padLeft = 50;
+            const padRight = 30;
+            const padTop = 20;
+            const padBottom = 25;
+            const plotW = w - padLeft - padRight;
+            const plotH = h - padTop - padBottom;
+
+            ctx.clearRect(0, 0, w, h);
+
+            if (waypoints.length < 2) {
+                ctx.fillStyle = '#888888';
+                ctx.font = '500 12px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Plot at least 2 waypoints to render vertical airspace cross-section', w / 2, h / 2);
+                return;
+            }
+
+            // Calculate cumulative distance
+            const legDists = [0];
+            let totalDist = 0;
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                const d = calculateNavData(waypoints[i].lat, waypoints[i].lng, waypoints[i+1].lat, waypoints[i+1].lng).dist;
+                totalDist += d;
+                legDists.push(totalDist);
+            }
+
+            const maxAlt = 10000; // 10,000 ft ceiling
+
+            // Draw Y Axis (Altitude Marks)
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--line').trim() || '#E0DDD5';
+            ctx.lineWidth = 1;
+            ctx.fillStyle = '#888888';
+            ctx.font = '600 9px "IBM Plex Mono", monospace';
+            ctx.textAlign = 'right';
+
+            [0, 2500, 5000, 7500, 10000].forEach(alt => {
+                const y = padTop + plotH - (alt / maxAlt) * plotH;
+                ctx.beginPath();
+                ctx.moveTo(padLeft, y);
+                ctx.lineTo(w - padRight, y);
+                ctx.stroke();
+                ctx.fillText(alt + ' ft', padLeft - 6, y + 3);
+            });
+
+            // Draw Sampled Airspaces Slabs
+            const steps = Math.max(10, Math.ceil(totalDist / 4));
+            for (let s = 0; s < steps; s++) {
+                const dist1 = (s / steps) * totalDist;
+                const dist2 = ((s + 1) / steps) * totalDist;
+                const frac = (s + 0.5) / steps;
+
+                // Find waypoint segment
+                let curLeg = 0;
+                while (curLeg < legDists.length - 2 && legDists[curLeg + 1] < (frac * totalDist)) {
+                    curLeg++;
+                }
+                const p1 = waypoints[curLeg];
+                const p2 = waypoints[curLeg + 1];
+                const legSpan = legDists[curLeg + 1] - legDists[curLeg];
+                const legFrac = legSpan > 0 ? ((frac * totalDist) - legDists[curLeg]) / legSpan : 0;
+                const sLat = p1.lat + (p2.lat - p1.lat) * legFrac;
+                const sLng = p1.lng + (p2.lng - p1.lng) * legFrac;
+
+                const airspaces = AeroData.findAirspacesAt(sLat, sLng);
+                const x1 = padLeft + (dist1 / totalDist) * plotW;
+                const x2 = padLeft + (dist2 / totalDist) * plotW;
+
+                airspaces.forEach(sp => {
+                    const floor = Math.min(maxAlt, sp.floorFt || 0);
+                    const ceil = Math.min(maxAlt, sp.ceilingFt || maxAlt);
+                    const yCeil = padTop + plotH - (ceil / maxAlt) * plotH;
+                    const yFloor = padTop + plotH - (floor / maxAlt) * plotH;
+                    const slabH = yFloor - yCeil;
+
+                    let fill = 'rgba(25, 103, 210, 0.12)';
+                    if (sp.type === 'Prohibited' || sp.class === 'A') fill = 'rgba(197, 34, 31, 0.22)';
+                    else if (sp.type === 'Restricted') fill = 'rgba(230, 81, 0, 0.20)';
+                    else if (sp.type === 'TMA') fill = 'rgba(26, 35, 126, 0.12)';
+
+                    ctx.fillStyle = fill;
+                    ctx.fillRect(x1, yCeil, x2 - x1, slabH);
+                });
+            }
+
+            // Draw Ground Elevation Base
+            ctx.fillStyle = '#c8bba8';
+            ctx.beginPath();
+            ctx.moveTo(padLeft, padTop + plotH);
+            ctx.lineTo(w - padRight, padTop + plotH);
+            ctx.lineTo(w - padRight, padTop + plotH + 10);
+            ctx.lineTo(padLeft, padTop + plotH + 10);
+            ctx.fill();
+
+            // Draw Cruising Altitude Line
+            ctx.strokeStyle = '#d81b60';
+            ctx.lineWidth = 3.5;
+            ctx.beginPath();
+
+            waypoints.forEach((wp, idx) => {
+                const x = padLeft + (legDists[idx] / totalDist) * plotW;
+                const alt = wp.alt || 3500;
+                const y = padTop + plotH - (alt / maxAlt) * plotH;
+
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Draw Waypoint Ticks on X Axis
+            ctx.fillStyle = '#111111';
+            ctx.font = '700 9.5px "IBM Plex Mono", monospace';
+            ctx.textAlign = 'center';
+
+            waypoints.forEach((wp, idx) => {
+                const x = padLeft + (legDists[idx] / totalDist) * plotW;
+                const alt = wp.alt || 3500;
+                const y = padTop + plotH - (alt / maxAlt) * plotH;
+
+                // Waypoint Point
+                ctx.fillStyle = '#d81b60';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Vertical dash
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, padTop);
+                ctx.lineTo(x, padTop + plotH);
+                ctx.stroke();
+
+                // Label
+                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#111111';
+                ctx.fillText(wp.name.split(' ')[0], x, padTop + plotH + 14);
+            });
+        }
+
+        window.addEventListener('resize', () => {
+            if (isProfileOpen) renderVerticalProfile();
+        });
+
+        // =========================================================================
+        // COLLAPSIBLE DOCK CONTROLS & TABS
+        // =========================================================================
+        const navlogDock = document.getElementById('navlogDock');
+        const btnDockToggle = document.getElementById('btnDockToggle');
+        const dockCollapseHandle = document.getElementById('dockCollapseHandle');
+        const dockHandleIcon = document.getElementById('dockHandleIcon');
+        let dockOpen = true;
+
+        function setDockState(open) {
+            dockOpen = open;
+            navlogDock.classList.toggle('collapsed', !dockOpen);
+            btnDockToggle.classList.toggle('active', dockOpen);
+            dockHandleIcon.textContent = dockOpen ? '▶' : '◀';
+            setTimeout(() => { map.invalidateSize(); }, 260);
+        }
+
+        btnDockToggle.addEventListener('click', () => setDockState(!dockOpen));
+        dockCollapseHandle.addEventListener('click', () => setDockState(!dockOpen));
+
+        // Dock Tab Switching
+        document.querySelectorAll('.dock-tab').forEach(tabBtn => {
+            tabBtn.addEventListener('click', () => {
+                document.querySelectorAll('.dock-tab').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.dock-pane').forEach(p => p.classList.remove('active'));
+
+                tabBtn.classList.add('active');
+                const targetId = tabBtn.dataset.tab;
+                const pane = document.getElementById(targetId);
+                if (pane) pane.classList.add('active');
+            });
+        });
+
+        // =========================================================================
+        // HUD ACTION BUTTONS (FIT, REVERSE, CLEAR)
+        // =========================================================================
+        function centerOnRoute() {
+            if (!waypoints || waypoints.length === 0) return;
+            if (waypoints.length === 1) {
+                map.setView([parseFloat(waypoints[0].lat), parseFloat(waypoints[0].lng)], 11, { animate: true });
+            } else {
+                const bounds = L.latLngBounds(waypoints.map(wp => [parseFloat(wp.lat), parseFloat(wp.lng)]));
+                map.fitBounds(bounds, { padding: [60, 60], maxZoom: 13, animate: true });
+            }
+        }
+
+        document.getElementById('hudFitBtn').addEventListener('click', centerOnRoute);
         
+        document.getElementById('hudReverseBtn').addEventListener('click', () => {
+            if (waypoints.length < 2) return;
+            waypoints.reverse();
+            updateUI();
+        });
+
+        document.getElementById('hudClearBtn').addEventListener('click', () => {
+            waypoints = [];
+            updateUI();
+        });
+
+        document.getElementById('btnAddWpModal').addEventListener('click', () => {
+            spotlightInput.focus();
+            spotlightInput.select();
+        });
+
+        // =========================================================================
+        // STORAGE & LIFECYCLE SYNC
+        // =========================================================================
+        function saveState() {
+            const sanitizedWaypoints = waypoints.map(wp => ({
+                ...wp,
+                name: cleanWaypointName(wp.name)
+            }));
+            const data = { waypoints: sanitizedWaypoints, tas: tasInput.value, windDir: windDirInput.value, windSpd: windSpdInput.value };
+            localStorage.setItem(NAV_STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function loadState() {
+            const rawData = localStorage.getItem(NAV_STORAGE_KEY);
+            if (rawData) {
+                try {
+                    const data = JSON.parse(rawData);
+                    if (data.tas) tasInput.value = data.tas;
+                    if (data.windDir) windDirInput.value = data.windDir;
+                    if (data.windSpd) windSpdInput.value = data.windSpd;
+                    if (Array.isArray(data.waypoints) && data.waypoints.length > 0) {
+                        waypoints = data.waypoints.map(wp => ({
+                            ...wp,
+                            name: cleanWaypointName(wp.name)
+                        }));
+                        updateUI();
+                    }
+                } catch (e) { console.warn("Failed to load nav state.", e); }
+            }
+        }
+
+        function updateUI() {
+            const hasWaypoints = waypoints.length > 0;
+            instruction.style.display = hasWaypoints ? 'none' : 'block';
+            
+            document.getElementById('hudFitBtn').disabled = !hasWaypoints;
+            document.getElementById('hudReverseBtn').disabled = waypoints.length < 2;
+
+            renderFlightTrack();
+            renderWaypointManager();
+            generateNavlog();
+            updateAirspaceBrief();
+            renderVerticalProfile();
+            saveState();
+        }
+
         function syncTasFromPerf() {
             try {
                 const raw = localStorage.getItem(PERF_STORAGE_KEY);
                 if (raw) {
                     const perf = JSON.parse(raw);
-                    // Fallback to Vc if not selected yet
                     const cruiseName = perf.range?.cruiseTas || 'Vc';
                     if (Array.isArray(perf.speeds)) {
                         const speedObj = perf.speeds.find(s => s.name === cruiseName);
@@ -515,7 +2849,6 @@
                     
                     if (Array.isArray(perf.speeds)) {
                         let speedObj = perf.speeds.find(s => s.name === cruiseName);
-                        // If it doesn't exist (e.g. wiped out), create it
                         if (!speedObj) {
                             speedObj = { name: cruiseName, value: newTas, unit: 'kt', desc: 'Cruising speed', type: 'normal' };
                             perf.speeds.push(speedObj);
@@ -532,7 +2865,6 @@
             } catch(e) {}
         }
 
-        // Attach listeners
         tasInput.addEventListener('input', () => { 
             generateNavlog(); 
             saveState(); 
@@ -541,24 +2873,38 @@
         
         windDirInput.addEventListener('input', () => { generateNavlog(); saveState(); });
         windSpdInput.addEventListener('input', () => { generateNavlog(); saveState(); });
-        const centerRouteBtn = document.getElementById('centerRouteBtn');
-        if (centerRouteBtn) centerRouteBtn.addEventListener('click', centerOnRoute);
-        document.getElementById('clearRouteBtn').addEventListener('click', () => { waypoints = []; updateUI(); });
         
-        // Listen to changes coming from the Performance page
         window.addEventListener('focus', syncTasFromPerf);
         window.addEventListener('storage', (e) => {
             if (e.key === PERF_STORAGE_KEY) syncTasFromPerf();
         });
 
-
+        // Theme Toggle
         const toggleBtn = document.getElementById('themeToggle');
         const root = document.documentElement;
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) root.classList.add('dark-mode');
-        toggleBtn.addEventListener('click', () => root.classList.toggle('dark-mode'));
+        toggleBtn.addEventListener('click', () => {
+            root.classList.toggle('dark-mode');
+            if (isProfileOpen) setTimeout(renderVerticalProfile, 100);
+        });
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+
+        // =========================================================================
+        // INITIALIZATION
+        // =========================================================================
+        renderAirspaces();
+        initAirportsData();
+        renderVfrPoints();
+        renderNavaids();
 
         loadState();
-        syncTasFromPerf(); // Attempt initial sync right away
+        syncTasFromPerf();
         updateUI();
     </script>
     <script src="flight_dossier.js"></script>

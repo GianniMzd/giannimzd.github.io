@@ -70,6 +70,9 @@
             font-size: 24px;
             font-weight: 700;
             letter-spacing: -0.03em;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
         }
 
         .brand svg {
@@ -129,35 +132,42 @@
 
         /* Left Navigation Sidebar */
         .sidebar {
-            width: 300px;
+            width: 260px;
+            min-width: 260px;
+            max-width: 260px;
+            flex: 0 0 260px;
             border-right: 2px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            flex-shrink: 0;
+            background-color: var(--bg-color);
         }
 
         .sidebar a {
-            padding: 30px;
+            padding: 25px;
             text-decoration: none;
             color: var(--text-color);
             font-size: 16px;
             font-weight: 500;
             border-bottom: 2px solid var(--border-color);
-            transition: all 0.2s ease;
+            transition: background-color 0.2s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            white-space: nowrap;
         }
 
         .sidebar a::after {
             content: '→';
+            flex-shrink: 0;
             opacity: 0;
-            transform: translateX(-10px);
-            transition: all 0.2s ease;
+            transform: translateX(-6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
         .sidebar a:hover {
             background-color: var(--hover-bg);
-            padding-left: 40px;
         }
 
         .sidebar a:hover::after {
@@ -247,6 +257,79 @@
             100% { transform: rotate(360deg); }
         }
 
+        .hero-modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 48px;
+            max-width: 1100px;
+        }
+
+        .module-card {
+            border: 2px solid var(--border-color);
+            background: var(--bg-color);
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--text-color);
+            background-color: var(--hover-bg);
+        }
+
+        .module-card-emergency {
+            border-color: var(--accent-orange);
+        }
+
+        .module-card-emergency:hover {
+            border-color: var(--accent-orange);
+            background-color: rgba(224, 76, 56, 0.06);
+        }
+
+        .module-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-code {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--border-color);
+        }
+
+        .module-arrow {
+            font-size: 16px;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .module-card:hover .module-arrow {
+            transform: translateX(4px);
+        }
+
+        .module-title {
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .module-desc {
+            font-size: 13px;
+            line-height: 1.45;
+            color: var(--text-color);
+            opacity: 0.75;
+        }
+
         /* Responsive Design */
         @media (max-width: 900px) {
             .main-layout {
@@ -254,6 +337,9 @@
             }
             .sidebar {
                 width: 100%;
+                min-width: 0;
+                max-width: none;
+                flex-basis: auto;
                 border-right: none;
                 border-bottom: 2px solid var(--border-color);
             }
@@ -275,13 +361,13 @@
 <body>
 
     <header class="top-bar">
-        <div class="brand">
+        <a href="homepage.html" class="brand">
             <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
                 <path d="M50 10 L90 85 L50 70 L10 85 Z" fill="var(--border-color)" />
                 <path d="M50 10 L50 70" stroke="var(--bg-color)" stroke-width="4" />
             </svg>
             FlightPrep Solution
-        </div>
+        </a>
         <div class="top-bar-right">
             <div class="meta-text">
                 Precision Software // Est. 2026
@@ -311,7 +397,7 @@
             <a href="VFR.html">Interactive Route Map</a>
             <a href="perfo.html">Aircraft Performance</a>
             <a href="checklists.html">Checklists</a>
-            <a href="#">Emergency Procedures</a>
+            <a href="emergency.html">Emergency Procedures</a>
             
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
             <div class="sidebar-export-wrap">
@@ -339,6 +425,49 @@
                 tools for <span class="accent green">modern</span> <br>
                 flight <span class="accent orange">operations.</span>
             </h1>
+
+            <div class="hero-modules-grid">
+                <a href="flg_prep.html" class="module-card">
+                    <div class="module-card-header">
+                        <span class="module-code">01 // NAV</span>
+                        <span class="module-arrow">&rarr;</span>
+                    </div>
+                    <div class="module-title">Flight Preparation</div>
+                    <div class="module-desc">NavLog, METAR/TAF weather decoder, W&amp;B, fuel calculation &amp; NOTAMs</div>
+                </a>
+                <a href="VFR.html" class="module-card">
+                    <div class="module-card-header">
+                        <span class="module-code">02 // MAP</span>
+                        <span class="module-arrow">&rarr;</span>
+                    </div>
+                    <div class="module-title">Interactive Route Map</div>
+                    <div class="module-desc">OpenAIP aeronautical charts, European airspaces, waypoints &amp; altitude filter</div>
+                </a>
+                <a href="perfo.html" class="module-card">
+                    <div class="module-card-header">
+                        <span class="module-code">03 // PERF</span>
+                        <span class="module-arrow">&rarr;</span>
+                    </div>
+                    <div class="module-title">Aircraft Performance</div>
+                    <div class="module-desc">Runway takeoff/landing distances, crosswind component &amp; critical V-speeds</div>
+                </a>
+                <a href="checklists.html" class="module-card">
+                    <div class="module-card-header">
+                        <span class="module-code">04 // CHK</span>
+                        <span class="module-arrow">&rarr;</span>
+                    </div>
+                    <div class="module-title">Checklists</div>
+                    <div class="module-desc">Multi-aircraft normal checklists organized by flight phase with progress tracking</div>
+                </a>
+                <a href="emergency.html" class="module-card module-card-emergency">
+                    <div class="module-card-header">
+                        <span class="module-code" style="color: var(--accent-orange);">05 // ALERT</span>
+                        <span class="module-arrow" style="color: var(--accent-orange);">&rarr;</span>
+                    </div>
+                    <div class="module-title" style="color: var(--accent-orange);">Emergency Procedures</div>
+                    <div class="module-desc">Memory items, quick-action emergency checklists, glide calculator &amp; 121.5 VHF script</div>
+                </a>
+            </div>
         </section>
     </main>
 

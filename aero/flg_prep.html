@@ -78,7 +78,7 @@
 
         .main-layout { display: flex; flex: 1; min-height: 0; }
         
-        .sidebar { width: 260px; flex: 0 0 260px; border-right: 2px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; background-color: var(--bg-color); z-index: 10;}
+        .sidebar { width: 260px; min-width: 260px; max-width: 260px; flex: 0 0 260px; border-right: 2px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; background-color: var(--bg-color); z-index: 10;}
         .sidebar a {
             padding: 25px; text-decoration: none; color: var(--text-color); font-size: 16px; font-weight: 500;
             border-bottom: 2px solid var(--border-color); transition: background-color 0.2s ease; display: flex;
@@ -166,7 +166,8 @@
 
         @media (max-width: 900px) { 
             .main-layout { flex-direction: column; } 
-            .sidebar { width: 100%; border-right: none; border-bottom: 2px solid var(--border-color); } 
+            .sidebar { width: 100%; min-width: 0; max-width: none; flex-basis: auto; border-right: none; border-bottom: 2px solid var(--border-color); } 
+            .top-bar { flex-direction: column; height: auto; padding: 20px; gap: 15px; }
             .workspace { padding: 20px; gap: 20px; }
             .dashboard-grid { gap: 20px; }
         }
@@ -724,13 +725,13 @@
 <body>
 
     <header class="top-bar">
-        <div class="brand">
+        <a href="homepage.html" class="brand" style="text-decoration:none; color:inherit;">
             <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
                 <path d="M50 10 L90 85 L50 70 L10 85 Z" fill="var(--border-color)" />
                 <path d="M50 10 L50 70" stroke="var(--bg-color)" stroke-width="4" />
             </svg>
             FlightPrep Solution
-        </div>
+        </a>
         <div class="top-bar-controls">
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
@@ -745,7 +746,7 @@
             <a href="VFR.html">Interactive Route Map</a>
             <a href="perfo.html">Aircraft Performance</a>
             <a href="checklists.html">Checklists</a>
-            <a href="#">Emergency Procedures</a>
+            <a href="emergency.html">Emergency Procedures</a>
             
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
             <div class="sidebar-export-wrap">
@@ -928,6 +929,10 @@
                             <label class="check-item"><input type="checkbox" id="chk_doc_medical"><span>Medical Certificate</span></label>
                             <label class="check-item"><input type="checkbox" id="chk_doc_arow"><span>Aircraft Docs (AROW)</span></label>
                             <label class="check-item"><input type="checkbox" id="chk_doc_charts"><span>Current VFR Charts</span></label>
+                            <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 11px; font-weight: 700; color: var(--danger, #c5221f); text-transform: uppercase; letter-spacing: 0.5px;">Emergency Ops</span>
+                                <a href="emergency.html" style="font-size: 12px; font-weight: 700; color: var(--danger, #c5221f); text-decoration: none;">🚨 Emergency Procedures &rarr;</a>
+                            </div>
                         </div>
                     </div>
                 </div>

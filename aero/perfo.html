@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
 
@@ -20,11 +20,11 @@
             --accent-green: #4A7C59;
             --accent-orange: #C16E56;
             --accent-blue: #3A6B88;
-            --sidebar-highlight-hover: #333;
+            --sidebar-highlight-hover: #333333;
             --card-bg: #FFFFFF;
             --muted-text: #6B6558;
             --danger: #B0402F;
-            --danger-bg: rgba(176, 64, 47, 0.12);
+            --danger-bg: rgba(176, 64, 47, 0.08);
             --danger-border: rgba(176, 64, 47, 0.25);
             --special-bg: rgba(58, 107, 136, 0.08);
             --special-border: rgba(58, 107, 136, 0.25);
@@ -60,54 +60,58 @@
             min-height: 100vh;
         }
 
-        /* Top Bar & Sidebar */
+        /* Top Bar Header */
         .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 30px; height: 80px; border-bottom: 2px solid var(--border-color); background-color: var(--bg-color);
-            gap: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            height: 80px;
+            border-bottom: 2px solid var(--border-color);
+            background-color: var(--bg-color);
+            gap: 20px;
+            flex-shrink: 0;
         }
-        .brand { display: flex; align-items: center; gap: 15px; font-size: 24px; font-weight: 700; letter-spacing: -0.03em; }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            text-decoration: none;
+            color: var(--text-color);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
         .brand svg { width: 40px; height: 40px; }
 
-        .top-bar-controls {
+        .top-bar-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 20px;
         }
-
-        .unit-selector-wrap {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            font-weight: 700;
+        .meta-text {
+            font-size: 13px;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: var(--muted-text);
-        }
-
-        .unit-system-select {
-            border: 2px solid var(--border-color);
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            padding: 6px 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            outline: none;
-            border-radius: 4px;
-            transition: background-color 0.15s ease;
-        }
-        .unit-system-select:hover {
-            background-color: var(--hover-bg);
         }
 
         .theme-toggle {
-            display: flex; align-items: center; justify-content: center;
-            width: 44px; height: 44px; border: 2px solid var(--border-color);
-            border-radius: 50%; background-color: var(--bg-color); color: var(--text-color);
-            cursor: pointer; transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            flex-shrink: 0;
         }
         .theme-toggle:hover { background-color: var(--hover-bg); transform: scale(1.05); }
         .theme-toggle svg { width: 20px; height: 20px; stroke: var(--text-color); }
@@ -115,19 +119,52 @@
         html.dark-mode .theme-toggle .icon-sun { display: none; }
         html.dark-mode .theme-toggle .icon-moon { display: block; }
 
-        .main-layout { display: flex; flex: 1; overflow: hidden; }
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            flex: 1;
+        }
         
         /* Animated Sidebar */
-        .sidebar { width: 260px; flex: 0 0 260px; border-right: 2px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
-        .sidebar a {
-            padding: 25px; text-decoration: none; color: var(--text-color); font-size: 16px; font-weight: 500;
-            border-bottom: 2px solid var(--border-color); transition: background-color 0.2s ease; display: flex;
-            justify-content: space-between; align-items: center; gap: 10px; white-space: nowrap;
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            max-width: 260px;
+            flex: 0 0 260px;
+            border-right: 2px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            background-color: var(--bg-color);
+            z-index: 10;
         }
-        .sidebar a::after { content: '→'; flex-shrink: 0; opacity: 0; transform: translateX(-6px); transition: opacity 0.2s ease, transform 0.2s ease; }
+        .sidebar a {
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: 500;
+            border-bottom: 2px solid var(--border-color);
+            transition: background-color 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+        .sidebar a::after {
+            content: '→';
+            flex-shrink: 0;
+            opacity: 0;
+            transform: translateX(-6px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
         .sidebar a:hover { background-color: var(--hover-bg); }
         .sidebar a:hover::after { opacity: 1; transform: translateX(0); }
-        .sidebar a.highlight { background-color: var(--border-color); color: var(--bg-color); }
+        .sidebar a.highlight {
+            background-color: var(--border-color);
+            color: var(--bg-color);
+        }
         .sidebar a.highlight:hover { background-color: var(--sidebar-highlight-hover); }
 
         .sidebar-export-wrap { padding: 25px; }
@@ -159,137 +196,634 @@
             cursor: not-allowed;
         }
 
-        /* Workspace Grid */
-        .workspace { flex: 1; display: grid; grid-template-columns: 1fr 480px; overflow: hidden; }
+        /* Content Section */
+        .content-section {
+            flex: 1;
+            padding: 40px 45px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            min-width: 0;
+            background-color: var(--bg-color);
+        }
 
-        /* Left Column: Profile / Speeds / Range */
-        .perf-section { display: flex; flex-direction: column; border-right: 2px solid var(--border-color); overflow-y: auto; }
+        /* Page Heading Banner & Unit Toolbar */
+        .page-heading-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 24px;
+        }
+        .page-heading h1 {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+        .page-heading p {
+            margin-top: 8px;
+            color: var(--muted-text);
+            font-size: 15px;
+        }
 
-        .card { border-bottom: 2px solid var(--border-color); }
-        .card-header { padding: 15px 20px; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-color); position: sticky; top: 0; z-index: 2; }
-        .card-header h2 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .card-body { padding: 20px; }
+        .heading-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
 
-        .btn-action { background: transparent; color: var(--text-color); border: 2px solid var(--border-color); padding: 6px 12px; font-weight: 700; font-family: 'Inter'; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: background 0.15s ease; }
+        .unit-selector-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            padding: 6px 12px;
+        }
+        .unit-toolbar-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted-text);
+            margin-right: 4px;
+        }
+        .unit-select-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .unit-field-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted-text);
+            text-transform: uppercase;
+        }
+        .unit-system-select {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 4px 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            border-radius: 0;
+            transition: background-color 0.15s ease;
+        }
+        .unit-system-select:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* Responsive Two-Column Workspace Grid */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(460px, 0.95fr);
+            gap: 30px;
+            align-items: start;
+        }
+
+        .perf-column {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            min-width: 0;
+        }
+
+        /* Card Container */
+        .card {
+            border: 2px solid var(--border-color);
+            background-color: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+        }
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg);
+        }
+        .card-header h2 {
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+        }
+        .card-body {
+            padding: 22px 24px;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            background: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 8px 14px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 0;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            line-height: 1;
+        }
         .btn-action:hover { background: var(--hover-bg); }
-        .btn-action.primary { background: var(--border-color); color: var(--bg-color); }
-        .btn-action.primary:hover { opacity: 0.9; background: var(--border-color); }
-        .btn-action.danger { background: var(--danger); color: #fff; border-color: var(--danger); }
-        .btn-action.danger:hover { opacity: 0.9; }
-        .btn-action.small { padding: 4px 8px; font-size: 11px; }
+        .btn-action.primary {
+            background: var(--border-color);
+            color: var(--bg-color);
+        }
+        .btn-action.primary:hover {
+            opacity: 0.9;
+            background: var(--border-color);
+        }
+        .btn-action.small {
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .btn-action.btn-danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .btn-action.btn-danger:hover {
+            background: var(--danger-bg);
+        }
+        .btn-action.btn-special {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        .btn-action.btn-special:hover {
+            background: var(--special-bg);
+        }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-        .form-group { display: flex; flex-direction: column; gap: 4px; }
-        .form-group label { font-size: 11px; font-weight: 700; color: var(--muted-text); text-transform: uppercase; }
-        .form-group input, .form-group select { border: 2px solid var(--hover-bg); background: transparent; padding: 8px; font-family: 'Inter'; font-size: 14px; color: var(--text-color); outline: none; width: 100%; cursor: pointer; }
-        .form-group input:focus, .form-group select:focus { border-color: var(--border-color); }
+        /* Form Grids */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .form-grid.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input, .form-group select {
+            border: 2px solid var(--hover-bg);
+            background: var(--bg-color);
+            padding: 9px 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+            outline: none;
+            border-radius: 0;
+            width: 100%;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--border-color);
+            background: var(--card-bg);
+        }
 
-        /* Speeds list */
-        .speeds-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--muted-text); margin: 0 0 8px 0; border-bottom: 2px solid var(--border-color); padding-bottom: 6px;}
-        .speeds-section-title.emergency-title { color: var(--danger); border-bottom-color: var(--danger); margin-top: 24px; }
-        .speeds-section-title.special-title { color: var(--accent-blue); border-bottom-color: var(--accent-blue); margin-top: 24px; }
-        
-        .edit-list { list-style: none; margin: 0 0 12px 0; padding: 0; }
-        .edit-list li { display: flex; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--hover-bg); gap: 8px; transition: background-color 0.15s ease;}
-        
+        /* Speeds List */
+        .speeds-section-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted-text);
+            margin: 0 0 10px 0;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+        .speeds-section-title.emergency-title {
+            color: var(--danger);
+            border-bottom-color: var(--danger);
+            margin-top: 24px;
+        }
+        .speeds-section-title.special-title {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+            margin-top: 24px;
+        }
+
+        .edit-list {
+            list-style: none;
+            margin: 0 0 12px 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .edit-list li {
+            display: flex;
+            align-items: center;
+            padding: 6px 10px;
+            border: 1px solid var(--hover-bg);
+            background-color: var(--bg-color);
+            gap: 10px;
+            transition: background-color 0.15s ease, border-color 0.15s ease;
+        }
+        .edit-list li:hover {
+            border-color: var(--border-color);
+        }
+
         /* Emergency row styles */
-        .edit-list.emergency-list li { background-color: var(--danger-bg); border-bottom: 1px solid var(--danger-border); }
-        .edit-list.emergency-list .name-input, .edit-list.emergency-list .val-input { color: var(--danger); font-weight: 700; }
-        .edit-list.emergency-list .desc-input { color: var(--danger); opacity: 0.8; }
-        .edit-list.emergency-list .val-input { border-color: var(--danger-border); }
-        
+        .edit-list.emergency-list li {
+            background-color: var(--danger-bg);
+            border: 1px solid var(--danger-border);
+        }
+        .edit-list.emergency-list .name-input, .edit-list.emergency-list .val-input {
+            color: var(--danger);
+            font-weight: 700;
+        }
+        .edit-list.emergency-list .desc-input {
+            color: var(--danger);
+            opacity: 0.85;
+        }
+        .edit-list.emergency-list .val-input {
+            border-color: var(--danger-border);
+        }
+
         /* Special row styles */
-        .edit-list.special-list li { background-color: var(--special-bg); border-bottom: 1px solid var(--special-border); }
-        .edit-list.special-list .name-input, .edit-list.special-list .val-input { color: var(--accent-blue); font-weight: 700; }
-        .edit-list.special-list .desc-input { color: var(--accent-blue); opacity: 0.8; }
-        .edit-list.special-list .val-input { border-color: var(--special-border); }
+        .edit-list.special-list li {
+            background-color: var(--special-bg);
+            border: 1px solid var(--special-border);
+        }
+        .edit-list.special-list .name-input, .edit-list.special-list .val-input {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+        .edit-list.special-list .desc-input {
+            color: var(--accent-blue);
+            opacity: 0.85;
+        }
+        .edit-list.special-list .val-input {
+            border-color: var(--special-border);
+        }
 
-        .name-input { flex: 1.2; border: 2px solid transparent; background: transparent; padding: 6px 8px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; }
-        .val-input { width: 80px; border: 2px solid var(--hover-bg); background: transparent; padding: 6px 8px; font-family: 'Inter'; font-size: 13px; font-weight: 500; color: var(--text-color); outline: none; border-radius: 4px; text-align: right; }
-        .desc-input { flex: 2; border: 2px solid transparent; background: transparent; padding: 6px 8px; font-family: 'Inter'; font-size: 12px; color: var(--muted-text); outline: none; border-radius: 4px; }
-        
-        .name-input:focus, .name-input:hover, .val-input:focus, .val-input:hover, .desc-input:focus, .desc-input:hover { border-color: var(--border-color); background: var(--bg-color); }
-        .edit-list.emergency-list .name-input:focus, .edit-list.emergency-list .name-input:hover, .edit-list.emergency-list .val-input:focus, .edit-list.emergency-list .val-input:hover, .edit-list.emergency-list .desc-input:focus, .edit-list.emergency-list .desc-input:hover { border-color: var(--danger); }
-        .edit-list.special-list .name-input:focus, .edit-list.special-list .name-input:hover, .edit-list.special-list .val-input:focus, .edit-list.special-list .val-input:hover, .edit-list.special-list .desc-input:focus, .edit-list.special-list .desc-input:hover { border-color: var(--accent-blue); }
+        .name-input {
+            flex: 1.2;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 5px 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-color);
+            outline: none;
+            border-radius: 0;
+        }
+        .val-input {
+            width: 80px;
+            border: 1px solid var(--hover-bg);
+            background: var(--card-bg);
+            padding: 5px 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-color);
+            outline: none;
+            border-radius: 0;
+            text-align: right;
+        }
+        .desc-input {
+            flex: 2;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 5px 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12.5px;
+            color: var(--muted-text);
+            outline: none;
+            border-radius: 0;
+        }
 
-        .unit-tag { font-size: 11px; color: var(--muted-text); font-weight: 700; width: 22px; }
+        .name-input:focus, .name-input:hover, .desc-input:focus, .desc-input:hover {
+            border-color: var(--border-color);
+            background: var(--card-bg);
+        }
+        .val-input:focus, .val-input:hover {
+            border-color: var(--border-color);
+        }
+
+        .edit-list.emergency-list .name-input:focus, .edit-list.emergency-list .name-input:hover, 
+        .edit-list.emergency-list .val-input:focus, .edit-list.emergency-list .val-input:hover, 
+        .edit-list.emergency-list .desc-input:focus, .edit-list.emergency-list .desc-input:hover {
+            border-color: var(--danger);
+        }
+        .edit-list.special-list .name-input:focus, .edit-list.special-list .name-input:hover, 
+        .edit-list.special-list .val-input:focus, .edit-list.special-list .val-input:hover, 
+        .edit-list.special-list .desc-input:focus, .edit-list.special-list .desc-input:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .unit-tag {
+            font-size: 11px;
+            color: var(--muted-text);
+            font-weight: 700;
+            width: 24px;
+            text-align: left;
+        }
         .edit-list.emergency-list .unit-tag { color: var(--danger); }
         .edit-list.special-list .unit-tag { color: var(--accent-blue); }
 
-        .type-select { border: 1px solid transparent; background: transparent; padding: 4px; font-family: 'Inter'; font-size: 11px; color: var(--muted-text); outline: none; border-radius: 4px; cursor: pointer;}
-        .type-select:hover { border-color: var(--hover-bg); background: var(--hover-bg); color: var(--text-color); }
-        
-        .edit-list.emergency-list .type-select { color: var(--danger); opacity: 0.8; }
-        .edit-list.emergency-list .type-select:hover { background: var(--danger-border); border-color: var(--danger-border); color: var(--danger); }
-        
-        .edit-list.special-list .type-select { color: var(--accent-blue); opacity: 0.8; }
-        .edit-list.special-list .type-select:hover { background: var(--special-border); border-color: var(--special-border); color: var(--accent-blue); }
-        
-        .btn-delete { background: none; border: none; color: var(--muted-text); cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.15s ease; }
+        .type-select {
+            border: 1px solid var(--hover-bg);
+            background: var(--card-bg);
+            padding: 4px 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted-text);
+            outline: none;
+            border-radius: 0;
+            cursor: pointer;
+        }
+        .type-select:hover {
+            border-color: var(--border-color);
+            color: var(--text-color);
+        }
+        .edit-list.emergency-list .type-select {
+            color: var(--danger);
+            border-color: var(--danger-border);
+        }
+        .edit-list.special-list .type-select {
+            color: var(--accent-blue);
+            border-color: var(--special-border);
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--muted-text);
+            cursor: pointer;
+            font-size: 15px;
+            padding: 4px 6px;
+            transition: color 0.15s ease;
+            line-height: 1;
+        }
         .btn-delete:hover { color: var(--danger); }
-        
-        /* Range results */
-        .result-strip { display: flex; gap: 0; margin-top: 18px; border: 2px solid var(--border-color); }
-        .result-box { flex: 1; padding: 14px; text-align: center; border-right: 2px solid var(--border-color); }
+
+        /* Range Results Strip */
+        .result-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 20px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-color);
+        }
+        .result-box {
+            padding: 16px 12px;
+            text-align: center;
+            border-right: 2px solid var(--border-color);
+        }
         .result-box:last-child { border-right: none; }
-        .result-box .r-label { font-size: 10px; text-transform: uppercase; color: var(--muted-text); font-weight: 700; }
-        .result-box .r-value { font-size: 20px; font-weight: 700; margin-top: 4px; }
+        .result-box .r-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted-text);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .result-box .r-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 6px;
+            color: var(--text-color);
+        }
 
-        /* W&B Panel (right column) */
-        .wb-panel { background-color: var(--card-bg); display: flex; flex-direction: column; overflow-y: auto; }
-        
-        .wb-params { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; border-bottom: 2px solid var(--border-color); background-color: var(--bg-color); }
+        /* Right Column: Weight & Balance Studio */
+        .wb-panel {
+            background-color: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            border: 2px solid var(--border-color);
+        }
 
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 10px 8px; border-bottom: 1px solid var(--hover-bg); font-size: 12.5px; }
-        th { font-size: 10.5px; text-transform: uppercase; color: var(--muted-text); border-bottom: 2px solid var(--border-color); position: sticky; top: 0; background-color: var(--card-bg); z-index: 1; }
-        tr:hover td { background-color: var(--hover-bg); }
-        td input { width: 100%; border: 2px solid transparent; background: transparent; padding: 5px 6px; font-family: 'Inter'; font-size: 12.5px; color: var(--text-color); outline: none; border-radius: 4px; text-align: right; }
-        td input:focus, td input:hover { border-color: var(--border-color); background: var(--bg-color); }
-        td.item-name input { text-align: left; font-weight: 500; }
-        td.moment-cell { font-weight: 700; text-align: right; }
+        .wb-params {
+            padding: 16px 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            border-bottom: 2px solid var(--border-color);
+            background-color: var(--bg-color);
+        }
 
-        .wb-totals { padding: 16px 20px; border-top: 2px solid var(--border-color); background-color: var(--bg-color); }
-        .wb-totals .row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
-        .wb-totals .row.grand { font-weight: 700; font-size: 15px; border-top: 1px solid var(--hover-bg); margin-top: 6px; padding-top: 10px; }
+        .wb-table-wrap {
+            overflow-x: auto;
+            width: 100%;
+        }
+        table.wb-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table.wb-table th {
+            padding: 12px 14px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: var(--muted-text);
+            background-color: var(--card-bg);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        table.wb-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid var(--hover-bg);
+            font-size: 13.5px;
+        }
+        table.wb-table tr:hover td {
+            background-color: var(--hover-bg);
+        }
+        table.wb-table td input {
+            width: 100%;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 6px 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-color);
+            outline: none;
+            border-radius: 0;
+            text-align: right;
+            transition: all 0.15s ease;
+        }
+        table.wb-table td input:focus, table.wb-table td input:hover {
+            border-color: var(--border-color);
+            background: var(--bg-color);
+        }
+        table.wb-table td.item-name input {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            text-align: left;
+        }
+        table.wb-table td.moment-cell {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            text-align: right;
+            padding-right: 14px;
+            font-size: 13.5px;
+            white-space: nowrap;
+        }
 
-        .status-banner { margin: 16px 20px 0 20px; padding: 12px 14px; border: 2px solid var(--border-color); font-weight: 700; font-size: 13px; text-align: center; }
-        .status-banner.ok { color: var(--accent-green); border-color: var(--accent-green); }
-        .status-banner.bad { color: var(--danger); border-color: var(--danger); }
+        .wb-totals {
+            padding: 18px 24px;
+            border-top: 2px solid var(--border-color);
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .wb-totals .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+        .wb-totals .row span:last-child {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 14.5px;
+        }
+        .wb-totals .row.grand {
+            font-weight: 800;
+            font-size: 15.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-top: 2px solid var(--border-color);
+            margin-top: 6px;
+            padding-top: 10px;
+        }
+        .wb-totals .row.grand span:last-child {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--accent-blue);
+        }
 
-        .cg-graph-wrap { padding: 16px 20px; }
-        svg text { font-family: 'Inter', sans-serif; }
+        .limits-inputs {
+            padding: 14px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            border-top: 2px solid var(--border-color);
+            background-color: var(--bg-color);
+        }
 
-        .limits-inputs { padding: 0 20px 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .status-banner {
+            margin: 18px 24px 0 24px;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            font-weight: 700;
+            font-size: 13px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .status-banner.ok {
+            background-color: rgba(74, 124, 89, 0.1);
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+        .status-banner.bad {
+            background-color: var(--danger-bg);
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .cg-graph-wrap {
+            padding: 18px 24px;
+        }
+        svg text {
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 1200px) {
+            .workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .sidebar {
+                width: 100%;
+                min-width: 0;
+                max-width: none;
+                flex-basis: auto;
+                border-right: none;
+                border-bottom: 2px solid var(--border-color);
+            }
+            .top-bar {
+                flex-direction: column;
+                height: auto;
+                padding: 20px;
+                gap: 15px;
+            }
+            .content-section {
+                padding: 24px 20px;
+            }
+            .page-heading h1 {
+                font-size: 32px;
+            }
+            .wb-params {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-grid.cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
     <header class="top-bar">
-        <div class="brand">
+        <a href="homepage.html" class="brand">
             <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round">
                 <path d="M50 10 L90 85 L50 70 L10 85 Z" fill="var(--border-color)" />
                 <path d="M50 10 L50 70" stroke="var(--bg-color)" stroke-width="4" />
             </svg>
             FlightPrep Solution
-        </div>
-        <div class="top-bar-controls">
-            <div class="unit-selector-wrap">
-                <span style="opacity: 0.6; margin-right: 2px;">Units:</span>
-                <select id="unitWeight" class="unit-system-select" title="Weight Unit">
-                    <option value="kg">kg</option>
-                    <option value="lbs">lbs</option>
-                </select>
-                <select id="unitArm" class="unit-system-select" title="Arm Unit">
-                    <option value="cm">cm</option>
-                    <option value="in">in</option>
-                </select>
-                <select id="unitFuel" class="unit-system-select" title="Fuel Unit">
-                    <option value="L">L</option>
-                    <option value="USG">USG</option>
-                </select>
-            </div>
+        </a>
+        <div class="top-bar-right">
+            <div class="meta-text">Precision Software // Est. 2026</div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
                 <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -303,7 +837,7 @@
             <a href="VFR.html">Interactive Route Map</a>
             <a href="perfo.html" class="highlight">Aircraft Performance</a>
             <a href="checklists.html">Checklists</a>
-            <a href="#">Emergency Procedures</a>
+            <a href="emergency.html">Emergency Procedures</a>
             
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
             <div class="sidebar-export-wrap">
@@ -318,159 +852,222 @@
             </div>
         </nav>
 
-        <div class="workspace">
-            <div class="perf-section">
-
-                <div class="card">
-                    <div class="card-header"><h2>Aircraft Profile</h2></div>
-                    <div class="card-body">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label>Flight / Callsign</label>
-                                <input type="text" id="acReg" placeholder="F-GXXX">
-                            </div>
-                            <div class="form-group">
-                                <label>Aircraft Type</label>
-                                <input type="text" id="acType" placeholder="DR400">
-                            </div>
+        <div class="content-section">
+            <div class="page-heading-wrap">
+                <div class="page-heading">
+                    <h1>Aircraft Performance</h1>
+                    <p>Mass &amp; Balance computation, CG envelope safety validation, V-speeds reference, and fuel range estimator.</p>
+                </div>
+                <div class="heading-toolbar">
+                    <div class="unit-selector-toolbar">
+                        <span class="unit-toolbar-label">Units</span>
+                        <div class="unit-select-group">
+                            <span class="unit-field-tag">Wgt</span>
+                            <select id="unitWeight" class="unit-system-select" title="Weight Unit">
+                                <option value="kg">kg</option>
+                                <option value="lbs">lbs</option>
+                            </select>
+                        </div>
+                        <div class="unit-select-group">
+                            <span class="unit-field-tag">Arm</span>
+                            <select id="unitArm" class="unit-system-select" title="Arm Unit">
+                                <option value="cm">cm</option>
+                                <option value="in">in</option>
+                            </select>
+                        </div>
+                        <div class="unit-select-group">
+                            <span class="unit-field-tag">Fuel</span>
+                            <select id="unitFuel" class="unit-system-select" title="Fuel Unit">
+                                <option value="L">L</option>
+                                <option value="USG">USG</option>
+                            </select>
                         </div>
                     </div>
+                    <button class="btn-action primary" id="exportPdfBtn" title="Export Weight & Balance computation sheet to PDF">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Export W&amp;B PDF
+                    </button>
                 </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Speeds (V-Speeds)</h2>
-                    </div>
-                    <div class="card-body" style="padding-top:15px;">
-                        <!-- Normal Speeds -->
-                        <div class="speeds-section-title">Normal Operations</div>
-                        <ul class="edit-list" id="normalSpeedsList"></ul>
-                        <button class="btn-action small" id="addNormalSpeedBtn">+ Add Normal</button>
-
-                        <!-- Emergency Speeds -->
-                        <div class="speeds-section-title emergency-title">Emergency &amp; Limits</div>
-                        <ul class="edit-list emergency-list" id="emergencySpeedsList"></ul>
-                        <button class="btn-action small" id="addEmergencySpeedBtn" style="border-color: var(--danger); color: var(--danger);">+ Add Emergency</button>
-                        
-                        <!-- Special Procedures -->
-                        <div class="speeds-section-title special-title">Special Procedures</div>
-                        <ul class="edit-list special-list" id="specialSpeedsList"></ul>
-                        <button class="btn-action small" id="addSpecialSpeedBtn" style="border-color: var(--accent-blue); color: var(--accent-blue);">+ Add Special</button>
-                    </div>
-                </div>
-
-                <div class="card" style="border-bottom: none;">
-                    <div class="card-header"><h2>Range &amp; Endurance</h2></div>
-                    <div class="card-body">
-                        <div class="form-grid cols-3">
-                            <div class="form-group">
-                                <label>Fuel on Board (<span class="unit-fuel">L</span>)</label>
-                                <input type="number" id="fuelOnBoard" value="110" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Fuel Burn (<span class="unit-fuel-flow">L/h</span>)</label>
-                                <input type="number" id="fuelBurn" value="28" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Final Reserve (min)</label>
-                                <input type="number" id="reserveMin" value="45">
-                            </div>
-                            <div class="form-group">
-                                <label>Cruise Speed Ref.</label>
-                                <select id="cruiseTas"></select>
-                            </div>
-                            <div class="form-group">
-                                <label>Taxi / Startup (<span class="unit-fuel">L</span>)</label>
-                                <input type="number" id="taxiFuel" value="4" step="0.1">
-                            </div>
-                            <div class="form-group">
-                                <label>Usable Fuel Capacity (<span class="unit-fuel">L</span>)</label>
-                                <input type="number" id="fuelCapacity" value="110" step="0.1">
-                            </div>
-                        </div>
-
-                        <div class="result-strip">
-                            <div class="result-box">
-                                <div class="r-label">Usable Fuel</div>
-                                <div class="r-value" id="resUsableFuel">— L</div>
-                            </div>
-                            <div class="result-box">
-                                <div class="r-label">Endurance</div>
-                                <div class="r-value" id="resEndurance">— h</div>
-                            </div>
-                            <div class="result-box">
-                                <div class="r-label">Still-Air Range</div>
-                                <div class="r-value" id="resRange">— nm</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
-            <div class="wb-panel">
-                <div class="card-header">
-                    <h2>Weight &amp; Balance</h2>
-                    <button class="btn-action primary" id="exportPdfBtn">Export PDF</button>
-                </div>
-                
-                <div class="wb-params">
-                    <div class="form-group">
-                        <label>Empty Wgt (<span class="unit-weight">kg</span>)</label>
-                        <input type="number" id="emptyWeight" value="600" step="0.1">
+            <div class="workspace-grid">
+                <!-- Left Column: Profile, Speeds, Range -->
+                <div class="perf-column">
+
+                    <!-- Aircraft Profile Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Aircraft Profile</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid cols-3">
+                                <div class="form-group">
+                                    <label>Flight / Callsign</label>
+                                    <input type="text" id="acReg" placeholder="F-GXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label>Aircraft Type</label>
+                                    <input type="text" id="acType" placeholder="DR400">
+                                </div>
+                                <div class="form-group">
+                                    <label>Usable Fuel Cap. (<span class="unit-fuel">L</span>)</label>
+                                    <input type="number" id="fuelCapacity" value="110" step="0.1">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Empty Arm (<span class="unit-arm">cm</span>)</label>
-                        <input type="number" id="emptyArm" value="230" step="0.1">
+
+                    <!-- V-Speeds Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Speeds (V-Speeds)</h2>
+                        </div>
+                        <div class="card-body">
+                            <!-- Normal Speeds -->
+                            <div class="speeds-section-title">Normal Operations</div>
+                            <ul class="edit-list" id="normalSpeedsList"></ul>
+                            <div style="margin-bottom: 20px;">
+                                <button class="btn-action small" id="addNormalSpeedBtn">+ Add Normal</button>
+                            </div>
+
+                            <!-- Emergency Speeds -->
+                            <div class="speeds-section-title emergency-title">Emergency &amp; Limits</div>
+                            <ul class="edit-list emergency-list" id="emergencySpeedsList"></ul>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px; flex-wrap:wrap;">
+                                <button class="btn-action small btn-danger" id="addEmergencySpeedBtn">+ Add Emergency</button>
+                                <a href="emergency.html" class="btn-action small btn-danger">🚨 Full Emergency Procedures &rarr;</a>
+                            </div>
+                            
+                            <!-- Special Procedures -->
+                            <div class="speeds-section-title special-title">Special Procedures</div>
+                            <ul class="edit-list special-list" id="specialSpeedsList"></ul>
+                            <div>
+                                <button class="btn-action small btn-special" id="addSpecialSpeedBtn">+ Add Special</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>MTOW (<span class="unit-weight">kg</span>)</label>
-                        <input type="number" id="mtow" value="1000" step="0.1">
+
+                    <!-- Range & Endurance Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Range &amp; Endurance</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-grid cols-3">
+                                <div class="form-group">
+                                    <label>Fuel on Board (<span class="unit-fuel">L</span>)</label>
+                                    <input type="number" id="fuelOnBoard" value="110" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fuel Burn (<span class="unit-fuel-flow">L/h</span>)</label>
+                                    <input type="number" id="fuelBurn" value="28" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Final Reserve (min)</label>
+                                    <input type="number" id="reserveMin" value="45">
+                                </div>
+                                <div class="form-group">
+                                    <label>Cruise Speed Ref.</label>
+                                    <select id="cruiseTas"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Taxi / Startup (<span class="unit-fuel">L</span>)</label>
+                                    <input type="number" id="taxiFuel" value="4" step="0.1">
+                                </div>
+                            </div>
+
+                            <div class="result-strip">
+                                <div class="result-box">
+                                    <div class="r-label">Usable Fuel</div>
+                                    <div class="r-value" id="resUsableFuel">— L</div>
+                                </div>
+                                <div class="result-box">
+                                    <div class="r-label">Endurance</div>
+                                    <div class="r-value" id="resEndurance">— h</div>
+                                </div>
+                                <div class="result-box">
+                                    <div class="r-label">Still-Air Range</div>
+                                    <div class="r-value" id="resRange">— nm</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>MLW (<span class="unit-weight">kg</span>)</label>
-                        <input type="number" id="mlw" value="1000" step="0.1">
-                    </div>
+
                 </div>
 
-                <table id="wbTable">
-                    <thead>
-                        <tr>
-                            <th style="width:34%;">Item</th>
-                            <th>Weight (<span class="unit-weight">kg</span>)</th>
-                            <th>Arm (<span class="unit-arm">cm</span>)</th>
-                            <th>Moment</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="wbBody"></tbody>
-                </table>
-                <div style="padding: 10px 20px;">
-                    <button class="btn-action small" id="addRowBtn">+ Add Item</button>
-                </div>
-
-                <div class="wb-totals">
-                    <div class="row"><span>Total Weight</span><span id="totWeight">0 kg</span></div>
-                    <div class="row"><span>Total Moment</span><span id="totMoment">0</span></div>
-                    <div class="row grand"><span>Resulting CG (Arm)</span><span id="totCg">0 cm</span></div>
-                    <div class="row"><span>Margin vs MTOW</span><span id="totMargin">0 kg</span></div>
-                </div>
-
-                <div class="limits-inputs">
-                    <div class="form-group">
-                        <label>Fwd CG Limit (<span class="unit-arm">cm</span>)</label>
-                        <input type="number" id="fwdLimit" value="215" step="0.1">
+                <!-- Right Column: Weight & Balance Studio -->
+                <div class="wb-panel">
+                    <div class="card-header">
+                        <h2>Weight &amp; Balance Studio</h2>
                     </div>
-                    <div class="form-group">
-                        <label>Aft CG Limit (<span class="unit-arm">cm</span>)</label>
-                        <input type="number" id="aftLimit" value="245" step="0.1">
+                    
+                    <div class="wb-params">
+                        <div class="form-group">
+                            <label>Empty Wgt (<span class="unit-weight">kg</span>)</label>
+                            <input type="number" id="emptyWeight" value="600" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Empty Arm (<span class="unit-arm">cm</span>)</label>
+                            <input type="number" id="emptyArm" value="230" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>MTOW (<span class="unit-weight">kg</span>)</label>
+                            <input type="number" id="mtow" value="1000" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>MLW (<span class="unit-weight">kg</span>)</label>
+                            <input type="number" id="mlw" value="1000" step="0.1">
+                        </div>
                     </div>
-                </div>
 
-                <div id="statusBanner" class="status-banner ok">Enter data to check envelope</div>
+                    <div class="wb-table-wrap">
+                        <table id="wbTable" class="wb-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:34%;">Item</th>
+                                    <th>Weight (<span class="unit-weight">kg</span>)</th>
+                                    <th>Arm (<span class="unit-arm">cm</span>)</th>
+                                    <th style="text-align:right; padding-right:14px;">Moment</th>
+                                    <th style="width:36px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="wbBody"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="padding: 12px 20px;">
+                        <button class="btn-action small" id="addRowBtn">+ Add Item</button>
+                    </div>
 
-                <div class="cg-graph-wrap">
-                    <svg id="cgGraph" viewBox="0 0 440 260" width="100%" height="260"></svg>
+                    <div class="wb-totals">
+                        <div class="row"><span>Total Weight</span><span id="totWeight">0 kg</span></div>
+                        <div class="row"><span>Total Moment</span><span id="totMoment">0</span></div>
+                        <div class="row grand"><span>Resulting CG (Arm)</span><span id="totCg">0 cm</span></div>
+                        <div class="row"><span>Margin vs MTOW</span><span id="totMargin">0 kg</span></div>
+                    </div>
+
+                    <div class="limits-inputs">
+                        <div class="form-group">
+                            <label>Fwd CG Limit (<span class="unit-arm">cm</span>)</label>
+                            <input type="number" id="fwdLimit" value="215" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Aft CG Limit (<span class="unit-arm">cm</span>)</label>
+                            <input type="number" id="aftLimit" value="245" step="0.1">
+                        </div>
+                    </div>
+
+                    <div id="statusBanner" class="status-banner ok">Enter data to check envelope</div>
+
+                    <div class="cg-graph-wrap">
+                        <svg id="cgGraph" viewBox="0 0 440 260" width="100%" height="260"></svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -512,7 +1109,6 @@
         const emptyArm = document.getElementById('emptyArm');
         const mtow = document.getElementById('mtow');
         const mlw = document.getElementById('mlw');
-        const fuelCapacity = document.getElementById('fuelCapacity');
 
         const normalSpeedsList = document.getElementById('normalSpeedsList');
         const emergencySpeedsList = document.getElementById('emergencySpeedsList');
@@ -527,6 +1123,7 @@
         const reserveMin = document.getElementById('reserveMin');
         const cruiseTas = document.getElementById('cruiseTas');
         const taxiFuel = document.getElementById('taxiFuel');
+        const fuelCapacity = document.getElementById('fuelCapacity');
         const resUsableFuel = document.getElementById('resUsableFuel');
         const resEndurance = document.getElementById('resEndurance');
         const resRange = document.getElementById('resRange');
@@ -860,13 +1457,13 @@
             });
             
             if (normalSpeedsList.children.length === 0) {
-                normalSpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:12px;padding:8px;justify-content:center;background:transparent;border:none;">No normal speeds added</li>';
+                normalSpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:13px;padding:10px;justify-content:center;background:transparent;border:1px dashed var(--hover-bg);">No normal speeds added</li>';
             }
             if (emergencySpeedsList.children.length === 0) {
-                emergencySpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:12px;padding:8px;justify-content:center;background:transparent;border:none;">No emergency speeds added</li>';
+                emergencySpeedsList.innerHTML = '<li style="color:var(--danger);font-size:13px;padding:10px;justify-content:center;background:transparent;border:1px dashed var(--danger-border);">No emergency speeds added</li>';
             }
             if (specialSpeedsList.children.length === 0) {
-                specialSpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:12px;padding:8px;justify-content:center;background:transparent;border:none;">No special speeds added</li>';
+                specialSpeedsList.innerHTML = '<li style="color:var(--accent-blue);font-size:13px;padding:10px;justify-content:center;background:transparent;border:1px dashed var(--special-border);">No special speeds added</li>';
             }
             
             updateCruiseDropdown();
@@ -1098,7 +1695,7 @@
         // ---------- CG envelope graph ----------
         function drawCgGraph(weight, cg, zfw, zfCg, mtowVal, fwd, aft, fuelWeight) {
             const W = 440, H = 260;
-            const padL = 55, padR = 20, padT = 20, padB = 35;
+            const padL = 58, padR = 24, padT = 22, padB = 38;
             const plotW = W - padL - padR;
             const plotH = H - padT - padB;
 
@@ -1122,6 +1719,7 @@
             const greenColor = styleVars.getPropertyValue('--accent-green').trim();
             const dangerColor = styleVars.getPropertyValue('--danger').trim();
             const hoverBg = styleVars.getPropertyValue('--hover-bg').trim();
+            const cardBg = styleVars.getPropertyValue('--card-bg').trim();
 
             const towOk = weight <= mtowVal && weight > 0 && cg >= fwd && cg <= aft;
             const zfOk = zfw <= mtowVal && zfw > 0 && zfCg >= fwd && zfCg <= aft;
@@ -1131,6 +1729,9 @@
             const lineColor = (towOk && zfOk) ? greenColor : dangerColor;
 
             let svg = '';
+            
+            // Background grid lines
+            svg += `<line x1="${padL}" y1="${padT + plotH * 0.5}" x2="${padL + plotW}" y2="${padT + plotH * 0.5}" stroke="${hoverBg}" stroke-width="1" stroke-dasharray="2,4"/>`;
             
             // axes
             svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="${borderColor}" stroke-width="2"/>`;
@@ -1142,18 +1743,18 @@
             // y-axis labels
             [0, mtowVal].forEach(w => {
                 const y = yForW(w);
-                svg += `<text x="${padL-8}" y="${y+4}" font-size="10" fill="${mutedColor}" text-anchor="end">${Math.round(w)}</text>`;
-                svg += `<line x1="${padL-4}" y1="${y}" x2="${padL}" y2="${y}" stroke="${borderColor}" stroke-width="1"/>`;
+                svg += `<text x="${padL-8}" y="${y+4}" font-size="10" font-weight="700" fill="${mutedColor}" text-anchor="end">${Math.round(w)}</text>`;
+                svg += `<line x1="${padL-4}" y1="${y}" x2="${padL}" y2="${y}" stroke="${borderColor}" stroke-width="1.5"/>`;
             });
-            svg += `<text x="14" y="${padT+plotH/2}" font-size="10" fill="${mutedColor}" text-anchor="middle" transform="rotate(-90 14 ${padT+plotH/2})">Weight (${currentUnitWeight})</text>`;
+            svg += `<text x="16" y="${padT+plotH/2}" font-size="10" font-weight="700" letter-spacing="0.5" fill="${mutedColor}" text-anchor="middle" transform="rotate(-90 16 ${padT+plotH/2})">WEIGHT (${currentUnitWeight.toUpperCase()})</text>`;
 
             // x-axis labels
             [fwd, aft].forEach(a => {
                 const x = xForArm(a);
-                svg += `<text x="${x}" y="${padT+plotH+16}" font-size="10" fill="${mutedColor}" text-anchor="middle">${a.toFixed(0)}</text>`;
-                svg += `<line x1="${x}" y1="${padT+plotH}" x2="${x}" y2="${padT+plotH+4}" stroke="${borderColor}" stroke-width="1"/>`;
+                svg += `<text x="${x}" y="${padT+plotH+16}" font-size="10" font-weight="700" fill="${mutedColor}" text-anchor="middle">${a.toFixed(0)}</text>`;
+                svg += `<line x1="${x}" y1="${padT+plotH}" x2="${x}" y2="${padT+plotH+4}" stroke="${borderColor}" stroke-width="1.5"/>`;
             });
-            svg += `<text x="${padL+plotW/2}" y="${H-6}" font-size="10" fill="${mutedColor}" text-anchor="middle">Arm (${currentUnitArm})</text>`;
+            svg += `<text x="${padL+plotW/2}" y="${H-8}" font-size="10" font-weight="700" letter-spacing="0.5" fill="${mutedColor}" text-anchor="middle">ARM (${currentUnitArm.toUpperCase()})</text>`;
 
             // CG points and line
             if (weight > 0) {
@@ -1163,16 +1764,16 @@
                 const py2 = yForW(zfw);
 
                 if (fuelWeight > 0 && weight > zfw) {
-                    svg += `<line x1="${px1}" y1="${py1}" x2="${px2}" y2="${py2}" stroke="${lineColor}" stroke-width="2" stroke-dasharray="4,4" opacity="0.8"/>`;
+                    svg += `<line x1="${px1}" y1="${py1}" x2="${px2}" y2="${py2}" stroke="${lineColor}" stroke-width="2" stroke-dasharray="4,4" opacity="0.85"/>`;
                     
                     svg += `<circle cx="${px2}" cy="${py2}" r="5" fill="${hoverBg}" stroke="${pointColorZfw}" stroke-width="2"/>`;
-                    svg += `<text x="${px2}" y="${py2+14}" font-size="10" font-weight="600" fill="${pointColorZfw}" text-anchor="middle">ZFW: ${zfw.toFixed(0)}${currentUnitWeight}</text>`;
+                    svg += `<text x="${px2}" y="${py2+16}" font-size="10" font-weight="700" fill="${pointColorZfw}" text-anchor="middle">ZFW: ${zfw.toFixed(0)}${currentUnitWeight}</text>`;
                 }
 
-                svg += `<line x1="${px1}" y1="${padT}" x2="${px1}" y2="${padT+plotH}" stroke="${hoverBg}" stroke-width="1"/>`;
+                svg += `<line x1="${px1}" y1="${padT}" x2="${px1}" y2="${padT+plotH}" stroke="${hoverBg}" stroke-width="1.5"/>`;
                 
-                svg += `<circle cx="${px1}" cy="${py1}" r="6" fill="${pointColorTow}" stroke="${borderColor}" stroke-width="2"/>`;
-                svg += `<text x="${px1}" y="${py1-10}" font-size="11" font-weight="700" fill="${pointColorTow}" text-anchor="middle">TOW: ${weight.toFixed(0)}${currentUnitWeight} / ${cg.toFixed(1)}${currentUnitArm}</text>`;
+                svg += `<circle cx="${px1}" cy="${py1}" r="6.5" fill="${pointColorTow}" stroke="${borderColor}" stroke-width="2"/>`;
+                svg += `<text x="${px1}" y="${py1-12}" font-size="11" font-weight="700" fill="${pointColorTow}" text-anchor="middle">TOW: ${weight.toFixed(0)}${currentUnitWeight} / ${cg.toFixed(1)}${currentUnitArm}</text>`;
             }
 
             cgGraph.innerHTML = svg;
@@ -1185,7 +1786,6 @@
                 syncFromFlightPrep();
             }
         });
-
 
         // ---------- PDF export ----------
         document.getElementById('exportPdfBtn').addEventListener('click', () => {
