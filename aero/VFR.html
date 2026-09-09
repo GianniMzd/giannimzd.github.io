@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     
-    <!-- PDF & Canvas Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+    <!-- PDF & Canvas Libraries (Deferred to eliminate initial page blocking) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" defer></script>
 
     <style>
         :root {
@@ -2020,12 +2020,17 @@
             osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 crossOrigin: true,
-                maxZoom: 19
+                maxZoom: 19,
+                subdomains: ['a', 'b', 'c'],
+                updateWhenIdle: true,
+                keepBuffer: 4
             }),
             satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: '&copy; Esri, Maxar, Earthstar Geographics',
                 crossOrigin: true,
-                maxZoom: 19
+                maxZoom: 19,
+                updateWhenIdle: true,
+                keepBuffer: 4
             })
         };
 
@@ -2109,26 +2114,37 @@
         document.getElementById('chkLayerCtrlAirspaces').addEventListener('change', e => {
             if (e.target.checked) ctrlAirspacesLayer.addTo(map);
             else map.removeLayer(ctrlAirspacesLayer);
+            scheduleViewportUpdate();
         });
         document.getElementById('chkLayerSpecialAirspaces').addEventListener('change', e => {
             if (e.target.checked) specialAirspacesLayer.addTo(map);
             else map.removeLayer(specialAirspacesLayer);
+            scheduleViewportUpdate();
         });
         document.getElementById('chkLayerDangerAirspaces').addEventListener('change', e => {
             if (e.target.checked) dangerAirspacesLayer.addTo(map);
             else map.removeLayer(dangerAirspacesLayer);
+            scheduleViewportUpdate();
         });
         document.getElementById('chkLayerAirports').addEventListener('change', e => {
-            if (e.target.checked) airportsLayer.addTo(map);
-            else map.removeLayer(airportsLayer);
+            if (e.target.checked) {
+                airportsLayer.addTo(map);
+                updateAirportsVisibility();
+            } else {
+                map.removeLayer(airportsLayer);
+            }
         });
         document.getElementById('chkLayerVfrPoints').addEventListener('change', e => {
             if (e.target.checked) vfrPointsLayer.addTo(map);
             else map.removeLayer(vfrPointsLayer);
         });
         document.getElementById('chkLayerNavaids').addEventListener('change', e => {
-            if (e.target.checked) navaidsLayer.addTo(map);
-            else map.removeLayer(navaidsLayer);
+            if (e.target.checked) {
+                navaidsLayer.addTo(map);
+                updateNavaidsVisibility();
+            } else {
+                map.removeLayer(navaidsLayer);
+            }
         });
         document.getElementById('chkLayerRoute').addEventListener('change', e => {
             if (e.target.checked) {
@@ -2163,16 +2179,7 @@
         // AIRSPACE RENDERING & INTERACTIVE INSPECTOR
         // =========================================================================
         const airspacePolygonRefs = [];
-        const airspaceLabelsLayer = L.layerGroup();
-
-        function updateAirspaceLabelsVisibility() {
-            if (map.getZoom() >= 8) {
-                if (!map.hasLayer(airspaceLabelsLayer)) map.addLayer(airspaceLabelsLayer);
-            } else {
-                if (map.hasLayer(airspaceLabelsLayer)) map.removeLayer(airspaceLabelsLayer);
-            }
-        }
-        map.on('zoomend', updateAirspaceLabelsVisibility);
+        const airspaceLabelsLayer = L.layerGroup().addTo(map);
 
         function openAirspaceDetailsPopup(sp, latlng) {
             const isProhibited = sp.type === 'Prohibited';
@@ -2268,12 +2275,17 @@
         }
 
         function focusAirspace(id) {
-            const ref = airspacePolygonRefs.find(r => r.sp.id === id);
-            if (ref && ref.polygon) {
-                map.fitBounds(ref.polygon.getBounds(), { padding: [50, 50], maxZoom: 11 });
-                ref.polygon.setStyle({ weight: 4.5, fillOpacity: 0.28 });
+            const sp = AeroData.AIRSPACES.find(s => s.id === id);
+            if (!sp) return;
+            const poly = getOrCreateAirspacePolygon(sp);
+            if (poly) {
+                if (sp._targetLayer && !sp._targetLayer.hasLayer(poly)) {
+                    sp._targetLayer.addLayer(poly);
+                }
+                map.fitBounds(poly.getBounds(), { padding: [50, 50], maxZoom: 11 });
+                poly.setStyle({ weight: 4.5, fillOpacity: 0.28 });
                 setTimeout(() => {
-                    applyAltitudeFilterToPolygon(ref.polygon, ref.sp);
+                    applyAltitudeFilterToPolygon(poly, sp);
                 }, 2500);
             }
         }
@@ -2415,247 +2427,305 @@
             `;
         }
 
-        function renderAirspaces() {
-            ctrlAirspacesLayer.clearLayers();
-            specialAirspacesLayer.clearLayers();
-            dangerAirspacesLayer.clearLayers();
-            airspaceLabelsLayer.clearLayers();
-            airspacePolygonRefs.length = 0;
+        // =========================================================================
+        // HIGH-PERFORMANCE AIRSPACE RENDERING & LAZY VIEWPORT LOD
+        // =========================================================================
+        function getOrCreateAirspacePolygon(sp) {
+            if (sp._poly) return sp._poly;
+
+            const isControlled = sp.type === 'CTR' || sp.type === 'TMA' || sp.type === 'CTA';
+            const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted';
+            
+            let strokeColor = '#1967d2';
+            let fillColor = '#1967d2';
+            let fillOpacity = 0.08;
+            let dashArray = '6, 4';
+            let weight = 2.0;
+
+            if (sp.type === 'Prohibited' || sp.class === 'A') {
+                strokeColor = '#c5221f';
+                fillColor = '#c5221f';
+                fillOpacity = 0.14;
+                dashArray = '5, 3';
+                weight = 2.2;
+            } else if (sp.type === 'Restricted') {
+                strokeColor = '#e65100';
+                fillColor = '#e65100';
+                fillOpacity = 0.11;
+                dashArray = '6, 4';
+                weight = 2.0;
+            } else if (sp.type === 'Danger') {
+                strokeColor = '#d84315';
+                fillColor = '#d84315';
+                fillOpacity = 0.09;
+                dashArray = '4, 4';
+                weight = 1.8;
+            } else if (sp.type === 'TMA' || sp.type === 'CTA') {
+                strokeColor = '#1a237e';
+                fillColor = '#1a237e';
+                fillOpacity = 0.05;
+                dashArray = '8, 5';
+                weight = 1.8;
+            } else if (sp.type === 'RMZ' || sp.type === 'TMZ') {
+                strokeColor = '#7b1fa2';
+                fillColor = '#7b1fa2';
+                fillOpacity = 0.08;
+                dashArray = '4, 6';
+                weight = 1.8;
+            } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
+                strokeColor = '#00796b';
+                fillColor = '#00796b';
+                fillOpacity = 0.05;
+                dashArray = '3, 4';
+                weight = 1.5;
+            }
+
+            const polygon = L.polygon(sp.coordinates, {
+                pane: 'airspacesPane',
+                color: strokeColor,
+                weight: weight,
+                opacity: 0.85,
+                fillColor: fillColor,
+                fillOpacity: fillOpacity,
+                dashArray: dashArray
+            });
+
+            polygon.bindTooltip(() => buildAirspaceTooltipHtml(sp), {
+                className: 'aero-airspace-tooltip',
+                sticky: true,
+                direction: 'top',
+                opacity: 0.99,
+                offset: [0, -10]
+            });
+
+            polygon.on('mouseover', function () {
+                this.setStyle({ weight: weight + 1.5, fillOpacity: Math.min(0.45, fillOpacity * 2.2) });
+                this.setTooltipContent(buildAirspaceTooltipHtml(sp));
+            });
+            polygon.on('mouseout', function () {
+                applyAltitudeFilterToPolygon(polygon, sp);
+            });
+
+            polygon.on('click', function(e) {
+                if (isRulerActive) return;
+                L.DomEvent.stopPropagation(e);
+                openAirspaceDetailsPopup(sp, e.latlng);
+            });
+
+            sp._poly = polygon;
+            sp._targetLayer = isControlled ? ctrlAirspacesLayer : (isSpecial ? specialAirspacesLayer : dangerAirspacesLayer);
+            sp._baseWeight = weight;
+            sp._baseFillOpacity = fillOpacity;
+
+            airspacePolygonRefs.push({ polygon, sp });
+            return polygon;
+        }
+
+        function getOrCreateAirspaceBadge(sp) {
+            if (sp._labelMarker !== undefined) return sp._labelMarker;
+            if (!(sp.type === 'CTR' || sp.type === 'Prohibited' || (sp.type === 'Restricted' && (!sp.country || sp.country === 'FR') && !sp.name.includes('ZRT')))) {
+                sp._labelMarker = null;
+                return null;
+            }
+
+            const centerLat = sp.bbox ? (sp.bbox[0] + sp.bbox[2]) / 2 : sp.coordinates[0][0];
+            const centerLng = sp.bbox ? (sp.bbox[1] + sp.bbox[3]) / 2 : sp.coordinates[0][1];
+
+            let shortName = sp.name
+                .replace(/^(CTR|TMA|LF-)\s*/i, '')
+                .split('(')[0]
+                .replace(/\b\d{3}\.\d{1,3}\b/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            if (shortName.length > 20) shortName = shortName.slice(0, 20).trim();
+
+            const cleanFloor = (sp.floor || 'SFC').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
+            const cleanCeil = (sp.ceiling || 'UNL').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
+            const altText = `${cleanFloor} / ${cleanCeil}`;
+
+            const badgeType = sp.type === 'Prohibited' ? 'prohibited' : (sp.type === 'Restricted' ? 'restricted' : 'ctr');
+
+            const labelIcon = L.divIcon({
+                className: 'aero-airspace-badge-icon',
+                html: `<div class="airspace-map-badge ${badgeType}"><span class="airspace-badge-name">${escapeHtml(shortName)}</span><span class="airspace-badge-alt">${escapeHtml(altText)}</span></div>`,
+                iconSize: null,
+                iconAnchor: null
+            });
+            const labelMarker = L.marker([centerLat, centerLng], { icon: labelIcon, interactive: false });
+            sp._labelMarker = labelMarker;
+            sp._labelLat = centerLat;
+            sp._labelLng = centerLng;
+            return labelMarker;
+        }
+
+        let activeAirspacePolys = new Set();
+        let activeAirspaceBadges = new Set();
+
+        function updateVisibleAirspaces() {
+            const bounds = map.getBounds().pad(0.25);
+            const minLat = bounds.getSouth(), maxLat = bounds.getNorth();
+            const minLng = bounds.getWest(), maxLng = bounds.getEast();
+            const z = map.getZoom();
+            const showBadges = z >= 8;
+
+            const nextPolys = new Set();
+            const nextBadges = new Set();
 
             AeroData.AIRSPACES.forEach(sp => {
-                const isControlled = sp.type === 'CTR' || sp.type === 'TMA' || sp.type === 'CTA';
-                const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted';
-                
-                let strokeColor = '#1967d2';
-                let fillColor = '#1967d2';
-                let fillOpacity = 0.08;
-                let dashArray = '6, 4';
-                let weight = 2.0;
-                let badgeClass = 'aero-badge-ctr';
-
-                if (sp.type === 'Prohibited' || sp.class === 'A') {
-                    strokeColor = '#c5221f';
-                    fillColor = '#c5221f';
-                    fillOpacity = 0.14;
-                    dashArray = '5, 3';
-                    weight = 2.2;
-                    badgeClass = 'aero-badge-prohibited';
-                } else if (sp.type === 'Restricted') {
-                    strokeColor = '#e65100';
-                    fillColor = '#e65100';
-                    fillOpacity = 0.11;
-                    dashArray = '6, 4';
-                    weight = 2.0;
-                    badgeClass = 'aero-badge-restricted';
-                } else if (sp.type === 'Danger') {
-                    strokeColor = '#d84315';
-                    fillColor = '#d84315';
-                    fillOpacity = 0.09;
-                    dashArray = '4, 4';
-                    weight = 1.8;
-                    badgeClass = 'aero-badge-danger';
-                } else if (sp.type === 'TMA' || sp.type === 'CTA') {
-                    strokeColor = '#1a237e';
-                    fillColor = '#1a237e';
-                    fillOpacity = 0.05;
-                    dashArray = '8, 5';
-                    weight = 1.8;
-                    badgeClass = 'aero-badge-tma';
-                } else if (sp.type === 'RMZ' || sp.type === 'TMZ') {
-                    strokeColor = '#7b1fa2';
-                    fillColor = '#7b1fa2';
-                    fillOpacity = 0.08;
-                    dashArray = '4, 6';
-                    weight = 1.8;
-                    badgeClass = 'aero-badge-rmz';
-                } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
-                    strokeColor = '#00796b';
-                    fillColor = '#00796b';
-                    fillOpacity = 0.05;
-                    dashArray = '3, 4';
-                    weight = 1.5;
-                    badgeClass = 'aero-badge-drop';
-                }
-
-                const polygon = L.polygon(sp.coordinates, {
-                    pane: 'airspacesPane',
-                    color: strokeColor,
-                    weight: weight,
-                    opacity: 0.85,
-                    fillColor: fillColor,
-                    fillOpacity: fillOpacity,
-                    dashArray: dashArray
-                });
-
-                polygon.bindTooltip(() => buildAirspaceTooltipHtml(sp), {
-                    className: 'aero-airspace-tooltip',
-                    sticky: true,
-                    direction: 'top',
-                    opacity: 0.99,
-                    offset: [0, -10]
-                });
-
-                polygon.on('mouseover', function () {
-                    this.setStyle({ weight: weight + 1.5, fillOpacity: Math.min(0.45, fillOpacity * 2.2) });
-                    this.setTooltipContent(buildAirspaceTooltipHtml(sp));
-                });
-                polygon.on('mouseout', function () {
-                    applyAltitudeFilterToPolygon(polygon, sp);
-                });
-
-                // Clicking airspace opens informative Details Popup with "Add Waypoint Here" option
-                polygon.on('click', function(e) {
-                    if (isRulerActive) return;
-                    L.DomEvent.stopPropagation(e);
-                    openAirspaceDetailsPopup(sp, e.latlng);
-                });
-
-                if (isControlled) {
-                    ctrlAirspacesLayer.addLayer(polygon);
-                } else if (isSpecial) {
-                    specialAirspacesLayer.addLayer(polygon);
-                } else {
-                    dangerAirspacesLayer.addLayer(polygon);
-                }
-
-                // Add center map badges for CTR, Prohibited, and major Restricted zones
-                if (sp.type === 'CTR' || sp.type === 'Prohibited' || (sp.type === 'Restricted' && (!sp.country || sp.country === 'FR') && !sp.name.includes('ZRT'))) {
-                    const centerLat = sp.bbox ? (sp.bbox[0] + sp.bbox[2]) / 2 : sp.coordinates[0][0];
-                    const centerLng = sp.bbox ? (sp.bbox[1] + sp.bbox[3]) / 2 : sp.coordinates[0][1];
-                    
-                    // Format badge name cleanly (strip frequency and parentheticals to prevent truncation)
-                    let shortName = sp.name
-                        .replace(/^(CTR|TMA|LF-)\s*/i, '')
-                        .split('(')[0]
-                        .replace(/\b\d{3}\.\d{1,3}\b/g, '')
-                        .replace(/\s+/g, ' ')
-                        .trim();
-                    if (shortName.length > 20) {
-                        shortName = shortName.slice(0, 20).trim();
+                const b = sp.bbox;
+                if (b[0] <= maxLat && b[2] >= minLat && b[1] <= maxLng && b[3] >= minLng) {
+                    if (z <= 6 && (sp.type === 'Glider Sector' || sp.type === 'Drop Zone' || sp.type === 'RMZ' || sp.type === 'TMZ')) {
+                        return;
                     }
 
-                    // Format altitudes cleanly (e.g. SFC / 2500')
-                    const cleanFloor = (sp.floor || 'SFC').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
-                    const cleanCeil = (sp.ceiling || 'UNL').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
-                    const altText = `${cleanFloor} / ${cleanCeil}`;
+                    const poly = getOrCreateAirspacePolygon(sp);
+                    nextPolys.add(sp);
 
-                    const badgeType = sp.type === 'Prohibited' ? 'prohibited' : (sp.type === 'Restricted' ? 'restricted' : 'ctr');
+                    if (!activeAirspacePolys.has(sp)) {
+                        sp._targetLayer.addLayer(poly);
+                        applyAltitudeFilterToPolygon(poly, sp);
+                    }
 
-                    const labelIcon = L.divIcon({
-                        className: 'aero-airspace-badge-icon',
-                        html: `<div class="airspace-map-badge ${badgeType}"><span class="airspace-badge-name">${escapeHtml(shortName)}</span><span class="airspace-badge-alt">${escapeHtml(altText)}</span></div>`,
-                        iconSize: null,
-                        iconAnchor: null
-                    });
-                    const labelMarker = L.marker([centerLat, centerLng], { icon: labelIcon, interactive: false });
-                    airspaceLabelsLayer.addLayer(labelMarker);
+                    if (showBadges) {
+                        const badge = getOrCreateAirspaceBadge(sp);
+                        if (badge && sp._labelLat >= minLat && sp._labelLat <= maxLat && sp._labelLng >= minLng && sp._labelLng <= maxLng) {
+                            nextBadges.add(sp);
+                            if (!activeAirspaceBadges.has(sp)) {
+                                airspaceLabelsLayer.addLayer(badge);
+                            }
+                        }
+                    }
                 }
-
-                airspacePolygonRefs.push({ polygon, sp, originalStyle: { color: strokeColor, weight, fillOpacity, opacity: 0.85 } });
             });
 
-            updateAirspaceLabelsVisibility();
+            activeAirspacePolys.forEach(sp => {
+                if (!nextPolys.has(sp) && sp._poly) {
+                    sp._targetLayer.removeLayer(sp._poly);
+                }
+            });
+            activeAirspacePolys = nextPolys;
+
+            activeAirspaceBadges.forEach(sp => {
+                if (!nextBadges.has(sp) && sp._labelMarker) {
+                    airspaceLabelsLayer.removeLayer(sp._labelMarker);
+                }
+            });
+            activeAirspaceBadges = nextBadges;
         }
 
         // =========================================================================
-        // AIRPORT RENDERING WITH ZOOM LOD
+        // AIRPORT RENDERING WITH LAZY VIEWPORT LOD
         // =========================================================================
-        let allAirportMarkers = [];
+        function getOrCreateAirportMarker(apt) {
+            if (apt._marker) return apt._marker;
 
-        function initAirportsData() {
-            allAirportMarkers = AeroData.AIRPORTS.map(apt => {
-                let badgeClass = 'ga';
-                let iconSymbol = '✈';
-                if (apt.type === 'intl') { badgeClass = 'intl'; iconSymbol = '🛫'; }
-                else if (apt.type === 'mil') { badgeClass = 'mil'; iconSymbol = '★'; }
-                else if (apt.type === 'uncontrolled') { badgeClass = 'uncontrolled'; iconSymbol = '🛩'; }
+            let badgeClass = 'ga';
+            let iconSymbol = '✈';
+            if (apt.type === 'intl') { badgeClass = 'intl'; iconSymbol = '🛫'; }
+            else if (apt.type === 'mil') { badgeClass = 'mil'; iconSymbol = '★'; }
+            else if (apt.type === 'uncontrolled') { badgeClass = 'uncontrolled'; iconSymbol = '🛩'; }
 
-                const icon = L.divIcon({
-                    className: 'aero-div-icon',
-                    html: `<div class="aero-icon-airport ${badgeClass}" style="width:22px; height:22px;" title="${escapeHtml(apt.icao)} - ${escapeHtml(apt.name)}">${iconSymbol}</div>`,
-                    iconSize: [22, 22],
-                    iconAnchor: [11, 11]
-                });
-
-                const marker = L.marker([apt.lat, apt.lng], { icon: icon });
-
-                const rwyHtml = (apt.runways || []).map(r => `
-                    <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 0;">
-                        <strong>RWY ${escapeHtml(r.name)}</strong> &bull; ${escapeHtml(r.length)} &bull; ${escapeHtml(r.surface)}
-                    </div>
-                `).join('');
-
-                const freqHtml = (apt.frequencies || []).map(f => `
-                    <div style="display:flex; justify-content:space-between; font-size:11px; padding:2px 0;">
-                        <span style="font-weight:700;">${escapeHtml(f.type)} (${escapeHtml(f.name || apt.name)})</span>
-                        <strong style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue);">${escapeHtml(f.freq)}</strong>
-                    </div>
-                `).join('');
-
-                const popupContent = `
-                    <div class="aero-popup-header">
-                        <div>
-                            <div class="aero-popup-title">${escapeHtml(apt.icao)} — ${escapeHtml(apt.name)}</div>
-                            <div style="font-size:10px; color:var(--muted-text);">${escapeHtml(apt.city)} &bull; Elev: ${apt.alt} ft AMSL</div>
-                        </div>
-                        <span class="spotlight-badge badge-airport">${escapeHtml(apt.type.toUpperCase())}</span>
-                    </div>
-                    <div class="aero-popup-body">
-                        <div style="font-weight:800; text-transform:uppercase; font-size:10px; color:var(--muted-text); margin-bottom:4px;">Runways</div>
-                        <div style="background:var(--bg-color); padding:6px 8px; border-radius:4px; margin-bottom:8px;">${rwyHtml || 'Standard'}</div>
-
-                        <div style="font-weight:800; text-transform:uppercase; font-size:10px; color:var(--muted-text); margin-bottom:4px;">Communications &amp; Frequencies</div>
-                        <div style="background:var(--bg-color); padding:6px 8px; border-radius:4px; margin-bottom:8px;">${freqHtml || '123.500 MHz A/A'}</div>
-
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Circuit</span>
-                            <span class="aero-popup-val">${escapeHtml(apt.circuit?.alt || '1000 ft AGL')}</span>
-                        </div>
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Fuel</span>
-                            <span class="aero-popup-val">${escapeHtml(apt.fuel || '100LL')}</span>
-                        </div>
-
-                        <!-- Quick Add Actions -->
-                        <div class="aero-popup-actions">
-                            <button class="btn-popup-action accent" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'departure')">🛫 Set Departure</button>
-                            <button class="btn-popup-action" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'waypoint')">➕ Add Waypoint</button>
-                            <button class="btn-popup-action accent" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'arrival')">🛬 Set Arrival</button>
-                            <button class="btn-popup-action" onclick="window.open('flg_prep.html', '_blank')">🌤️ Weather Brief</button>
-                        </div>
-                    </div>
-                `;
-                marker.bindPopup(popupContent);
-                marker.bindTooltip(`<strong>${apt.icao}</strong> &bull; ${apt.name}`, { direction: 'top', offset: [0, -10] });
-
-                return { marker, apt };
+            const icon = L.divIcon({
+                className: 'aero-div-icon',
+                html: `<div class="aero-icon-airport ${badgeClass}" style="width:22px; height:22px;" title="${escapeHtml(apt.icao)} - ${escapeHtml(apt.name)}">${iconSymbol}</div>`,
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
             });
 
-            updateAirportsVisibility();
+            const marker = L.marker([apt.lat, apt.lng], { icon: icon });
+
+            const rwyHtml = (apt.runways || []).map(r => `
+                <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 0;">
+                    <strong>RWY ${escapeHtml(r.name)}</strong> &bull; ${escapeHtml(r.length)} &bull; ${escapeHtml(r.surface)}
+                </div>
+            `).join('');
+
+            const freqHtml = (apt.frequencies || []).map(f => `
+                <div style="display:flex; justify-content:space-between; font-size:11px; padding:2px 0;">
+                    <span style="font-weight:700;">${escapeHtml(f.type)} (${escapeHtml(f.name || apt.name)})</span>
+                    <strong style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue);">${escapeHtml(f.freq)}</strong>
+                </div>
+            `).join('');
+
+            const popupContent = `
+                <div class="aero-popup-header">
+                    <div>
+                        <div class="aero-popup-title">${escapeHtml(apt.icao)} — ${escapeHtml(apt.name)}</div>
+                        <div style="font-size:10px; color:var(--muted-text);">${escapeHtml(apt.city)} &bull; Elev: ${apt.alt} ft AMSL</div>
+                    </div>
+                    <span class="spotlight-badge badge-airport">${escapeHtml(apt.type.toUpperCase())}</span>
+                </div>
+                <div class="aero-popup-body">
+                    <div style="font-weight:800; text-transform:uppercase; font-size:10px; color:var(--muted-text); margin-bottom:4px;">Runways</div>
+                    <div style="background:var(--bg-color); padding:6px 8px; border-radius:4px; margin-bottom:8px;">${rwyHtml || 'Standard'}</div>
+
+                    <div style="font-weight:800; text-transform:uppercase; font-size:10px; color:var(--muted-text); margin-bottom:4px;">Communications &amp; Frequencies</div>
+                    <div style="background:var(--bg-color); padding:6px 8px; border-radius:4px; margin-bottom:8px;">${freqHtml || '123.500 MHz A/A'}</div>
+
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Circuit</span>
+                        <span class="aero-popup-val">${escapeHtml(apt.circuit?.alt || '1000 ft AGL')}</span>
+                    </div>
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Fuel</span>
+                        <span class="aero-popup-val">${escapeHtml(apt.fuel || '100LL')}</span>
+                    </div>
+
+                    <!-- Quick Add Actions -->
+                    <div class="aero-popup-actions">
+                        <button class="btn-popup-action accent" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'departure')">🛫 Set Departure</button>
+                        <button class="btn-popup-action" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'waypoint')">➕ Add Waypoint</button>
+                        <button class="btn-popup-action accent" onclick="addAirportAsWp('${escapeHtml(apt.icao)}', 'arrival')">🛬 Set Arrival</button>
+                        <button class="btn-popup-action" onclick="window.open('flg_prep.html', '_blank')">🌤️ Weather Brief</button>
+                    </div>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+            marker.bindTooltip(`<strong>${apt.icao}</strong> &bull; ${apt.name}`, { direction: 'top', offset: [0, -10] });
+
+            apt._marker = marker;
+            return marker;
         }
+
+        let activeAirports = new Set();
 
         function updateAirportsVisibility() {
-            airportsLayer.clearLayers();
+            if (!map.hasLayer(airportsLayer)) return;
             const z = map.getZoom();
-            const bounds = map.getBounds();
+            const bounds = map.getBounds().pad(0.15);
+            const minLat = bounds.getSouth(), maxLat = bounds.getNorth();
+            const minLng = bounds.getWest(), maxLng = bounds.getEast();
 
-            allAirportMarkers.forEach(item => {
-                const apt = item.apt;
+            const nextAirports = new Set();
+
+            AeroData.AIRPORTS.forEach(apt => {
                 let visible = false;
                 if (z <= 5) visible = apt.type === 'intl';
                 else if (z <= 7) visible = apt.type === 'intl' || apt.type === 'ga';
                 else visible = true;
 
-                if (visible && bounds.contains([apt.lat, apt.lng])) {
-                    airportsLayer.addLayer(item.marker);
+                if (visible && apt.lat >= minLat && apt.lat <= maxLat && apt.lng >= minLng && apt.lng <= maxLng) {
+                    const marker = getOrCreateAirportMarker(apt);
+                    nextAirports.add(apt);
+                    if (!activeAirports.has(apt)) {
+                        airportsLayer.addLayer(marker);
+                    }
                 }
             });
+
+            activeAirports.forEach(apt => {
+                if (!nextAirports.has(apt) && apt._marker) {
+                    airportsLayer.removeLayer(apt._marker);
+                }
+            });
+            activeAirports = nextAirports;
         }
 
-        map.on('zoomend moveend', updateAirportsVisibility);
+        // Backward compatibility for external scripts
+        const allAirportMarkers = AeroData.AIRPORTS.map(apt => ({ apt, get marker() { return getOrCreateAirportMarker(apt); } }));
 
         // =========================================================================
-        // VFR REPORTING POINTS & NAVAIDS
+        // VFR REPORTING POINTS
         // =========================================================================
         function renderVfrPoints() {
             vfrPointsLayer.clearLayers();
@@ -2704,50 +2774,105 @@
             });
         }
 
-        function renderNavaids() {
-            navaidsLayer.clearLayers();
-            AeroData.NAVAIDS.forEach(nav => {
-                const icon = L.divIcon({
-                    className: 'aero-div-icon',
-                    html: `<div class="aero-icon-vor" title="${escapeHtml(nav.ident)} (${escapeHtml(nav.freq)})">⬡ ${escapeHtml(nav.ident)}</div>`,
-                    iconSize: [45, 20],
-                    iconAnchor: [22, 10]
-                });
+        // =========================================================================
+        // NAVAIDS RENDERING WITH LAZY VIEWPORT LOD
+        // =========================================================================
+        function getOrCreateNavaidMarker(nav) {
+            if (nav._marker) return nav._marker;
+            const icon = L.divIcon({
+                className: 'aero-div-icon',
+                html: `<div class="aero-icon-vor" title="${escapeHtml(nav.ident)} (${escapeHtml(nav.freq)})">⬡ ${escapeHtml(nav.ident)}</div>`,
+                iconSize: [45, 20],
+                iconAnchor: [22, 10]
+            });
 
-                const marker = L.marker([nav.lat, nav.lng], { icon: icon });
-                const popupContent = `
-                    <div class="aero-popup-header">
-                        <div>
-                            <div class="aero-popup-title">${escapeHtml(nav.ident)} &bull; ${escapeHtml(nav.freq)}</div>
-                            <div style="font-size:10.5px; color:var(--muted-text); font-weight:700;">${escapeHtml(nav.name)}</div>
-                        </div>
-                        <span class="spotlight-badge badge-vor">${escapeHtml(nav.type)}</span>
+            const marker = L.marker([nav.lat, nav.lng], { icon: icon });
+            const popupContent = `
+                <div class="aero-popup-header">
+                    <div>
+                        <div class="aero-popup-title">${escapeHtml(nav.ident)} &bull; ${escapeHtml(nav.freq)}</div>
+                        <div style="font-size:10.5px; color:var(--muted-text); font-weight:700;">${escapeHtml(nav.name)}</div>
                     </div>
-                    <div class="aero-popup-body">
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Frequency / Channel</span>
-                            <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue);">${escapeHtml(nav.freq)} (${escapeHtml(nav.channel || '—')})</span>
-                        </div>
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Morse Ident</span>
-                            <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; font-size:13px;">${escapeHtml(nav.morse)}</span>
-                        </div>
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Elevation</span>
-                            <span class="aero-popup-val">${nav.alt} ft AMSL</span>
-                        </div>
-                        <div style="margin-top:12px;">
-                            <button class="btn-popup-action accent" style="width:100%;" onclick="addVfrPointAsWp('${escapeHtml(nav.ident + (nav.type ? ' ' + nav.type : ''))}', ${nav.lat}, ${nav.lng})">
-                                ➕ Add ${escapeHtml(nav.ident)} to Route
-                            </button>
-                        </div>
+                    <span class="spotlight-badge badge-vor">${escapeHtml(nav.type)}</span>
+                </div>
+                <div class="aero-popup-body">
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Frequency / Channel</span>
+                        <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; color:var(--accent-blue);">${escapeHtml(nav.freq)} (${escapeHtml(nav.channel || '—')})</span>
                     </div>
-                `;
-                marker.bindPopup(popupContent);
-                marker.bindTooltip(`<strong>${nav.ident}</strong> (${nav.freq})`, { direction: 'top', offset: [0, -10] });
-                navaidsLayer.addLayer(marker);
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Morse Ident</span>
+                        <span class="aero-popup-val" style="font-family:'IBM Plex Mono',monospace; font-size:13px;">${escapeHtml(nav.morse)}</span>
+                    </div>
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Elevation</span>
+                        <span class="aero-popup-val">${nav.alt} ft AMSL</span>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <button class="btn-popup-action accent" style="width:100%;" onclick="addVfrPointAsWp('${escapeHtml(nav.ident + (nav.type ? ' ' + nav.type : ''))}', ${nav.lat}, ${nav.lng})">
+                            ➕ Add ${escapeHtml(nav.ident)} to Route
+                        </button>
+                    </div>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+            marker.bindTooltip(`<strong>${nav.ident}</strong> (${nav.freq})`, { direction: 'top', offset: [0, -10] });
+
+            nav._marker = marker;
+            return marker;
+        }
+
+        let activeNavaids = new Set();
+
+        function updateNavaidsVisibility() {
+            if (!map.hasLayer(navaidsLayer)) return;
+            const z = map.getZoom();
+            if (z < 7) {
+                activeNavaids.forEach(nav => {
+                    if (nav._marker) navaidsLayer.removeLayer(nav._marker);
+                });
+                activeNavaids.clear();
+                return;
+            }
+
+            const bounds = map.getBounds().pad(0.15);
+            const minLat = bounds.getSouth(), maxLat = bounds.getNorth();
+            const minLng = bounds.getWest(), maxLng = bounds.getEast();
+
+            const nextNavaids = new Set();
+
+            AeroData.NAVAIDS.forEach(nav => {
+                if (nav.lat >= minLat && nav.lat <= maxLat && nav.lng >= minLng && nav.lng <= maxLng) {
+                    const marker = getOrCreateNavaidMarker(nav);
+                    nextNavaids.add(nav);
+                    if (!activeNavaids.has(nav)) {
+                        navaidsLayer.addLayer(marker);
+                    }
+                }
+            });
+
+            activeNavaids.forEach(nav => {
+                if (!nextNavaids.has(nav) && nav._marker) {
+                    navaidsLayer.removeLayer(nav._marker);
+                }
+            });
+            activeNavaids = nextNavaids;
+        }
+
+        // =========================================================================
+        // DEBOUNCED VIEWPORT UPDATE DISPATCHER
+        // =========================================================================
+        let viewportTimer = null;
+        function scheduleViewportUpdate() {
+            if (viewportTimer) cancelAnimationFrame(viewportTimer);
+            viewportTimer = requestAnimationFrame(() => {
+                updateVisibleAirspaces();
+                updateAirportsVisibility();
+                updateNavaidsVisibility();
             });
         }
+
+        map.on('moveend zoomend', scheduleViewportUpdate);
 
         // =========================================================================
         // ALTITUDE SLICER / FILTER
@@ -2862,13 +2987,14 @@
                                     if (l.getLatLng && Math.abs(l.getLatLng().lat - sel.lat) < 0.001) l.openPopup();
                                 });
                             } else if (sel.type === 'navaid') {
-                                navaidsLayer.eachLayer(l => {
-                                    if (l.getLatLng && Math.abs(l.getLatLng().lat - sel.lat) < 0.001) l.openPopup();
-                                });
+                                const navItem = AeroData.NAVAIDS.find(n => n.ident === sel.item.ident);
+                                if (navItem) {
+                                    const marker = getOrCreateNavaidMarker(navItem);
+                                    if (!navaidsLayer.hasLayer(marker)) navaidsLayer.addLayer(marker);
+                                    marker.openPopup();
+                                }
                             } else if (sel.type === 'airspace') {
-                                airspacePolygonRefs.forEach(ref => {
-                                    if (ref.sp.name === sel.item.name) ref.polygon.openPopup();
-                                });
+                                focusAirspace(sel.item.id);
                             }
                         }, 400);
                     }
@@ -3790,12 +3916,10 @@
         }
 
         // =========================================================================
-        // INITIALIZATION
+        // INITIALIZATION (Instantaneous Viewport-Bounded Load)
         // =========================================================================
-        renderAirspaces();
-        initAirportsData();
         renderVfrPoints();
-        renderNavaids();
+        scheduleViewportUpdate();
 
         loadState();
         syncTasFromPerf();
