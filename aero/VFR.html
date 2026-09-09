@@ -78,7 +78,8 @@
             border-bottom: 2px solid var(--border-color); 
             background-color: var(--bg-color); 
             flex-shrink: 0;
-            z-index: 100;
+            position: relative;
+            z-index: 3000;
             gap: 20px;
         }
 
@@ -103,6 +104,7 @@
             flex: 1;
             max-width: 480px;
             min-width: 260px;
+            z-index: 3100;
         }
 
         .spotlight-input-box {
@@ -154,7 +156,7 @@
             box-shadow: var(--shadow-lg);
             max-height: 380px;
             overflow-y: auto;
-            z-index: 2500;
+            z-index: 3200;
             display: none;
         }
         .spotlight-item {
@@ -364,90 +366,76 @@
         }
 
         /* -------------------------------------------------------------
-           FLIGHT DECK HUD & ROUTE RIBBON (FLOATING GLASS DOCK)
+           FLIGHT DECK HUD CARD (BOTTOM-LEFT CORNER DOCK)
         ------------------------------------------------------------- */
         .flight-deck-hud {
             position: absolute;
-            top: 16px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 24px;
+            left: 18px;
             z-index: 1000;
             background: var(--card-bg-glass);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 2px solid var(--border-color);
-            border-radius: 32px;
+            border-radius: 8px;
             box-shadow: var(--shadow-md);
-            padding: 6px 16px;
+            padding: 10px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 480px;
+            max-width: calc(100% - 190px);
+            pointer-events: auto;
+            transition: bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s ease;
+        }
+
+        .hud-top-row {
             display: flex;
             align-items: center;
-            gap: 18px;
-            max-width: 90%;
-            pointer-events: auto;
-            transition: all 0.2s ease;
+            justify-content: space-between;
+            gap: 12px;
         }
 
         .hud-route-summary {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             font-weight: 800;
-            font-size: 13.5px;
+            font-size: 12px;
             letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1;
         }
         .hud-airport-pill {
             background: var(--border-color);
             color: var(--bg-color);
             padding: 3px 8px;
-            border-radius: 12px;
+            border-radius: 4px;
             font-family: 'IBM Plex Mono', monospace;
             font-size: 12px;
             font-weight: 700;
+            white-space: nowrap;
         }
         .hud-route-arrow {
             color: var(--magenta);
             font-weight: 900;
-        }
-
-        .hud-metrics {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            border-left: 1.5px solid var(--line);
-            border-right: 1.5px solid var(--line);
-            padding: 0 14px;
-        }
-        .hud-metric-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            line-height: 1.1;
-        }
-        .hud-metric-label {
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted-text);
-        }
-        .hud-metric-val {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--text-color);
-            font-variant-numeric: tabular-nums;
+            font-size: 11px;
         }
 
         .hud-actions {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
+            flex-shrink: 0;
         }
         .hud-btn {
             background: transparent;
             border: 1.5px solid var(--border-color);
-            border-radius: 16px;
-            padding: 4px 10px;
+            border-radius: 4px;
+            padding: 4px 8px;
             font-size: 11px;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
@@ -457,8 +445,13 @@
             align-items: center;
             gap: 4px;
             transition: all 0.15s ease;
+            white-space: nowrap;
         }
         .hud-btn:hover {
+            background: var(--border-color);
+            color: var(--bg-color);
+        }
+        .hud-btn.active {
             background: var(--border-color);
             color: var(--bg-color);
         }
@@ -467,6 +460,36 @@
             cursor: not-allowed;
             background: transparent;
             color: var(--text-color);
+        }
+
+        .hud-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            border-top: 1px solid var(--line);
+            padding-top: 8px;
+            text-align: center;
+        }
+        .hud-metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.2;
+        }
+        .hud-metric-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--muted-text);
+            margin-bottom: 2px;
+        }
+        .hud-metric-val {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-color);
+            font-variant-numeric: tabular-nums;
         }
 
         /* -------------------------------------------------------------
@@ -543,7 +566,7 @@
         }
         .aero-layer-content { 
             padding: 10px 12px; 
-            max-height: 380px; 
+            max-height: min(520px, calc(100vh - 160px)); 
             overflow-y: auto; 
             order: 1; /* Content above header */
         }
@@ -592,21 +615,7 @@
 
         /* Empty State Map Instruction */
         .empty-map-state { 
-            position: absolute; 
-            bottom: 24px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: var(--card-bg-glass); 
-            backdrop-filter: blur(12px);
-            border: 2px solid var(--border-color); 
-            padding: 10px 20px; 
-            font-weight: 600; 
-            font-size: 13px; 
-            z-index: 990; 
-            pointer-events: none; 
-            border-radius: 20px; 
-            box-shadow: var(--shadow-sm); 
-            white-space: nowrap;
+            display: none !important;
         }
 
         /* -------------------------------------------------------------
@@ -1115,7 +1124,7 @@
         /* Responsive Styles */
         @media (max-width: 1024px) {
             .navlog-dock { width: 320px; }
-            .flight-deck-hud { max-width: 95%; padding: 6px 12px; gap: 10px; }
+            .flight-deck-hud { width: 440px; max-width: calc(100% - 190px); }
         }
         @media (max-width: 900px) {
             .main-layout { flex-direction: column; }
@@ -1137,6 +1146,7 @@
         @media (max-width: 768px) {
             .workspace { flex-direction: column; }
             .navlog-dock { width: 100% !important; height: 50vh; }
+            .flight-deck-hud { width: calc(100% - 36px); max-width: none; }
         }
     </style>
 </head>
@@ -1230,51 +1240,46 @@
             <!-- Map Area -->
             <div class="map-section">
                 
-                <!-- FLIGHT DECK HUD RIBBON -->
-                <div class="flight-deck-hud" id="flightDeckHud">
-                    <div class="hud-route-summary" id="hudRouteSummary">
-                        <span style="color: var(--muted-text); font-weight:600; font-size:12px;">NO FLIGHT PLAN</span>
-                    </div>
-
-                    <div class="hud-metrics">
-                        <div class="hud-metric-item">
-                            <span class="hud-metric-label">Dist</span>
-                            <span class="hud-metric-val" id="hudDistVal">0.0 nm</span>
-                        </div>
-                        <div class="hud-metric-item">
-                            <span class="hud-metric-label">ETE</span>
-                            <span class="hud-metric-val" id="hudEteVal">00:00</span>
-                        </div>
-                        <div class="hud-metric-item">
-                            <span class="hud-metric-label">Avg GS</span>
-                            <span class="hud-metric-val" id="hudGsVal">110 kt</span>
-                        </div>
-                        <div class="hud-metric-item">
-                            <span class="hud-metric-label">Est Fuel</span>
-                            <span class="hud-metric-val" id="hudFuelVal">0.0 L</span>
-                        </div>
-                    </div>
-
-                    <div class="hud-actions">
-                        <button class="hud-btn" id="hudFitBtn" title="Fit flight route to screen">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>
-                            Fit
-                        </button>
-                        <button class="hud-btn" id="hudReverseBtn" title="Reverse route direction">
-                            ⇄ Invert
-                        </button>
-                        <button class="hud-btn" id="hudProfileToggleBtn" title="Toggle vertical airspace cross-section">
-                            ▲ Profile
-                        </button>
-                        <button class="hud-btn" id="hudClearBtn" style="color: var(--danger);" title="Clear entire route">
-                            ✕ Clear
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Leaflet Map Container -->
                 <div class="map-wrapper">
                     <div id="map"></div>
+
+                    <!-- Bottom-Left Flight Deck HUD Card -->
+                    <div class="flight-deck-hud" id="flightDeckHud">
+                        <div class="hud-top-row">
+                            <div class="hud-route-summary" id="hudRouteSummary">
+                                <span style="color: var(--muted-text); font-weight:600; font-size:11.5px;">NO FLIGHT PLAN</span>
+                            </div>
+                            <div class="hud-actions">
+                                <button class="hud-btn" id="hudFitBtn" title="Fit flight route to screen">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line></svg>
+                                    Fit
+                                </button>
+                                <button class="hud-btn" id="hudReverseBtn" title="Reverse route direction">⇄ Invert</button>
+                                <button class="hud-btn" id="hudProfileToggleBtn" title="Toggle vertical airspace cross-section">▲ Profile</button>
+                                <button class="hud-btn" id="hudClearBtn" style="color: var(--danger);" title="Clear entire route">✕ Clear</button>
+                            </div>
+                        </div>
+
+                        <div class="hud-metrics">
+                            <div class="hud-metric-item">
+                                <span class="hud-metric-label">Dist</span>
+                                <span class="hud-metric-val" id="hudDistVal">0.0 nm</span>
+                            </div>
+                            <div class="hud-metric-item">
+                                <span class="hud-metric-label">ETE</span>
+                                <span class="hud-metric-val" id="hudEteVal">00:00</span>
+                            </div>
+                            <div class="hud-metric-item">
+                                <span class="hud-metric-label">Avg GS</span>
+                                <span class="hud-metric-val" id="hudGsVal">110 kt</span>
+                            </div>
+                            <div class="hud-metric-item">
+                                <span class="hud-metric-label">Est Fuel</span>
+                                <span class="hud-metric-val" id="hudFuelVal">0.0 L</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Floating Aeronautical Layers Control -->
                     <div class="floating-chart-tools">
@@ -1291,35 +1296,7 @@
                                 <span id="layerToggleIcon">▴</span>
                             </div>
                             <div class="aero-layer-content" id="aeroLayerContent">
-                                <div class="aero-layer-heading">Base Chart</div>
-                                <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="openflightmaps" checked>
-                                    <span>Aero (OpenFlightMaps)</span>
-                                </label>
-                                <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="carto_light">
-                                    <span>Carto Light (Clean)</span>
-                                </label>
-                                <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="osm">
-                                    <span>OpenStreetMap</span>
-                                </label>
-                                <label class="aero-layer-item">
-                                    <input type="radio" name="baseLayerRadio" value="satellite">
-                                    <span>Satellite Imagery</span>
-                                </label>
-
-                                <div class="aero-layer-heading">Airspaces & Limits</div>
-                                <label class="aero-layer-item">
-                                    <input type="checkbox" id="chkLayerCtrlAirspaces" checked>
-                                    <span>Controlled (CTR / TMA)</span>
-                                </label>
-                                <label class="aero-layer-item">
-                                    <input type="checkbox" id="chkLayerSpecialAirspaces" checked>
-                                    <span>Prohibited &amp; Restricted (P/R)</span>
-                                </label>
-
-                                <div class="aero-layer-heading">Airfields & Nav</div>
+                                <div class="aero-layer-heading">Waypoints &amp; Airfields</div>
                                 <label class="aero-layer-item">
                                     <input type="checkbox" id="chkLayerAirports" checked>
                                     <span>Airports (All French &amp; Hubs)</span>
@@ -1336,6 +1313,34 @@
                                     <input type="checkbox" id="chkLayerRoute" checked>
                                     <span>Flight Track &amp; Navlog</span>
                                 </label>
+
+                                <div class="aero-layer-heading" style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border-color);">Airspaces &amp; Limits</div>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerCtrlAirspaces" checked>
+                                    <span>Controlled (CTR / TMA)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerSpecialAirspaces" checked>
+                                    <span>Prohibited &amp; Restricted (P/R)</span>
+                                </label>
+
+                                <div class="aero-layer-heading" style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border-color);">Base Chart</div>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="openflightmaps" checked>
+                                    <span>Aero (OpenFlightMaps)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="carto_light">
+                                    <span>Carto Light (Clean)</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="osm">
+                                    <span>OpenStreetMap</span>
+                                </label>
+                                <label class="aero-layer-item">
+                                    <input type="radio" name="baseLayerRadio" value="satellite">
+                                    <span>Satellite Imagery</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -1346,9 +1351,6 @@
                         <span class="ruler-banner-text" id="rulerBannerText">Click chart to start measuring...</span>
                         <button class="btn-cockpit" id="rulerCloseBtn" style="padding: 2px 8px; font-size:11px;">Done</button>
                     </div>
-
-                    <!-- Empty state click instruction -->
-                    <div id="mapInstruction" class="empty-map-state">Click anywhere on chart or search aerodromes to plot flight track.</div>
 
                     <!-- BOTTOM VERTICAL PROFILE DRAWER -->
                     <div class="vertical-profile-drawer" id="verticalProfileDrawer">
@@ -1484,7 +1486,7 @@
         // Initialize Map
         const map = L.map('map', { zoomControl: false, preferCanvas: true, attributionControl: false }).setView([48.83, 2.35], 9);
         L.control.zoom({ position: 'topleft' }).addTo(map);
-        L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+        L.control.attribution({ position: 'bottomright', prefix: false }).addTo(map);
 
         // Custom Leaflet Layer Panes for Strict Visual Hierarchy
         map.createPane('airspacesPane');
@@ -1601,6 +1603,7 @@
         let layerBoxOpen = false; // Start collapsed
         layerContent.style.display = 'none';
         layerIcon.textContent = '▴';
+        aeroLayerBox.classList.remove('open');
 
         layerHeader.addEventListener('click', () => {
             layerBoxOpen = !layerBoxOpen;
@@ -2307,7 +2310,6 @@
         const windDirInput = document.getElementById('windDirInput');
         const windSpdInput = document.getElementById('windSpdInput');
         const navlogBody = document.getElementById('navlogBody');
-        const instruction = document.getElementById('mapInstruction');
         const wpCountBadge = document.getElementById('wpCountBadge');
 
         function calculateNavData(lat1, lon1, lat2, lon2) {
@@ -2395,10 +2397,12 @@
             // Update HUD
             const firstWp = cleanWaypointName(waypoints[0].name);
             const lastWp = cleanWaypointName(waypoints[waypoints.length - 1].name);
+            const legCount = waypoints.length - 1;
             document.getElementById('hudRouteSummary').innerHTML = `
                 <span class="hud-airport-pill">${escapeHtml(firstWp)}</span>
                 <span class="hud-route-arrow">➔</span>
                 <span class="hud-airport-pill">${escapeHtml(lastWp)}</span>
+                <span style="font-size: 11px; font-weight:700; color: var(--muted-text); margin-left: 6px;">(${legCount} leg${legCount > 1 ? 's' : ''})</span>
             `;
             document.getElementById('hudDistVal').textContent = `${totalDist.toFixed(1)} nm`;
             const hrs = Math.floor(totalETE / 60);
@@ -2544,8 +2548,12 @@
             verticalProfileDrawer.classList.toggle('open', isProfileOpen);
             hudProfileToggleBtn.classList.toggle('active', isProfileOpen);
             const chartTools = document.querySelector('.floating-chart-tools');
+            const flightDeckHud = document.getElementById('flightDeckHud');
             if (chartTools) {
                 chartTools.style.bottom = isProfileOpen ? '215px' : '24px';
+            }
+            if (flightDeckHud) {
+                flightDeckHud.style.bottom = isProfileOpen ? '215px' : '24px';
             }
             if (isProfileOpen) {
                 setTimeout(renderVerticalProfile, 100);
@@ -2805,8 +2813,6 @@
 
         function updateUI() {
             const hasWaypoints = waypoints.length > 0;
-            instruction.style.display = hasWaypoints ? 'none' : 'block';
-            
             document.getElementById('hudFitBtn').disabled = !hasWaypoints;
             document.getElementById('hudReverseBtn').disabled = waypoints.length < 2;
 
