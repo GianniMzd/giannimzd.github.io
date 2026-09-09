@@ -58,6 +58,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         /* Top Bar Header */
@@ -125,7 +126,7 @@
             flex: 1;
         }
         
-        /* Animated Sidebar */
+        /* Navigation Sidebar */
         .sidebar {
             width: 260px;
             min-width: 260px;
@@ -196,19 +197,19 @@
             cursor: not-allowed;
         }
 
-        /* Content Section */
+        /* Content Section - Sizing & Padding identical to Checklists & Emergency */
         .content-section {
             flex: 1;
-            padding: 40px 45px;
+            padding: 50px 5vw;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 35px;
             min-width: 0;
             background-color: var(--bg-color);
         }
 
-        /* Page Heading Banner & Unit Toolbar */
-        .page-heading-wrap {
+        /* Page Heading Banner */
+        .page-heading {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
@@ -222,6 +223,7 @@
             font-weight: 700;
             letter-spacing: -0.03em;
             line-height: 1.1;
+            margin: 0;
         }
         .page-heading p {
             margin-top: 8px;
@@ -229,10 +231,10 @@
             font-size: 15px;
         }
 
-        .heading-toolbar {
+        .page-heading-actions {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -242,7 +244,7 @@
             gap: 8px;
             border: 2px solid var(--border-color);
             background: var(--card-bg);
-            padding: 6px 12px;
+            padding: 6px 14px;
         }
         .unit-toolbar-label {
             font-size: 11px;
@@ -267,7 +269,7 @@
             border: 1px solid var(--border-color);
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding: 4px 8px;
+            padding: 5px 8px;
             font-family: 'Inter', sans-serif;
             font-size: 12px;
             font-weight: 700;
@@ -283,15 +285,15 @@
         /* Responsive Two-Column Workspace Grid */
         .workspace-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(460px, 0.95fr);
-            gap: 30px;
+            grid-template-columns: 1.05fr 1fr;
+            gap: 35px;
             align-items: start;
         }
 
         .perf-column {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 35px;
             min-width: 0;
         }
 
@@ -303,7 +305,7 @@
             flex-direction: column;
         }
         .card-header {
-            padding: 16px 20px;
+            padding: 16px 22px;
             border-bottom: 2px solid var(--border-color);
             display: flex;
             justify-content: space-between;
@@ -311,7 +313,7 @@
             background-color: var(--card-bg);
         }
         .card-header h2 {
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -321,7 +323,7 @@
             margin: 0;
         }
         .card-body {
-            padding: 22px 24px;
+            padding: 24px;
         }
 
         /* Action Buttons */
@@ -329,7 +331,7 @@
             background: transparent;
             color: var(--text-color);
             border: 2px solid var(--border-color);
-            padding: 8px 14px;
+            padding: 8px 16px;
             font-weight: 700;
             font-family: 'Inter', sans-serif;
             cursor: pointer;
@@ -355,7 +357,7 @@
             background: var(--border-color);
         }
         .btn-action.small {
-            padding: 6px 10px;
+            padding: 6px 12px;
             font-size: 11px;
             font-weight: 700;
         }
@@ -373,6 +375,25 @@
         .btn-action.btn-special:hover {
             background: var(--special-bg);
         }
+
+        .ghost-btn {
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            padding: 8px 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 0;
+            transition: all 0.15s ease;
+        }
+        .ghost-btn:hover { background-color: var(--hover-bg); }
 
         /* Form Grids */
         .form-grid {
@@ -415,7 +436,7 @@
 
         /* Speeds List */
         .speeds-section-title {
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -423,6 +444,9 @@
             margin: 0 0 10px 0;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .speeds-section-title.emergency-title {
             color: var(--danger);
@@ -441,27 +465,33 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
-        .edit-list li {
+
+        /* Speed Row Item */
+        .speed-row {
             display: flex;
             align-items: center;
             padding: 6px 10px;
-            border: 1px solid var(--hover-bg);
+            border: 1.5px solid var(--hover-bg);
             background-color: var(--bg-color);
             gap: 10px;
-            transition: background-color 0.15s ease, border-color 0.15s ease;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
         }
-        .edit-list li:hover {
+        .speed-row:hover {
             border-color: var(--border-color);
         }
 
-        /* Emergency row styles */
-        .edit-list.emergency-list li {
+        /* Emergency speed row */
+        .edit-list.emergency-list .speed-row {
             background-color: var(--danger-bg);
-            border: 1px solid var(--danger-border);
+            border-color: var(--danger-border);
         }
-        .edit-list.emergency-list .name-input, .edit-list.emergency-list .val-input {
+        .edit-list.emergency-list .speed-row:hover {
+            border-color: var(--danger);
+        }
+        .edit-list.emergency-list .name-input,
+        .edit-list.emergency-list .val-input {
             color: var(--danger);
             font-weight: 700;
         }
@@ -469,16 +499,17 @@
             color: var(--danger);
             opacity: 0.85;
         }
-        .edit-list.emergency-list .val-input {
-            border-color: var(--danger-border);
-        }
 
-        /* Special row styles */
-        .edit-list.special-list li {
+        /* Special speed row */
+        .edit-list.special-list .speed-row {
             background-color: var(--special-bg);
-            border: 1px solid var(--special-border);
+            border-color: var(--special-border);
         }
-        .edit-list.special-list .name-input, .edit-list.special-list .val-input {
+        .edit-list.special-list .speed-row:hover {
+            border-color: var(--accent-blue);
+        }
+        .edit-list.special-list .name-input,
+        .edit-list.special-list .val-input {
             color: var(--accent-blue);
             font-weight: 700;
         }
@@ -486,112 +517,111 @@
             color: var(--accent-blue);
             opacity: 0.85;
         }
-        .edit-list.special-list .val-input {
-            border-color: var(--special-border);
-        }
 
         .name-input {
-            flex: 1.2;
+            width: 120px;
+            min-width: 90px;
             border: 1px solid transparent;
             background: transparent;
-            padding: 5px 8px;
+            padding: 6px 8px;
             font-family: 'Inter', sans-serif;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--text-color);
-            outline: none;
-            border-radius: 0;
-        }
-        .val-input {
-            width: 80px;
-            border: 1px solid var(--hover-bg);
-            background: var(--card-bg);
-            padding: 5px 8px;
-            font-family: 'Space Mono', monospace;
             font-size: 14px;
             font-weight: 700;
             color: var(--text-color);
             outline: none;
             border-radius: 0;
-            text-align: right;
+            transition: all 0.15s ease;
         }
-        .desc-input {
-            flex: 2;
-            border: 1px solid transparent;
-            background: transparent;
-            padding: 5px 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 12.5px;
-            color: var(--muted-text);
-            outline: none;
-            border-radius: 0;
-        }
-
-        .name-input:focus, .name-input:hover, .desc-input:focus, .desc-input:hover {
+        .name-input:focus, .name-input:hover {
             border-color: var(--border-color);
             background: var(--card-bg);
         }
-        .val-input:focus, .val-input:hover {
-            border-color: var(--border-color);
-        }
 
-        .edit-list.emergency-list .name-input:focus, .edit-list.emergency-list .name-input:hover, 
-        .edit-list.emergency-list .val-input:focus, .edit-list.emergency-list .val-input:hover, 
-        .edit-list.emergency-list .desc-input:focus, .edit-list.emergency-list .desc-input:hover {
-            border-color: var(--danger);
+        .val-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            padding: 2px 8px;
+            flex-shrink: 0;
         }
-        .edit-list.special-list .name-input:focus, .edit-list.special-list .name-input:hover, 
-        .edit-list.special-list .val-input:focus, .edit-list.special-list .val-input:hover, 
-        .edit-list.special-list .desc-input:focus, .edit-list.special-list .desc-input:hover {
-            border-color: var(--accent-blue);
+        .val-input {
+            width: 58px;
+            border: none;
+            background: transparent;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-color);
+            outline: none;
+            text-align: right;
         }
-
         .unit-tag {
             font-size: 11px;
             color: var(--muted-text);
             font-weight: 700;
-            width: 24px;
-            text-align: left;
+            text-transform: uppercase;
         }
-        .edit-list.emergency-list .unit-tag { color: var(--danger); }
-        .edit-list.special-list .unit-tag { color: var(--accent-blue); }
 
-        .type-select {
-            border: 1px solid var(--hover-bg);
-            background: var(--card-bg);
-            padding: 4px 6px;
+        .desc-input {
+            flex: 1;
+            min-width: 80px;
+            border: 1px solid transparent;
+            background: transparent;
+            padding: 6px 8px;
             font-family: 'Inter', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 13px;
             color: var(--muted-text);
             outline: none;
             border-radius: 0;
-            cursor: pointer;
+            transition: all 0.15s ease;
         }
-        .type-select:hover {
+        .desc-input:focus, .desc-input:hover {
             border-color: var(--border-color);
+            background: var(--card-bg);
             color: var(--text-color);
-        }
-        .edit-list.emergency-list .type-select {
-            color: var(--danger);
-            border-color: var(--danger-border);
-        }
-        .edit-list.special-list .type-select {
-            color: var(--accent-blue);
-            border-color: var(--special-border);
         }
 
         .btn-delete {
             background: none;
-            border: none;
+            border: 1.5px solid transparent;
             color: var(--muted-text);
             cursor: pointer;
-            font-size: 15px;
-            padding: 4px 6px;
-            transition: color 0.15s ease;
+            font-size: 14px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
             line-height: 1;
+            flex-shrink: 0;
+            border-radius: 0;
         }
-        .btn-delete:hover { color: var(--danger); }
+        .btn-delete:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+            background-color: var(--danger-bg);
+        }
+
+        .empty-speed-msg {
+            color: var(--muted-text);
+            font-size: 13px;
+            padding: 10px;
+            text-align: center;
+            background: transparent;
+            border: 1px dashed var(--hover-bg);
+            list-style: none;
+        }
+        .empty-speed-msg.emergency {
+            color: var(--danger);
+            border-color: var(--danger-border);
+        }
+        .empty-speed-msg.special {
+            color: var(--accent-blue);
+            border-color: var(--special-border);
+        }
 
         /* Range Results Strip */
         .result-strip {
@@ -776,7 +806,7 @@
         }
 
         /* Responsive Layout */
-        @media (max-width: 1200px) {
+        @media (max-width: 1150px) {
             .workspace-grid {
                 grid-template-columns: 1fr;
             }
@@ -798,7 +828,7 @@
                 gap: 15px;
             }
             .content-section {
-                padding: 24px 20px;
+                padding: 35px 20px;
             }
             .page-heading h1 {
                 font-size: 32px;
@@ -824,7 +854,7 @@
         </a>
         <div class="top-bar-right">
             <div class="meta-text">Precision Software // Est. 2026</div>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
                 <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
                 <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
@@ -852,13 +882,13 @@
             </div>
         </nav>
 
-        <div class="content-section">
-            <div class="page-heading-wrap">
-                <div class="page-heading">
+        <section class="content-section">
+            <div class="page-heading">
+                <div>
                     <h1>Aircraft Performance</h1>
                     <p>Mass &amp; Balance computation, CG envelope safety validation, V-speeds reference, and fuel range estimator.</p>
                 </div>
-                <div class="heading-toolbar">
+                <div class="page-heading-actions">
                     <div class="unit-selector-toolbar">
                         <span class="unit-toolbar-label">Units</span>
                         <div class="unit-select-group">
@@ -883,7 +913,7 @@
                             </select>
                         </div>
                     </div>
-                    <button class="btn-action primary" id="exportPdfBtn" title="Export Weight & Balance computation sheet to PDF">
+                    <button class="ghost-btn" id="exportPdfBtn" title="Export Weight & Balance computation sheet to PDF">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
@@ -930,25 +960,31 @@
                         </div>
                         <div class="card-body">
                             <!-- Normal Speeds -->
-                            <div class="speeds-section-title">Normal Operations</div>
+                            <div class="speeds-section-title">
+                                <span>Normal Operations</span>
+                            </div>
                             <ul class="edit-list" id="normalSpeedsList"></ul>
-                            <div style="margin-bottom: 20px;">
-                                <button class="btn-action small" id="addNormalSpeedBtn">+ Add Normal</button>
+                            <div style="margin-bottom: 22px;">
+                                <button class="btn-action small" id="addNormalSpeedBtn">+ Add Normal Speed</button>
                             </div>
 
                             <!-- Emergency Speeds -->
-                            <div class="speeds-section-title emergency-title">Emergency &amp; Limits</div>
+                            <div class="speeds-section-title emergency-title">
+                                <span>Emergency &amp; Limits</span>
+                            </div>
                             <ul class="edit-list emergency-list" id="emergencySpeedsList"></ul>
-                            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 20px; flex-wrap:wrap;">
-                                <button class="btn-action small btn-danger" id="addEmergencySpeedBtn">+ Add Emergency</button>
-                                <a href="emergency.html" class="btn-action small btn-danger">🚨 Full Emergency Procedures &rarr;</a>
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 22px; flex-wrap:wrap;">
+                                <button class="btn-action small btn-danger" id="addEmergencySpeedBtn">+ Add Emergency Speed</button>
+                                <a href="emergency.html" class="btn-action small btn-danger" style="text-decoration:none;">🚨 Full Emergency Procedures &rarr;</a>
                             </div>
                             
                             <!-- Special Procedures -->
-                            <div class="speeds-section-title special-title">Special Procedures</div>
+                            <div class="speeds-section-title special-title">
+                                <span>Special Procedures</span>
+                            </div>
                             <ul class="edit-list special-list" id="specialSpeedsList"></ul>
                             <div>
-                                <button class="btn-action small btn-special" id="addSpecialSpeedBtn">+ Add Special</button>
+                                <button class="btn-action small btn-special" id="addSpecialSpeedBtn">+ Add Special Speed</button>
                             </div>
                         </div>
                     </div>
@@ -1070,7 +1106,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
     <script>
@@ -1261,7 +1297,6 @@
                         saveState();
                     }
                 } else {
-                    // If the briefing key doesn't exist yet, push our defaults to it
                     syncToFlightPrep();
                 }
             } catch(e) {}
@@ -1377,7 +1412,7 @@
             }
         }
 
-        // ---------- Speeds list ----------
+        // ---------- Speeds list (No category switching dropdown; direct add/remove) ----------
         function renderSpeeds() {
             normalSpeedsList.innerHTML = '';
             emergencySpeedsList.innerHTML = '';
@@ -1385,16 +1420,21 @@
             
             speeds.forEach((s, i) => {
                 const li = document.createElement('li');
+                li.className = 'speed-row';
 
                 const nameInput = document.createElement('input');
                 nameInput.className = 'name-input';
                 nameInput.value = s.name;
+                nameInput.placeholder = 'Speed Code';
                 nameInput.addEventListener('input', e => { 
                     speeds[i].name = e.target.value; 
                     updateCruiseDropdown();
                     computeRange();
                     saveState(); 
                 });
+
+                const valWrap = document.createElement('div');
+                valWrap.className = 'val-input-wrap';
 
                 const valInput = document.createElement('input');
                 valInput.className = 'val-input';
@@ -1411,29 +1451,22 @@
                 unitTag.className = 'unit-tag';
                 unitTag.textContent = s.unit || 'kt';
 
+                valWrap.appendChild(valInput);
+                valWrap.appendChild(unitTag);
+
                 const descInput = document.createElement('input');
                 descInput.className = 'desc-input';
                 descInput.value = s.desc || '';
-                descInput.placeholder = 'description';
-                descInput.addEventListener('input', e => { speeds[i].desc = e.target.value; saveState(); });
-
-                const typeSelect = document.createElement('select');
-                typeSelect.className = 'type-select';
-                typeSelect.innerHTML = `
-                    <option value="normal" ${s.type === 'normal' ? 'selected' : ''}>Normal</option>
-                    <option value="emergency" ${s.type === 'emergency' ? 'selected' : ''}>Emergency</option>
-                    <option value="special" ${s.type === 'special' ? 'selected' : ''}>Special</option>
-                `;
-                typeSelect.addEventListener('change', e => {
-                    speeds[i].type = e.target.value;
-                    saveState();
-                    renderSpeeds(); 
+                descInput.placeholder = 'Description / Note';
+                descInput.addEventListener('input', e => { 
+                    speeds[i].desc = e.target.value; 
+                    saveState(); 
                 });
 
                 const delBtn = document.createElement('button');
                 delBtn.className = 'btn-delete';
                 delBtn.innerHTML = '✕';
-                delBtn.title = 'Remove';
+                delBtn.title = 'Remove speed';
                 delBtn.onclick = () => { 
                     speeds.splice(i, 1); 
                     renderSpeeds(); 
@@ -1441,10 +1474,8 @@
                 };
 
                 li.appendChild(nameInput);
-                li.appendChild(valInput);
-                li.appendChild(unitTag);
+                li.appendChild(valWrap);
                 li.appendChild(descInput);
-                li.appendChild(typeSelect);
                 li.appendChild(delBtn);
                 
                 if (s.type === 'emergency') {
@@ -1457,13 +1488,13 @@
             });
             
             if (normalSpeedsList.children.length === 0) {
-                normalSpeedsList.innerHTML = '<li style="color:var(--muted-text);font-size:13px;padding:10px;justify-content:center;background:transparent;border:1px dashed var(--hover-bg);">No normal speeds added</li>';
+                normalSpeedsList.innerHTML = '<li class="empty-speed-msg">No normal speeds added</li>';
             }
             if (emergencySpeedsList.children.length === 0) {
-                emergencySpeedsList.innerHTML = '<li style="color:var(--danger);font-size:13px;padding:10px;justify-content:center;background:transparent;border:1px dashed var(--danger-border);">No emergency speeds added</li>';
+                emergencySpeedsList.innerHTML = '<li class="empty-speed-msg emergency">No emergency speeds added</li>';
             }
             if (specialSpeedsList.children.length === 0) {
-                specialSpeedsList.innerHTML = '<li style="color:var(--accent-blue);font-size:13px;padding:10px;justify-content:center;background:transparent;border:1px dashed var(--special-border);">No special speeds added</li>';
+                specialSpeedsList.innerHTML = '<li class="empty-speed-msg special">No special speeds added</li>';
             }
             
             updateCruiseDropdown();
