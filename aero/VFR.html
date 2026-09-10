@@ -1057,6 +1057,15 @@
             font-size: 12px;
             font-weight: 800;
             flex-shrink: 0;
+            transition: background 0.2s, color 0.2s;
+        }
+        .wp-num-badge.dep {
+            background: #188038;
+            color: #ffffff;
+        }
+        .wp-num-badge.arr {
+            background: #c5221f;
+            color: #ffffff;
         }
         .wp-card-fields {
             flex: 1;
@@ -1358,6 +1367,7 @@
         .aero-badge-danger { background: #d84315; color: #fff; }
         .aero-badge-rmz { background: #7b1fa2; color: #fff; }
         .aero-badge-drop { background: #00796b; color: #fff; }
+        .aero-badge-fis { background: #0284c7; color: #fff; }
 
         .aero-tooltip-grid {
             display: grid;
@@ -1511,84 +1521,237 @@
             transform: translate(-50%, -50%);
             display: inline-flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             box-sizing: border-box;
             width: max-content;
-            min-width: 48px;
-            max-width: 170px;
-            background: rgba(15, 23, 42, 0.88);
-            color: #ffffff;
-            border: 1.5px solid rgba(255, 255, 255, 0.4);
-            padding: 3px 8px;
-            border-radius: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-            pointer-events: none;
+            max-width: 140px;
+            padding: 2px 5px 2.5px 5px;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.94);
+            color: #f8fafc;
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+            pointer-events: auto;
+            cursor: pointer;
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            text-align: center;
             user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+            z-index: 400;
         }
-        .airspace-map-badge.ctr {
-            border-color: #3b82f6;
-            background: rgba(15, 23, 42, 0.90);
+
+        .airspace-map-badge:hover,
+        .airspace-map-badge.airspace-highlighted {
+            transform: translate(-50%, -50%) scale(1.10);
+            z-index: 999 !important;
+            box-shadow: 0 0 14px currentColor, 0 4px 14px rgba(0, 0, 0, 0.65) !important;
         }
-        .airspace-map-badge.prohibited {
-            border-color: #ef4444;
-            background: rgba(153, 27, 27, 0.92);
+
+        .airspace-badge-row1 {
+            display: flex;
+            align-items: center;
+            gap: 3.5px;
+            line-height: 1.1;
+            white-space: nowrap;
         }
-        .airspace-map-badge.restricted {
-            border-color: #f59e0b;
-            background: rgba(120, 53, 15, 0.92);
+
+        .airspace-type-chip {
+            font-size: 7.5px;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 1px 3.5px;
+            border-radius: 2.5px;
+            letter-spacing: 0.03em;
+            line-height: 1;
+            flex-shrink: 0;
         }
+
         .airspace-badge-name {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-            font-size: 9.5px;
+            font-size: 8.5px;
             font-weight: 800;
-            font-family: 'IBM Plex Mono', monospace;
-            line-height: 1.2;
             letter-spacing: 0.02em;
+            text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 95px;
         }
-        .airspace-badge-alt {
-            display: block;
-            width: 100%;
-            max-width: 100%;
-            font-size: 8px;
-            font-weight: 700;
-            font-family: 'IBM Plex Mono', monospace;
-            opacity: 0.9;
-            line-height: 1.2;
-            letter-spacing: 0.01em;
+
+        .airspace-badge-row2 {
+            display: flex;
+            align-items: center;
+            gap: 4px;
             margin-top: 1.5px;
+            font-size: 7.5px;
+            line-height: 1;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-family: 'IBM Plex Mono', monospace;
         }
+
+        .airspace-alt-chip {
+            font-weight: 700;
+            color: #cbd5e1;
+            letter-spacing: -0.01em;
+        }
+
+        .airspace-freq-chip {
+            font-weight: 700;
+            color: #38bdf8;
+            font-size: 7.5px;
+        }
+
+        /* Color identities matching airspace polygon strokes */
+        .airspace-map-badge.ctr {
+            border-color: #0284c7;
+            border-left: 3.5px solid #0284c7;
+            color: #38bdf8;
+        }
+        .airspace-map-badge.ctr .airspace-type-chip {
+            background: #0284c7;
+            color: #ffffff;
+        }
+        .airspace-map-badge.ctr .airspace-badge-name {
+            color: #f0f9ff;
+        }
+
+        .airspace-map-badge.tma {
+            border-color: #2563eb;
+            border-left: 3.5px solid #2563eb;
+            color: #60a5fa;
+        }
+        .airspace-map-badge.tma .airspace-type-chip {
+            background: #2563eb;
+            color: #ffffff;
+        }
+        .airspace-map-badge.tma .airspace-badge-name {
+            color: #eff6ff;
+        }
+
+        .airspace-map-badge.prohibited {
+            border-color: #dc2626;
+            border-left: 3.5px solid #dc2626;
+            color: #f87171;
+        }
+        .airspace-map-badge.prohibited .airspace-type-chip {
+            background: #dc2626;
+            color: #ffffff;
+        }
+        .airspace-map-badge.prohibited .airspace-badge-name {
+            color: #fef2f2;
+        }
+
+        .airspace-map-badge.restricted {
+            border-color: #ea580c;
+            border-left: 3.5px solid #ea580c;
+            color: #fb923c;
+        }
+        .airspace-map-badge.restricted .airspace-type-chip {
+            background: #ea580c;
+            color: #ffffff;
+        }
+        .airspace-map-badge.restricted .airspace-badge-name {
+            color: #fff7ed;
+        }
+
+        .airspace-map-badge.danger {
+            border-color: #d97706;
+            border-left: 3.5px solid #d97706;
+            color: #fbbf24;
+        }
+        .airspace-map-badge.danger .airspace-type-chip {
+            background: #d97706;
+            color: #ffffff;
+        }
+        .airspace-map-badge.danger .airspace-badge-name {
+            color: #fffbeb;
+        }
+
+        .airspace-map-badge.siv {
+            border-color: #06b6d4;
+            border-left: 3.5px solid #06b6d4;
+            color: #22d3ee;
+        }
+        .airspace-map-badge.siv .airspace-type-chip {
+            background: #0891b2;
+            color: #ffffff;
+        }
+        .airspace-map-badge.siv .airspace-badge-name {
+            color: #ecfeff;
+        }
+
+        .airspace-map-badge.rmz, .airspace-map-badge.tmz {
+            border-color: #9333ea;
+            border-left: 3.5px solid #9333ea;
+            color: #c084fc;
+        }
+        .airspace-map-badge.rmz .airspace-type-chip, .airspace-map-badge.tmz .airspace-type-chip {
+            background: #9333ea;
+            color: #ffffff;
+        }
+        .airspace-map-badge.rmz .airspace-badge-name, .airspace-map-badge.tmz .airspace-badge-name {
+            color: #faf5ff;
+        }
+
+        /* Light Mode High-Contrast Clean Aesthetics */
         html:not(.dark-mode) .airspace-map-badge {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.97);
             color: #0f172a;
-            border-color: rgba(15, 23, 42, 0.45);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+        }
+        html:not(.dark-mode) .airspace-map-badge .airspace-badge-name {
+            color: #0f172a;
+        }
+        html:not(.dark-mode) .airspace-map-badge .airspace-alt-chip {
+            color: #475569;
+        }
+        html:not(.dark-mode) .airspace-map-badge .airspace-freq-chip {
+            color: #0284c7;
         }
         html:not(.dark-mode) .airspace-map-badge.ctr {
-            border-color: #2563eb;
-            color: #1e3a8a;
+            border-color: #0284c7;
+            border-left-color: #0284c7;
+        }
+        html:not(.dark-mode) .airspace-map-badge.tma {
+            border-color: #1d4ed8;
+            border-left-color: #1d4ed8;
         }
         html:not(.dark-mode) .airspace-map-badge.prohibited {
             border-color: #dc2626;
-            background: rgba(254, 226, 226, 0.96);
-            color: #991b1b;
+            border-left-color: #dc2626;
         }
         html:not(.dark-mode) .airspace-map-badge.restricted {
-            border-color: #d97706;
-            background: rgba(254, 243, 199, 0.96);
-            color: #92400e;
+            border-color: #ea580c;
+            border-left-color: #ea580c;
         }
+        html:not(.dark-mode) .airspace-map-badge.danger {
+            border-color: #d97706;
+            border-left-color: #d97706;
+        }
+        html:not(.dark-mode) .airspace-map-badge.siv {
+            border-color: #0891b2;
+            border-left-color: #0891b2;
+        }
+
+        /* Satellite Mode Enhancements for Badges */
+        .map-section.satellite-active .airspace-map-badge {
+            background: rgba(15, 23, 42, 0.95) !important;
+            color: #f8fafc !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.85) !important;
+        }
+        .map-section.satellite-active .airspace-map-badge .airspace-badge-name {
+            color: #ffffff !important;
+        }
+        .map-section.satellite-active .airspace-map-badge .airspace-alt-chip {
+            color: #e2e8f0 !important;
+        }
+        .map-section.satellite-active .airspace-map-badge.ctr { border-color: #38bdf8 !important; border-left-color: #38bdf8 !important; }
+        .map-section.satellite-active .airspace-map-badge.tma { border-color: #60a5fa !important; border-left-color: #60a5fa !important; }
+        .map-section.satellite-active .airspace-map-badge.prohibited { border-color: #f87171 !important; border-left-color: #f87171 !important; }
+        .map-section.satellite-active .airspace-map-badge.restricted { border-color: #fb923c !important; border-left-color: #fb923c !important; }
+        .map-section.satellite-active .airspace-map-badge.danger { border-color: #fbbf24 !important; border-left-color: #fbbf24 !important; }
+        .map-section.satellite-active .airspace-map-badge.siv { border-color: #2dd4bf !important; border-left-color: #2dd4bf !important; }
 
         /* Responsive Styles */
         @media (max-width: 1024px) {
@@ -1647,11 +1810,11 @@
             <div class="cockpit-select-wrap" title="Filter airspaces active at cruising level">
                 <span>Cruising Alt:</span>
                 <select id="altFilterSelect" class="cockpit-select">
-                    <option value="0">All Altitudes</option>
+                    <option value="0" selected>All Altitudes</option>
                     <option value="500">SFC / 500 ft</option>
                     <option value="1500">1,500 ft</option>
                     <option value="2500">2,500 ft</option>
-                    <option value="3500" selected>3,500 ft</option>
+                    <option value="3500">3,500 ft</option>
                     <option value="4500">4,500 ft</option>
                     <option value="5500">5,500 ft</option>
                     <option value="6500">FL 065 (6,500 ft)</option>
@@ -1842,6 +2005,10 @@
                                     <input type="checkbox" id="chkLayerDangerAirspaces" checked>
                                     <span>Danger &amp; Special (D, RMZ, TMZ)</span>
                                 </label>
+                                <label class="aero-layer-item">
+                                    <input type="checkbox" id="chkLayerFisAirspaces" checked>
+                                    <span>Flight Info Sectors (FIS / SIV)</span>
+                                </label>
 
                                 <div class="aero-layer-heading" style="margin-top:10px; padding-top:8px; border-top:1px solid var(--border-color);">Base Chart</div>
                                 <label class="aero-layer-item">
@@ -2002,8 +2169,14 @@
         const chartScale = L.control.scale({ imperial: true, metric: false, position: 'bottomleft', maxWidth: 120 }).addTo(map);
 
         // Custom Leaflet Layer Panes for Strict Visual Hierarchy
+        map.createPane('fisPane');
+        map.getPane('fisPane').style.zIndex = 330;
+
         map.createPane('airspacesPane');
-        map.getPane('airspacesPane').style.zIndex = 350;
+        map.getPane('airspacesPane').style.zIndex = 360;
+
+        map.createPane('airspaceLabelsPane');
+        map.getPane('airspaceLabelsPane').style.zIndex = 450;
 
         map.createPane('routeTrackPane');
         map.getPane('routeTrackPane').style.zIndex = 550;
@@ -2103,6 +2276,7 @@
         const ctrlAirspacesLayer = L.layerGroup().addTo(map);
         const specialAirspacesLayer = L.layerGroup().addTo(map);
         const dangerAirspacesLayer = L.layerGroup().addTo(map);
+        const fisAirspacesLayer = L.layerGroup().addTo(map);
         const airportsLayer = L.layerGroup().addTo(map);
         const vfrPointsLayer = L.layerGroup().addTo(map);
         const navaidsLayer = L.layerGroup().addTo(map);
@@ -2126,6 +2300,14 @@
             else map.removeLayer(dangerAirspacesLayer);
             scheduleViewportUpdate();
         });
+        const chkFis = document.getElementById('chkLayerFisAirspaces');
+        if (chkFis) {
+            chkFis.addEventListener('change', e => {
+                if (e.target.checked) fisAirspacesLayer.addTo(map);
+                else map.removeLayer(fisAirspacesLayer);
+                scheduleViewportUpdate();
+            });
+        }
         document.getElementById('chkLayerAirports').addEventListener('change', e => {
             if (e.target.checked) {
                 airportsLayer.addTo(map);
@@ -2135,8 +2317,12 @@
             }
         });
         document.getElementById('chkLayerVfrPoints').addEventListener('change', e => {
-            if (e.target.checked) vfrPointsLayer.addTo(map);
-            else map.removeLayer(vfrPointsLayer);
+            if (e.target.checked) {
+                vfrPointsLayer.addTo(map);
+                updateVfrPointsVisibility();
+            } else {
+                map.removeLayer(vfrPointsLayer);
+            }
         });
         document.getElementById('chkLayerNavaids').addEventListener('change', e => {
             if (e.target.checked) {
@@ -2335,6 +2521,9 @@
             } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
                 badgeClass = 'aero-badge-drop';
                 categoryBorderColor = '#00796b';
+            } else if (sp.type === 'FIS' || sp.type === 'SIV') {
+                badgeClass = 'aero-badge-fis';
+                categoryBorderColor = '#0284c7';
             }
 
             // Cruising altitude conflict comparison
@@ -2382,6 +2571,8 @@
                 detailedRule = "🪂 PARACHUTE DROP ZONE — Intense skydiving activity. Avoid overflying drop zone while parachute operations are active.";
             } else if (sp.type === 'Glider Sector') {
                 detailedRule = "🪂 GLIDER SOARING SECTOR — High concentration of unpowered sailplanes in thermals and ridge waves. Maintain vigilant lookout.";
+            } else if (sp.type === 'FIS' || sp.type === 'SIV') {
+                detailedRule = "📻 FLIGHT INFORMATION SERVICE (FIS / SIV) — Contact on frequency for flight following, traffic information, regional QNH, and transit coordination. Continuous listening watch recommended.";
             }
 
             return `
@@ -2430,61 +2621,158 @@
         // =========================================================================
         // HIGH-PERFORMANCE AIRSPACE RENDERING & LAZY VIEWPORT LOD
         // =========================================================================
+        function isPointInsidePolygon(pt, poly) {
+            const x = pt[0], y = pt[1];
+            let inside = false;
+            for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+                const xi = poly[i][0], yi = poly[i][1];
+                const xj = poly[j][0], yj = poly[j][1];
+                const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                if (intersect) inside = !inside;
+            }
+            return inside;
+        }
+
+        function getAirspaceInteriorCenter(sp) {
+            const coords = sp.coordinates;
+            if (!coords || coords.length === 0) return [0, 0];
+            if (coords.length < 3) return coords[0];
+
+            // 1. Polygon vertex centroid
+            let sumLat = 0, sumLng = 0;
+            for (let i = 0; i < coords.length; i++) {
+                sumLat += coords[i][0];
+                sumLng += coords[i][1];
+            }
+            const centroid = [sumLat / coords.length, sumLng / coords.length];
+            if (isPointInsidePolygon(centroid, coords)) return centroid;
+
+            // 2. Bounding box center
+            if (sp.bbox) {
+                const bboxCenter = [(sp.bbox[0] + sp.bbox[2]) / 2, (sp.bbox[1] + sp.bbox[3]) / 2];
+                if (isPointInsidePolygon(bboxCenter, coords)) return bboxCenter;
+            }
+
+            // 3. Scanline interior midpoint (guaranteed inside)
+            const midLat = sp.bbox ? (sp.bbox[0] + sp.bbox[2]) / 2 : coords[0][0];
+            const intersections = [];
+            for (let i = 0, j = coords.length - 1; i < coords.length; j = i++) {
+                const p1 = coords[i], p2 = coords[j];
+                if ((p1[0] > midLat) !== (p2[0] > midLat)) {
+                    const lng = p1[1] + (midLat - p1[0]) * (p2[1] - p1[1]) / (p2[0] - p1[0]);
+                    intersections.push(lng);
+                }
+            }
+            intersections.sort((a, b) => a - b);
+            if (intersections.length >= 2) {
+                return [midLat, (intersections[0] + intersections[1]) / 2];
+            }
+
+            return coords[0];
+        }
+
+        function highlightAirspace(sp, isHover) {
+            const poly = sp._poly;
+            const badgeEl = document.getElementById('badge_' + sp.id);
+            if (isHover) {
+                if (poly) {
+                    poly.setStyle({
+                        weight: (sp._baseWeight || 3.0) + 2.5,
+                        opacity: 1.0,
+                        fillOpacity: Math.min(0.45, (sp._baseFillOpacity || 0.12) * 2.5 + 0.12)
+                    });
+                    if (poly.bringToFront) poly.bringToFront();
+                }
+                if (badgeEl) badgeEl.classList.add('airspace-highlighted');
+            } else {
+                if (poly) {
+                    applyAltitudeFilterToPolygon(poly, sp);
+                }
+                if (badgeEl) badgeEl.classList.remove('airspace-highlighted');
+            }
+        }
+
         function getOrCreateAirspacePolygon(sp) {
             if (sp._poly) return sp._poly;
 
             const isControlled = sp.type === 'CTR' || sp.type === 'TMA' || sp.type === 'CTA';
             const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted';
+            const isFis = sp.type === 'FIS' || sp.type === 'SIV';
             
-            let strokeColor = '#1967d2';
-            let fillColor = '#1967d2';
-            let fillOpacity = 0.08;
-            let dashArray = '6, 4';
-            let weight = 2.0;
+            // Aeronautical standard styling:
+            // CTR: Bold SOLID blue boundary with clear fill
+            let strokeColor = '#0284c7';
+            let fillColor = '#0284c7';
+            let fillOpacity = 0.14;
+            let dashArray = null; // SOLID
+            let weight = 3.2;
+            let opacity = 1.0;
+            let targetPane = 'airspacesPane';
 
-            if (sp.type === 'Prohibited' || sp.class === 'A') {
-                strokeColor = '#c5221f';
-                fillColor = '#c5221f';
+            if (sp.type === 'CTR') {
+                strokeColor = '#0284c7';
+                fillColor = '#0284c7';
                 fillOpacity = 0.14;
-                dashArray = '5, 3';
-                weight = 2.2;
+                dashArray = null; // Bold SOLID line
+                weight = 3.2;
+                opacity = 1.0;
+            } else if (sp.type === 'Prohibited' || sp.class === 'A') {
+                strokeColor = '#dc2626';
+                fillColor = '#dc2626';
+                fillOpacity = 0.20;
+                dashArray = null; // Bold SOLID red
+                weight = 3.0;
+                opacity = 1.0;
             } else if (sp.type === 'Restricted') {
-                strokeColor = '#e65100';
-                fillColor = '#e65100';
-                fillOpacity = 0.11;
-                dashArray = '6, 4';
-                weight = 2.0;
+                strokeColor = '#ea580c';
+                fillColor = '#ea580c';
+                fillOpacity = 0.16;
+                dashArray = null; // Bold SOLID orange
+                weight = 2.8;
+                opacity = 1.0;
             } else if (sp.type === 'Danger') {
-                strokeColor = '#d84315';
-                fillColor = '#d84315';
-                fillOpacity = 0.09;
+                strokeColor = '#d97706';
+                fillColor = '#d97706';
+                fillOpacity = 0.12;
+                dashArray = '8, 4';
+                weight = 2.4;
+                opacity = 1.0;
+            } else if (sp.type === 'TMA' || sp.type === 'CTA') {
+                strokeColor = '#1d4ed8';
+                fillColor = '#1d4ed8';
+                fillOpacity = 0.08;
+                dashArray = null; // SOLID deep blue
+                weight = 2.6;
+                opacity = 0.95;
+            } else if (sp.type === 'RMZ' || sp.type === 'TMZ') {
+                strokeColor = '#9333ea';
+                fillColor = '#9333ea';
+                fillOpacity = 0.10;
+                dashArray = '6, 4';
+                weight = 2.2;
+                opacity = 1.0;
+            } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
+                strokeColor = '#059669';
+                fillColor = '#059669';
+                fillOpacity = 0.06;
                 dashArray = '4, 4';
                 weight = 1.8;
-            } else if (sp.type === 'TMA' || sp.type === 'CTA') {
-                strokeColor = '#1a237e';
-                fillColor = '#1a237e';
-                fillOpacity = 0.05;
-                dashArray = '8, 5';
-                weight = 1.8;
-            } else if (sp.type === 'RMZ' || sp.type === 'TMZ') {
-                strokeColor = '#7b1fa2';
-                fillColor = '#7b1fa2';
-                fillOpacity = 0.08;
-                dashArray = '4, 6';
-                weight = 1.8;
-            } else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') {
-                strokeColor = '#00796b';
-                fillColor = '#00796b';
-                fillOpacity = 0.05;
-                dashArray = '3, 4';
-                weight = 1.5;
+                opacity = 0.9;
+            } else if (sp.type === 'FIS' || sp.type === 'SIV') {
+                strokeColor = '#0ea5e9';
+                fillColor = '#0ea5e9';
+                fillOpacity = 0.035;
+                dashArray = '12, 6';
+                weight = 2.0;
+                opacity = 0.85;
+                targetPane = 'fisPane';
             }
 
             const polygon = L.polygon(sp.coordinates, {
-                pane: 'airspacesPane',
+                pane: targetPane,
                 color: strokeColor,
                 weight: weight,
-                opacity: 0.85,
+                opacity: opacity,
                 fillColor: fillColor,
                 fillOpacity: fillOpacity,
                 dashArray: dashArray
@@ -2499,11 +2787,11 @@
             });
 
             polygon.on('mouseover', function () {
-                this.setStyle({ weight: weight + 1.5, fillOpacity: Math.min(0.45, fillOpacity * 2.2) });
+                highlightAirspace(sp, true);
                 this.setTooltipContent(buildAirspaceTooltipHtml(sp));
             });
             polygon.on('mouseout', function () {
-                applyAltitudeFilterToPolygon(polygon, sp);
+                highlightAirspace(sp, false);
             });
 
             polygon.on('click', function(e) {
@@ -2513,9 +2801,12 @@
             });
 
             sp._poly = polygon;
-            sp._targetLayer = isControlled ? ctrlAirspacesLayer : (isSpecial ? specialAirspacesLayer : dangerAirspacesLayer);
+            sp._targetLayer = isFis ? fisAirspacesLayer : (isControlled ? ctrlAirspacesLayer : (isSpecial ? specialAirspacesLayer : dangerAirspacesLayer));
             sp._baseWeight = weight;
+            sp._baseOpacity = opacity;
             sp._baseFillOpacity = fillOpacity;
+            sp._baseDashArray = dashArray;
+            sp._baseStroke = strokeColor;
 
             airspacePolygonRefs.push({ polygon, sp });
             return polygon;
@@ -2523,60 +2814,170 @@
 
         function getOrCreateAirspaceBadge(sp) {
             if (sp._labelMarker !== undefined) return sp._labelMarker;
-            if (!(sp.type === 'CTR' || sp.type === 'Prohibited' || (sp.type === 'Restricted' && (!sp.country || sp.country === 'FR') && !sp.name.includes('ZRT')))) {
+            
+            const isLabeledType = sp.type === 'CTR' || 
+                                  sp.type === 'TMA' || 
+                                  sp.type === 'CTA' || 
+                                  sp.type === 'Prohibited' || 
+                                  sp.type === 'FIS' || 
+                                  sp.type === 'SIV' || 
+                                  (sp.type === 'Restricted' && (!sp.country || sp.country === 'FR') && !sp.name.includes('ZRT')) ||
+                                  (sp.type === 'Danger' && (sp._diag || 0.1) >= 0.1);
+
+            if (!isLabeledType) {
                 sp._labelMarker = null;
                 return null;
             }
 
-            const centerLat = sp.bbox ? (sp.bbox[0] + sp.bbox[2]) / 2 : sp.coordinates[0][0];
-            const centerLng = sp.bbox ? (sp.bbox[1] + sp.bbox[3]) / 2 : sp.coordinates[0][1];
+            const [centerLat, centerLng] = getAirspaceInteriorCenter(sp);
 
+            // 1. Extract clean name
             let shortName = sp.name
-                .replace(/^(CTR|TMA|LF-)\s*/i, '')
-                .split('(')[0]
-                .replace(/\b\d{3}\.\d{1,3}\b/g, '')
+                .replace(/^(CTR\s*\d*|TMA\s*\d*|LF-)\s*/i, '')
+                .replace(/\b(CTR|TMA|SIV)\b/gi, '')
+                .replace(/\b\d{3}\.\d{2,3}\b/g, '')
                 .replace(/\s+/g, ' ')
                 .trim();
-            if (shortName.length > 20) shortName = shortName.slice(0, 20).trim();
+            if (shortName.length > 18) shortName = shortName.slice(0, 18).trim();
+
+            // 2. Frequency extraction
+            let freq = '';
+            if (sp.freq) {
+                const fm = sp.freq.match(/(\d{3}\.\d{2,3})/);
+                if (fm) freq = fm[1];
+            }
+            if (!freq && sp.name) {
+                const fm = sp.name.match(/(\d{3}\.\d{2,3})/);
+                if (fm) freq = fm[1];
+            }
+
+            // 3. Type Tag & Badge Class
+            let typeTag = sp.type;
+            let badgeType = 'ctr';
+            if (sp.type === 'CTR') {
+                typeTag = sp.class ? `CTR ${sp.class}` : 'CTR';
+                badgeType = 'ctr';
+            } else if (sp.type === 'TMA' || sp.type === 'CTA') {
+                typeTag = sp.class ? `TMA ${sp.class}` : 'TMA';
+                badgeType = 'tma';
+            } else if (sp.type === 'Prohibited') {
+                typeTag = 'P';
+                badgeType = 'prohibited';
+            } else if (sp.type === 'Restricted') {
+                typeTag = 'R';
+                badgeType = 'restricted';
+            } else if (sp.type === 'Danger') {
+                typeTag = 'D';
+                badgeType = 'danger';
+            } else if (sp.type === 'FIS' || sp.type === 'SIV') {
+                typeTag = 'SIV';
+                badgeType = 'siv';
+            } else if (sp.type === 'RMZ') {
+                typeTag = 'RMZ';
+                badgeType = 'rmz';
+            } else if (sp.type === 'TMZ') {
+                typeTag = 'TMZ';
+                badgeType = 'tmz';
+            }
 
             const cleanFloor = (sp.floor || 'SFC').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
             const cleanCeil = (sp.ceiling || 'UNL').replace(/'\s*AMSL/i, "'").replace(/'\s*AGL/i, "' AGL").trim();
-            const altText = `${cleanFloor} / ${cleanCeil}`;
-
-            const badgeType = sp.type === 'Prohibited' ? 'prohibited' : (sp.type === 'Restricted' ? 'restricted' : 'ctr');
 
             const labelIcon = L.divIcon({
                 className: 'aero-airspace-badge-icon',
-                html: `<div class="airspace-map-badge ${badgeType}"><span class="airspace-badge-name">${escapeHtml(shortName)}</span><span class="airspace-badge-alt">${escapeHtml(altText)}</span></div>`,
+                html: `
+                    <div class="airspace-map-badge ${badgeType}" id="badge_${sp.id}" title="Click to inspect ${escapeHtml(sp.name)}">
+                        <div class="airspace-badge-row1">
+                            <span class="airspace-type-chip">${escapeHtml(typeTag)}</span>
+                            <span class="airspace-badge-name">${escapeHtml(shortName)}</span>
+                        </div>
+                        <div class="airspace-badge-row2">
+                            <span class="airspace-alt-chip">${escapeHtml(cleanCeil)} ▾ ${escapeHtml(cleanFloor)}</span>
+                            ${freq ? `<span class="airspace-freq-chip">📻 ${escapeHtml(freq)}</span>` : ''}
+                        </div>
+                    </div>
+                `,
                 iconSize: null,
                 iconAnchor: null
             });
-            const labelMarker = L.marker([centerLat, centerLng], { icon: labelIcon, interactive: false });
+            const labelMarker = L.marker([centerLat, centerLng], { 
+                icon: labelIcon, 
+                interactive: true,
+                pane: 'airspaceLabelsPane'
+            });
+
+            labelMarker.on('mouseover', () => highlightAirspace(sp, true));
+            labelMarker.on('mouseout', () => highlightAirspace(sp, false));
+            labelMarker.on('click', (e) => {
+                if (isRulerActive) return;
+                L.DomEvent.stopPropagation(e);
+                openAirspaceDetailsPopup(sp, labelMarker.getLatLng());
+            });
+
             sp._labelMarker = labelMarker;
             sp._labelLat = centerLat;
             sp._labelLng = centerLng;
             return labelMarker;
         }
 
+        // Precompute bounding box diagonal span for Level-of-Detail (LOD) decluttering
+        AeroData.AIRSPACES.forEach(sp => {
+            if (sp.bbox) {
+                const dLat = sp.bbox[2] - sp.bbox[0];
+                const dLng = sp.bbox[3] - sp.bbox[1];
+                sp._diag = Math.sqrt(dLat * dLat + dLng * dLng);
+            } else {
+                sp._diag = 0.1;
+            }
+        });
+
+        AeroData.AIRPORTS.forEach(apt => {
+            if (apt._maxRwy === undefined) {
+                apt._maxRwy = (apt.runways && apt.runways.length)
+                    ? Math.max(...apt.runways.map(r => parseInt(r.length) || 0))
+                    : 0;
+            }
+            apt._hasIata = !!(apt.iata && apt.iata.length === 3);
+        });
+
         let activeAirspacePolys = new Set();
         let activeAirspaceBadges = new Set();
 
         function updateVisibleAirspaces() {
-            const bounds = map.getBounds().pad(0.25);
+            const bounds = map.getBounds().pad(0.2);
             const minLat = bounds.getSouth(), maxLat = bounds.getNorth();
             const minLng = bounds.getWest(), maxLng = bounds.getEast();
             const z = map.getZoom();
-            const showBadges = z >= 8;
 
             const nextPolys = new Set();
             const nextBadges = new Set();
 
             AeroData.AIRSPACES.forEach(sp => {
                 const b = sp.bbox;
+                // Fast bounding-box rejection
                 if (b[0] <= maxLat && b[2] >= minLat && b[1] <= maxLng && b[3] >= minLng) {
-                    if (z <= 6 && (sp.type === 'Glider Sector' || sp.type === 'Drop Zone' || sp.type === 'RMZ' || sp.type === 'TMZ')) {
-                        return;
+                    // Level of Detail (LOD) decluttering based on zoom level:
+                    let isVisible = false;
+                    if (z <= 5) {
+                        // Continental Europe view: Major high-level controlled airspaces & airways only
+                        isVisible = (sp.type === 'TMA' || sp.type === 'CTA' || sp.type === 'Airway') && sp._diag >= 0.5;
+                    } else if (z === 6) {
+                        // National view (whole country): Large TMAs, CTAs, Airways, FIS/SIV, and major sectors; hide micro-zones & special sport areas
+                        isVisible = (sp.type === 'TMA' || sp.type === 'CTA' || sp.type === 'Airway' || sp.type === 'FIS' || sp.type === 'SIV' || sp._diag >= 0.35) &&
+                                    (sp.type !== 'Drop Zone' && sp.type !== 'Glider Sector' && sp.type !== 'RMZ' && sp.type !== 'TMZ');
+                    } else if (z === 7) {
+                        // Multi-region view: TMAs, CTAs, Airways, prominent CTRs, FIS/SIV and major P/R/D areas; hide small local hazards
+                        isVisible = (sp.type === 'TMA' || sp.type === 'CTA' || sp.type === 'Airway' || sp.type === 'CTR' || sp.type === 'FIS' || sp.type === 'SIV' || sp._diag >= 0.15) &&
+                                    (sp.type !== 'Drop Zone' && sp.type !== 'Glider Sector');
+                    } else if (z === 8) {
+                        // Regional view: Controlled airspaces, FIS/SIV and significant sectors; hide micro-zones
+                        isVisible = (sp._diag >= 0.05 || sp.type === 'FIS' || sp.type === 'SIV') && (sp.type !== 'Drop Zone' && sp.type !== 'Glider Sector');
+                    } else {
+                        // Zoom >= 9 (Sub-regional & Terminal detail): Full detail including all micro-zones, DZs, gliders
+                        isVisible = true;
                     }
+
+                    if (!isVisible) return;
 
                     const poly = getOrCreateAirspacePolygon(sp);
                     nextPolys.add(sp);
@@ -2586,7 +2987,18 @@
                         applyAltitudeFilterToPolygon(poly, sp);
                     }
 
-                    if (showBadges) {
+                    // Airspace Badges (Rectangular Labels):
+                    // At zoom <= 7: No badges to prevent visual clutter.
+                    // At zoom 8: Show badges for primary controlled airspaces (CTR, TMA, CTA) and FIS/SIV sectors.
+                    // At zoom >= 9: Show badges for all labeled airspaces.
+                    let showBadge = false;
+                    if (z >= 9) {
+                        showBadge = true;
+                    } else if (z === 8) {
+                        showBadge = (sp.type === 'CTR' || sp.type === 'TMA' || sp.type === 'CTA' || sp.type === 'FIS' || sp.type === 'SIV') && sp._diag >= 0.15;
+                    }
+
+                    if (showBadge) {
                         const badge = getOrCreateAirspaceBadge(sp);
                         if (badge && sp._labelLat >= minLat && sp._labelLat <= maxLat && sp._labelLng >= minLng && sp._labelLng <= maxLng) {
                             nextBadges.add(sp);
@@ -2697,12 +3109,36 @@
             const minLng = bounds.getWest(), maxLng = bounds.getEast();
 
             const nextAirports = new Set();
+            const routeIcaoSet = new Set((waypoints || []).map(wp => wp.name));
 
             AeroData.AIRPORTS.forEach(apt => {
                 let visible = false;
-                if (z <= 5) visible = apt.type === 'intl';
-                else if (z <= 7) visible = apt.type === 'intl' || apt.type === 'ga';
-                else visible = true;
+
+                // Priority 1: If an airport is part of active flight plan, always keep it visible!
+                if (routeIcaoSet.has(apt.icao)) {
+                    visible = true;
+                } else if (z <= 4) {
+                    // Zoom <= 4 (Europe Continental): Major international gateway hubs (runway >= 2600m)
+                    visible = apt.type === 'intl' && apt._maxRwy >= 2600;
+                } else if (z === 5) {
+                    // Zoom 5 (Western Europe): Primary international hubs (runway >= 2000m)
+                    visible = apt.type === 'intl' && apt._maxRwy >= 2000;
+                } else if (z === 6) {
+                    // Zoom 6 (National overview): International & primary airline hubs with IATA (runway >= 1800m)
+                    visible = apt.type === 'intl' || (apt._hasIata && apt._maxRwy >= 1800);
+                } else if (z === 7) {
+                    // Zoom 7 (Multi-region view): Commercial destinations, military airbases & runways >= 1500m
+                    visible = apt.type === 'intl' || (apt._hasIata && apt._maxRwy >= 1300) || (apt.type === 'mil' && apt._maxRwy >= 1500) || apt._maxRwy >= 1600;
+                } else if (z === 8) {
+                    // Zoom 8 (Regional view ~120 NM): Commercial, military & primary paved GA airfields (runway >= 1100m)
+                    visible = apt.type === 'intl' || apt._hasIata || apt.type === 'mil' || apt._maxRwy >= 1100;
+                } else if (z === 9) {
+                    // Zoom 9 (Sub-regional view ~50 NM): Paved & standard aerodromes (runway >= 650m or military/intl/iata)
+                    visible = apt.type === 'intl' || apt._hasIata || apt.type === 'mil' || apt._maxRwy >= 650;
+                } else {
+                    // Zoom >= 10 (Local / Approach view): 100% of all operational aerodromes, grass strips, ultralights
+                    visible = true;
+                }
 
                 if (visible && apt.lat >= minLat && apt.lat <= maxLat && apt.lng >= minLng && apt.lng <= maxLng) {
                     const marker = getOrCreateAirportMarker(apt);
@@ -2725,53 +3161,91 @@
         const allAirportMarkers = AeroData.AIRPORTS.map(apt => ({ apt, get marker() { return getOrCreateAirportMarker(apt); } }));
 
         // =========================================================================
-        // VFR REPORTING POINTS
+        // VFR REPORTING POINTS WITH LEVEL-OF-DETAIL
         // =========================================================================
-        function renderVfrPoints() {
-            vfrPointsLayer.clearLayers();
-            AeroData.VFR_WAYPOINTS.forEach(wp => {
-                const reqClass = wp.compulsory ? '' : 'on-request';
-                const icon = L.divIcon({
-                    className: 'aero-div-icon',
-                    html: `
-                        <div style="display:flex; flex-direction:column; align-items:center;">
-                            <div class="aero-icon-vfr ${reqClass}" title="${escapeHtml(wp.airport)} ${escapeHtml(wp.code)}"></div>
-                            <span style="font-size:9px; font-weight:800; font-family:'IBM Plex Mono',monospace; background:rgba(255,255,255,0.85); padding:0 2px; border-radius:2px; margin-top:1px;">${escapeHtml(wp.code)}</span>
-                        </div>
-                    `,
-                    iconSize: [16, 26],
-                    iconAnchor: [8, 7]
-                });
-
-                const marker = L.marker([wp.lat, wp.lng], { icon: icon });
-                const popupContent = `
-                    <div class="aero-popup-header">
-                        <div>
-                            <div class="aero-popup-title">${escapeHtml(wp.airport)} Point ${escapeHtml(wp.code)}</div>
-                            <div style="font-size:10.5px; color:var(--muted-text); font-weight:700;">${escapeHtml(wp.name)}</div>
-                        </div>
-                        <span class="spotlight-badge badge-vfr">${wp.compulsory ? 'COMPULSORY ▲' : 'ON REQUEST △'}</span>
+        function getOrCreateVfrPointMarker(wp) {
+            if (wp._marker) return wp._marker;
+            const reqClass = wp.compulsory ? '' : 'on-request';
+            const icon = L.divIcon({
+                className: 'aero-div-icon',
+                html: `
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="aero-icon-vfr ${reqClass}" title="${escapeHtml(wp.airport)} ${escapeHtml(wp.code)}"></div>
+                        <span style="font-size:9px; font-weight:800; font-family:'IBM Plex Mono',monospace; background:rgba(255,255,255,0.85); padding:0 2px; border-radius:2px; margin-top:1px;">${escapeHtml(wp.code)}</span>
                     </div>
-                    <div class="aero-popup-body">
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Altitude</span>
-                            <span class="aero-popup-val" style="color:var(--accent-blue); font-weight:800;">${escapeHtml(wp.alt || 'Standard VFR')}</span>
-                        </div>
-                        <div class="aero-popup-row">
-                            <span class="aero-popup-label">Landmark</span>
-                            <span class="aero-popup-val">${escapeHtml(wp.desc || 'Visual checkpoint')}</span>
-                        </div>
-                        <div style="margin-top:12px;">
-                            <button class="btn-popup-action accent" style="width:100%;" onclick="addVfrPointAsWp('${escapeHtml(wp.airport + ' ' + wp.code + ' (' + wp.name + ')')}', ${wp.lat}, ${wp.lng})">
-                                ➕ Add ${escapeHtml(wp.code)} to Route
-                            </button>
-                        </div>
-                    </div>
-                `;
-                marker.bindPopup(popupContent);
-                marker.bindTooltip(`<strong>${wp.airport} ${wp.code}</strong> (${wp.name})`, { direction: 'top', offset: [0, -12] });
-                vfrPointsLayer.addLayer(marker);
+                `,
+                iconSize: [16, 26],
+                iconAnchor: [8, 7]
             });
+
+            const marker = L.marker([wp.lat, wp.lng], { icon: icon });
+            const popupContent = `
+                <div class="aero-popup-header">
+                    <div>
+                        <div class="aero-popup-title">${escapeHtml(wp.airport)} Point ${escapeHtml(wp.code)}</div>
+                        <div style="font-size:10.5px; color:var(--muted-text); font-weight:700;">${escapeHtml(wp.name)}</div>
+                    </div>
+                    <span class="spotlight-badge badge-vfr">${wp.compulsory ? 'COMPULSORY ▲' : 'ON REQUEST △'}</span>
+                </div>
+                <div class="aero-popup-body">
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Altitude</span>
+                        <span class="aero-popup-val" style="color:var(--accent-blue); font-weight:800;">${escapeHtml(wp.alt || 'Standard VFR')}</span>
+                    </div>
+                    <div class="aero-popup-row">
+                        <span class="aero-popup-label">Landmark</span>
+                        <span class="aero-popup-val">${escapeHtml(wp.desc || 'Visual checkpoint')}</span>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <button class="btn-popup-action accent" style="width:100%;" onclick="addVfrPointAsWp('${escapeHtml(wp.airport + ' ' + wp.code + ' (' + wp.name + ')')}', ${wp.lat}, ${wp.lng})">
+                            ➕ Add ${escapeHtml(wp.code)} to Route
+                        </button>
+                    </div>
+                </div>
+            `;
+            marker.bindPopup(popupContent);
+            marker.bindTooltip(`<strong>${wp.airport} ${wp.code}</strong> (${wp.name})`, { direction: 'top', offset: [0, -12] });
+
+            wp._marker = marker;
+            return marker;
+        }
+
+        let activeVfrPoints = new Set();
+
+        function updateVfrPointsVisibility() {
+            if (!map.hasLayer(vfrPointsLayer)) return;
+            const z = map.getZoom();
+            if (z < 9) {
+                // VFR entry/exit reporting points are only useful for approach into CTRs/airfields (zoom >= 9)
+                activeVfrPoints.forEach(wp => {
+                    if (wp._marker) vfrPointsLayer.removeLayer(wp._marker);
+                });
+                activeVfrPoints.clear();
+                return;
+            }
+
+            const bounds = map.getBounds().pad(0.15);
+            const minLat = bounds.getSouth(), maxLat = bounds.getNorth();
+            const minLng = bounds.getWest(), maxLng = bounds.getEast();
+
+            const nextVfr = new Set();
+
+            AeroData.VFR_WAYPOINTS.forEach(wp => {
+                if (wp.lat >= minLat && wp.lat <= maxLat && wp.lng >= minLng && wp.lng <= maxLng) {
+                    const marker = getOrCreateVfrPointMarker(wp);
+                    nextVfr.add(wp);
+                    if (!activeVfrPoints.has(wp)) {
+                        vfrPointsLayer.addLayer(marker);
+                    }
+                }
+            });
+
+            activeVfrPoints.forEach(wp => {
+                if (!nextVfr.has(wp) && wp._marker) {
+                    vfrPointsLayer.removeLayer(wp._marker);
+                }
+            });
+            activeVfrPoints = nextVfr;
         }
 
         // =========================================================================
@@ -2827,7 +3301,8 @@
         function updateNavaidsVisibility() {
             if (!map.hasLayer(navaidsLayer)) return;
             const z = map.getZoom();
-            if (z < 7) {
+            if (z < 8) {
+                // When zoomed out to regional or continental levels, hide navaids completely
                 activeNavaids.forEach(nav => {
                     if (nav._marker) navaidsLayer.removeLayer(nav._marker);
                 });
@@ -2842,7 +3317,18 @@
             const nextNavaids = new Set();
 
             AeroData.NAVAIDS.forEach(nav => {
-                if (nav.lat >= minLat && nav.lat <= maxLat && nav.lng >= minLng && nav.lng <= maxLng) {
+                let visible = false;
+                const isMajorVor = nav.type === 'VOR' || nav.type === 'VOR-DME' || nav.type === 'VORTAC';
+
+                if (z === 8) {
+                    // Zoom 8 (Regional): Show only primary enroute VOR/VORTAC aids
+                    visible = isMajorVor;
+                } else {
+                    // Zoom >= 9: Show all radio navaids (VOR, TACAN, NDB, DME)
+                    visible = true;
+                }
+
+                if (visible && nav.lat >= minLat && nav.lat <= maxLat && nav.lng >= minLng && nav.lng <= maxLng) {
                     const marker = getOrCreateNavaidMarker(nav);
                     nextNavaids.add(nav);
                     if (!activeNavaids.has(nav)) {
@@ -2869,6 +3355,7 @@
                 updateVisibleAirspaces();
                 updateAirportsVisibility();
                 updateNavaidsVisibility();
+                updateVfrPointsVisibility();
             });
         }
 
@@ -2880,12 +3367,11 @@
         function applyAltitudeFilterToPolygon(polygon, sp) {
             const selectVal = parseInt(document.getElementById('altFilterSelect').value, 10) || 0;
             if (selectVal === 0) {
-                const isSpecial = sp.type === 'Prohibited' || sp.type === 'Restricted' || sp.type === 'Danger';
-                const baseWeight = (sp.type === 'Prohibited' || sp.class === 'A') ? 2.2 : (sp.type === 'Restricted' ? 2.0 : 1.8);
                 polygon.setStyle({
-                    opacity: 0.85,
-                    weight: baseWeight,
-                    fillOpacity: isSpecial ? 0.12 : (sp.type === 'TMA' || sp.type === 'CTA' ? 0.06 : 0.08)
+                    opacity: sp._baseOpacity || 1.0,
+                    weight: sp._baseWeight || 3.0,
+                    fillOpacity: sp._baseFillOpacity || 0.12,
+                    dashArray: sp._baseDashArray || null
                 });
                 return;
             }
@@ -2897,14 +3383,16 @@
             if (activeAtAlt) {
                 polygon.setStyle({
                     opacity: 1.0,
-                    weight: 3.5,
-                    fillOpacity: 0.22
+                    weight: Math.max(3.8, (sp._baseWeight || 3.0) + 1.2),
+                    fillOpacity: Math.min(0.38, (sp._baseFillOpacity || 0.12) * 2.2 + 0.08),
+                    dashArray: sp._baseDashArray || null
                 });
             } else {
                 polygon.setStyle({
-                    opacity: 0.20,
-                    weight: 0.8,
-                    fillOpacity: 0.02
+                    opacity: 0.55,
+                    weight: Math.max(1.6, (sp._baseWeight || 3.0) * 0.65),
+                    fillOpacity: (sp._baseFillOpacity || 0.12) * 0.4,
+                    dashArray: sp._baseDashArray || null
                 });
             }
         }
@@ -2977,15 +3465,19 @@
 
                         setTimeout(() => {
                             if (sel.type === 'airport') {
-                                const found = allAirportMarkers.find(m => m.apt.icao === sel.item.icao);
-                                if (found) {
-                                    if (!airportsLayer.hasLayer(found.marker)) airportsLayer.addLayer(found.marker);
-                                    found.marker.openPopup();
+                                const aptItem = AeroData.AIRPORTS.find(a => a.icao === sel.item.icao);
+                                if (aptItem) {
+                                    const marker = getOrCreateAirportMarker(aptItem);
+                                    if (!airportsLayer.hasLayer(marker)) airportsLayer.addLayer(marker);
+                                    marker.openPopup();
                                 }
                             } else if (sel.type === 'vfr_point') {
-                                vfrPointsLayer.eachLayer(l => {
-                                    if (l.getLatLng && Math.abs(l.getLatLng().lat - sel.lat) < 0.001) l.openPopup();
-                                });
+                                const vfrItem = AeroData.VFR_WAYPOINTS.find(v => Math.abs(v.lat - sel.lat) < 0.001 && Math.abs(v.lng - sel.lng) < 0.001);
+                                if (vfrItem) {
+                                    const marker = getOrCreateVfrPointMarker(vfrItem);
+                                    if (!vfrPointsLayer.hasLayer(marker)) vfrPointsLayer.addLayer(marker);
+                                    marker.openPopup();
+                                }
                             } else if (sel.type === 'navaid') {
                                 const navItem = AeroData.NAVAIDS.find(n => n.ident === sel.item.ident);
                                 if (navItem) {
@@ -3077,17 +3569,37 @@
                 name: apt.icao,
                 lat: apt.lat,
                 lng: apt.lng,
-                alt: apt.alt || 3500
+                alt: apt.alt || 3500,
+                role: role,
+                isDeparture: role === 'departure',
+                isArrival: role === 'arrival'
             };
 
             if (role === 'departure') {
-                if (waypoints.length > 0) waypoints[0] = wpItem;
-                else waypoints.push(wpItem);
+                if (waypoints.length === 0) {
+                    waypoints.push(wpItem);
+                } else if (waypoints[0].isDeparture || waypoints[0].role === 'departure' || waypoints.length === 1) {
+                    waypoints[0] = wpItem;
+                } else {
+                    waypoints.unshift(wpItem);
+                }
             } else if (role === 'arrival') {
-                if (waypoints.length > 1) waypoints[waypoints.length - 1] = wpItem;
-                else waypoints.push(wpItem);
+                if (waypoints.length === 0) {
+                    waypoints.push(wpItem);
+                } else if (waypoints[waypoints.length - 1].isArrival || waypoints[waypoints.length - 1].role === 'arrival') {
+                    // Changing existing arrival airport
+                    waypoints[waypoints.length - 1] = wpItem;
+                } else {
+                    // Appending arrival airport to the end of the existing route without overwriting any waypoints
+                    waypoints.push(wpItem);
+                }
             } else {
-                waypoints.push(wpItem);
+                // Intermediate waypoint
+                if (waypoints.length >= 2 && (waypoints[waypoints.length - 1].isArrival || waypoints[waypoints.length - 1].role === 'arrival')) {
+                    waypoints.splice(waypoints.length - 1, 0, wpItem);
+                } else {
+                    waypoints.push(wpItem);
+                }
             }
 
             map.closePopup();
@@ -3095,12 +3607,20 @@
         };
 
         window.addVfrPointAsWp = function(name, lat, lng) {
-            waypoints.push({
+            const wpItem = {
                 name: cleanWaypointName(name),
                 lat: parseFloat(lat),
                 lng: parseFloat(lng),
-                alt: 3500
-            });
+                alt: 3500,
+                role: 'waypoint',
+                isDeparture: false,
+                isArrival: false
+            };
+            if (waypoints.length >= 2 && (waypoints[waypoints.length - 1].isArrival || waypoints[waypoints.length - 1].role === 'arrival')) {
+                waypoints.splice(waypoints.length - 1, 0, wpItem);
+            } else {
+                waypoints.push(wpItem);
+            }
             map.closePopup();
             updateUI();
         };
@@ -3146,12 +3666,21 @@
                 wpName = `${nearbyVfr.ident} (${nearbyVfr.name})`;
             }
 
-            waypoints.push({
+            const newWp = {
                 lat: lat,
                 lng: lng,
                 name: cleanWaypointName(wpName),
-                alt: wpAlt
-            });
+                alt: wpAlt,
+                role: 'waypoint',
+                isDeparture: false,
+                isArrival: false
+            };
+
+            if (waypoints.length >= 2 && (waypoints[waypoints.length - 1].isArrival || waypoints[waypoints.length - 1].role === 'arrival')) {
+                waypoints.splice(waypoints.length - 1, 0, newWp);
+            } else {
+                waypoints.push(newWp);
+            }
 
             updateUI();
         }
@@ -3166,7 +3695,7 @@
             if (airspacesHere.length > 0) {
                 const spListHtml = airspacesHere.map(sp => `
                     <div style="border-bottom:1px solid var(--line); padding:5px 0; font-size:11.5px;">
-                        <strong style="color:var(--text-color);">${sp.country ? '[' + escapeHtml(sp.country) + '] ' : ''}${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)} Class ${escapeHtml(sp.class)})<br>
+                        <strong style="color:var(--text-color);">${sp.country ? '[' + escapeHtml(sp.country) + '] ' : ''}${escapeHtml(sp.name)}</strong> (${escapeHtml(sp.type)}${sp.class && sp.class !== 'UNC' ? ' Class ' + escapeHtml(sp.class) : ''})<br>
                         <span style="color:var(--muted-text); font-size:10px;">Limits: ${escapeHtml(sp.floor)} - ${escapeHtml(sp.ceiling)} &bull; ${escapeHtml(sp.freq)}</span>
                     </div>
                 `).join('');
@@ -3426,12 +3955,19 @@
             waypoints.forEach((wp, index) => {
                 const li = document.createElement('li');
                 li.className = 'wp-card';
+                const isDep = wp.isDeparture || (index === 0 && waypoints.length > 1);
+                const isArr = wp.isArrival || (index === waypoints.length - 1 && waypoints.length > 1);
+                const badgeClass = isDep ? 'dep' : (isArr ? 'arr' : '');
+                const roleTag = isDep ? '<span style="font-size:9.5px; font-weight:800; color:#188038; background:rgba(24,128,56,0.12); padding:2px 5px; border-radius:3px; margin-left:6px; flex-shrink:0;">DEP</span>' : (isArr ? '<span style="font-size:9.5px; font-weight:800; color:#c5221f; background:rgba(197,34,31,0.12); padding:2px 5px; border-radius:3px; margin-left:6px; flex-shrink:0;">ARR</span>' : '');
 
                 li.innerHTML = `
-                    <div class="wp-num-badge">${index + 1}</div>
+                    <div class="wp-num-badge ${badgeClass}">${index + 1}</div>
                     <div class="wp-card-fields">
                         <div class="wp-card-title-row">
-                            <input type="text" class="wp-name-input" value="${escapeHtml(cleanWaypointName(wp.name))}" data-idx="${index}">
+                            <div style="display:flex; align-items:center; flex:1; min-width:0;">
+                                <input type="text" class="wp-name-input" value="${escapeHtml(cleanWaypointName(wp.name))}" data-idx="${index}">
+                                ${roleTag}
+                            </div>
                             <button class="btn-card-del" data-idx="${index}" title="Remove waypoint">✕</button>
                         </div>
                         <div class="wp-alt-row">
@@ -3522,6 +4058,7 @@
                 else if (sp.type === 'Danger') tagClass = 'aero-badge-danger';
                 else if (sp.type === 'RMZ' || sp.type === 'TMZ') tagClass = 'aero-badge-rmz';
                 else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') tagClass = 'aero-badge-drop';
+                else if (sp.type === 'FIS' || sp.type === 'SIV') tagClass = 'aero-badge-fis';
 
                 html += `
                     <div class="airspace-brief-card ${penetratesCruising ? 'active-cruising' : ''}" style="cursor:pointer;" onclick="focusAirspace('${escapeHtml(sp.id)}')" title="Click to locate on chart">
@@ -3666,6 +4203,7 @@
                     else if (sp.type === 'TMA' || sp.type === 'CTA') fill = 'rgba(26, 35, 126, 0.12)';
                     else if (sp.type === 'RMZ' || sp.type === 'TMZ') fill = 'rgba(123, 31, 162, 0.14)';
                     else if (sp.type === 'Drop Zone' || sp.type === 'Glider Sector') fill = 'rgba(0, 121, 107, 0.12)';
+                    else if (sp.type === 'FIS' || sp.type === 'SIV') fill = 'rgba(2, 132, 199, 0.08)';
 
                     ctx.fillStyle = fill;
                     ctx.fillRect(x1, yCeil, x2 - x1, slabH);
@@ -3781,6 +4319,21 @@
         document.getElementById('hudReverseBtn').addEventListener('click', () => {
             if (waypoints.length < 2) return;
             waypoints.reverse();
+            waypoints.forEach((wp, idx, arr) => {
+                if (idx === 0) {
+                    wp.role = 'departure';
+                    wp.isDeparture = true;
+                    wp.isArrival = false;
+                } else if (idx === arr.length - 1) {
+                    wp.role = 'arrival';
+                    wp.isDeparture = false;
+                    wp.isArrival = true;
+                } else {
+                    wp.role = 'waypoint';
+                    wp.isDeparture = false;
+                    wp.isArrival = false;
+                }
+            });
             updateUI();
         });
 
@@ -3815,9 +4368,12 @@
                     if (data.windDir) windDirInput.value = data.windDir;
                     if (data.windSpd) windSpdInput.value = data.windSpd;
                     if (Array.isArray(data.waypoints) && data.waypoints.length > 0) {
-                        waypoints = data.waypoints.map(wp => ({
+                        waypoints = data.waypoints.map((wp, idx, arr) => ({
                             ...wp,
-                            name: cleanWaypointName(wp.name)
+                            name: cleanWaypointName(wp.name),
+                            role: wp.role || (idx === 0 ? 'departure' : (idx === arr.length - 1 && arr.length > 1 ? 'arrival' : 'waypoint')),
+                            isDeparture: wp.isDeparture !== undefined ? wp.isDeparture : (idx === 0),
+                            isArrival: wp.isArrival !== undefined ? wp.isArrival : (idx === arr.length - 1 && arr.length > 1)
                         }));
                         updateUI();
                     }
@@ -3918,7 +4474,7 @@
         // =========================================================================
         // INITIALIZATION (Instantaneous Viewport-Bounded Load)
         // =========================================================================
-        renderVfrPoints();
+        updateVfrPointsVisibility();
         scheduleViewportUpdate();
 
         loadState();
