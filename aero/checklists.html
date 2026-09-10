@@ -398,6 +398,13 @@
             <a href="checklists.html" class="highlight">Checklists</a>
             <a href="emergency.html">Emergency Procedures</a>
             
+            <!-- AIRCRAFT PROFILE MANAGER BUTTON -->
+            <div style="padding: 0 16px; margin: 12px 0 6px 0;">
+                <button type="button" class="btn-export-bw" onclick="AircraftProfiles.openModal()" style="width: 100%; padding: 10px 12px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 4px; background: var(--accent-blue, #1967d2); color: #fff; border: 1.5px solid var(--border-color);" title="Import, export, or select aircraft profiles">
+                    <span>✈️</span> Aircraft Profiles
+                </button>
+            </div>
+            
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
             <div class="sidebar-export-wrap">
                 <button class="btn-export-bw btn-export-dossier" id="exportFlightDocBtn" title="Export complete flight dossier (Navlog, Minimap, Performance, Checklists & Emergency)">
@@ -417,9 +424,14 @@
                     <h1>Checklists</h1>
                     <p>Add the aircraft you operate, then arrange checklists in flight order and work through each phase.</p>
                 </div>
-                <a href="emergency.html" class="btn-export-bw" style="width: auto; padding: 10px 18px; font-size: 12px; background: var(--danger, #c5221f); border-color: var(--danger, #c5221f); color: #fff; text-decoration: none;">
-                    🚨 Emergency Procedures &rarr;
-                </a>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button class="btn-export-bw" onclick="AircraftProfiles.openModal()" style="width: auto; padding: 10px 18px; font-size: 12px; cursor: pointer;">
+                        ✈️ Aircraft Profiles
+                    </button>
+                    <a href="emergency.html" class="btn-export-bw" style="width: auto; padding: 10px 18px; font-size: 12px; background: var(--danger, #c5221f); border-color: var(--danger, #c5221f); color: #fff; text-decoration: none;">
+                        🚨 Emergency Procedures &rarr;
+                    </a>
+                </div>
             </div>
 
             <div class="workspace">
@@ -1303,8 +1315,28 @@
 
         renderAircraftList();
         renderChecklistsPanel();
+
+        function reloadFromStorage() {
+            const state = loadState();
+            if (state) {
+                aircraft = state.aircraft;
+                activeAircraftId = state.activeAircraftId || (aircraft[0] ? aircraft[0].id : null);
+                expandedChecklistIds = new Set(Array.isArray(state.expandedIds) ? state.expandedIds : []);
+                renderAircraftList();
+                renderChecklistsPanel();
+            }
+        }
+
+        window.__hasProfileChangeHandler = true;
+        window.addEventListener('aircraftProfileChanged', reloadFromStorage);
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE_KEY || e.key === 'flightprep_profile_sync_trigger') {
+                reloadFromStorage();
+            }
+        });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="aircraft_profiles.js"></script>
     <script src="flight_dossier.js"></script>
 </body>
 </html>

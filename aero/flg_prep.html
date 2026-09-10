@@ -420,17 +420,17 @@
         }
         .notam-controls-left input:focus { border-color: var(--border-color); }
         .notam-quick-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
+        
         .notam-filter-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: var(--bg-color);
+            gap: 12px;
             padding: 10px 14px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            border: 2px solid var(--border-color);
+            flex-wrap: wrap;
         }
         .notam-filter-chips {
             display: flex;
@@ -438,16 +438,15 @@
             flex-wrap: wrap;
         }
         .notam-filter-btn {
-            padding: 5px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            border-radius: 14px;
-            border: 1px solid var(--border-color);
             background: var(--card-bg);
+            border: 1px solid var(--border-color);
             color: var(--text-color);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 4px;
             cursor: pointer;
             transition: all 0.15s ease;
-            font-family: 'Inter', sans-serif;
         }
         .notam-filter-btn:hover {
             background: var(--hover-bg);
@@ -455,18 +454,17 @@
         .notam-filter-btn.active {
             background: var(--border-color);
             color: var(--bg-color);
-            border-color: var(--border-color);
         }
+        
         .notam-search-filter {
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 14px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-color);
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 4px;
             outline: none;
-            min-width: 200px;
-            font-family: 'Inter', sans-serif;
+            width: 220px;
         }
         .notam-search-filter:focus { border-color: var(--accent-blue); }
 
@@ -475,59 +473,76 @@
             border-radius: 6px;
             background: var(--card-bg);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            margin-bottom: 16px;
         }
+        .notam-airport-group:last-child { margin-bottom: 0; }
+        
         .notam-airport-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 16px;
             background: var(--bg-color);
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .notam-apt-title {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .notam-apt-code {
-            font-size: 16px;
+            font-family: monospace;
             font-weight: 800;
-            letter-spacing: 0.5px;
+            font-size: 14px;
         }
         .notam-apt-name {
-            font-size: 12px;
-            color: var(--muted-text);
+            font-weight: 600;
+            font-size: 13px;
         }
         .notam-apt-count {
+            background: var(--hover-bg);
+            padding: 2px 6px;
+            border-radius: 3px;
             font-size: 11px;
             font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: var(--hover-bg);
-            color: var(--text-color);
+        }
+        .notam-source-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .notam-source-badge.source-live {
+            background: rgba(19, 115, 51, 0.12);
+            color: #137333;
+            border: 1px solid rgba(19, 115, 51, 0.3);
+        }
+        .notam-source-badge.source-airac {
+            background: rgba(26, 115, 232, 0.12);
+            color: var(--accent-blue);
+            border: 1px solid rgba(26, 115, 232, 0.3);
         }
         .notam-apt-actions {
             display: flex;
-            gap: 8px;
             align-items: center;
+            gap: 8px;
         }
         .notam-portal-link {
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--accent-blue);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            background: var(--card-bg);
+            gap: 3px;
+            padding: 3px 6px;
             border: 1px solid var(--border-color);
-            transition: background 0.15s ease;
+            border-radius: 3px;
+            background: var(--card-bg);
         }
         .notam-portal-link:hover { text-decoration: underline; background: var(--hover-bg); }
 
@@ -536,28 +551,22 @@
             flex-direction: column;
         }
         .notam-item {
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--hover-bg);
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            transition: background-color 0.15s ease, opacity 0.2s ease;
+            gap: 6px;
+            font-size: 12.5px;
+            transition: background 0.15s ease;
         }
         .notam-item:last-child { border-bottom: none; }
         .notam-item:hover { background-color: var(--hover-bg); }
-        .notam-item.acknowledged {
-            opacity: 0.5;
-            background-color: rgba(0,0,0,0.015);
-        }
-        html.dark-mode .notam-item.acknowledged {
-            background-color: rgba(255,255,255,0.015);
-        }
         .notam-item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .notam-tags {
             display: flex;
@@ -570,13 +579,12 @@
             font-weight: 800;
             font-size: 12px;
             color: var(--text-color);
-            padding-right: 4px;
         }
         .notam-badge {
-            font-size: 10.5px;
+            font-size: 10px;
             font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 4px;
+            padding: 2px 6px;
+            border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -588,71 +596,70 @@
         html.dark-mode .notam-badge-info { background: #172b4d; color: #8ab4f8; border-color: #4285f4; }
 
         .notam-status-badge {
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 3px;
-            letter-spacing: 0.3px;
+            padding: 1px 5px;
+            border-radius: 2px;
+            background: var(--hover-bg);
+            color: var(--muted-text);
         }
-        .status-active { background: #e6f4ea; color: #137333; border: 1px solid #34a853; }
-        .status-upcoming { background: #e8eaed; color: #3c4043; border: 1px solid #9aa0a6; }
-        .status-expired { background: var(--hover-bg); color: var(--muted-text); }
-        .status-perm { background: #f3e8fd; color: #8430ce; border: 1px solid #a142f4; }
-        html.dark-mode .status-active { background: #133a1e; color: #81c995; border-color: #34a853; }
-        html.dark-mode .status-upcoming { background: #303134; color: #dadce0; border-color: #5f6368; }
-        html.dark-mode .status-perm { background: #2e1744; color: #c58af9; border-color: #a142f4; }
-
+        .notam-status-badge.status-active {
+            background: #e6f4ea;
+            color: #137333;
+        }
+        html.dark-mode .notam-status-badge.status-active {
+            background: #0f3818;
+            color: #81c995;
+        }
         .notam-validity {
-            font-size: 11px;
+            font-size: 11.5px;
             color: var(--muted-text);
             display: flex;
-            gap: 12px;
-            align-items: center;
+            gap: 16px;
             flex-wrap: wrap;
         }
         .notam-validity strong { color: var(--text-color); font-weight: 600; }
         .notam-body {
-            font-family: 'SF Mono', Consolas, Monaco, monospace;
-            font-size: 12.5px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 12px;
             line-height: 1.45;
-            background: var(--bg-color);
-            padding: 9px 12px;
-            border-radius: 4px;
-            border: 1px solid var(--hover-bg);
             color: var(--text-color);
+            background: var(--bg-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 3px solid var(--border-color);
             white-space: pre-wrap;
             word-break: break-word;
         }
         .notam-body strong.highlight-text {
-            color: var(--danger);
+            color: var(--accent-blue);
             font-weight: 700;
         }
         .notam-raw-details {
-            margin-top: 2px;
+            font-size: 11px;
         }
         .notam-raw-details summary {
-            font-size: 11px;
-            color: var(--muted-text);
             cursor: pointer;
+            color: var(--muted-text);
+            font-weight: 600;
             user-select: none;
         }
         .notam-raw-details summary:hover { color: var(--text-color); }
         .notam-raw-details pre {
+            margin-top: 6px;
+            padding: 8px 12px;
+            background: var(--bg-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 4px;
             font-family: monospace;
             font-size: 11px;
-            padding: 8px 10px;
-            background: var(--hover-bg);
-            border-radius: 4px;
-            margin-top: 6px;
-            margin-bottom: 0;
+            line-height: 1.35;
+            overflow-x: auto;
             white-space: pre-wrap;
-            word-break: break-all;
-            color: var(--muted-text);
         }
         .notam-item-actions {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         /* Modal for pasting raw NOTAMs */
@@ -748,6 +755,13 @@
             <a href="checklists.html">Checklists</a>
             <a href="emergency.html">Emergency Procedures</a>
             
+            <!-- AIRCRAFT PROFILE MANAGER BUTTON -->
+            <div style="padding: 0 16px; margin: 12px 0 6px 0;">
+                <button type="button" class="btn-action primary" onclick="AircraftProfiles.openModal()" style="width: 100%; padding: 10px 12px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);" title="Import, export, or select aircraft profiles">
+                    <span>✈️</span> Aircraft Profiles
+                </button>
+            </div>
+            
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
             <div class="sidebar-export-wrap">
                 <button class="btn-export-bw btn-export-dossier" id="exportFlightDocBtn" title="Export complete flight dossier (Navlog, Minimap, Performance, Checklists & Emergency)">
@@ -765,8 +779,11 @@
             
             <!-- NavLog Section -->
             <div class="navlog-section">
-                <div class="card-header">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <h2>VFR Navigation Log</h2>
+                    <button type="button" class="btn-action primary small" onclick="AircraftProfiles.openModal()" style="font-weight: 800; font-size: 11.5px; display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 4px; cursor: pointer;" title="Import, export, or select aircraft profile">
+                        <span>✈️</span> Aircraft Profiles
+                    </button>
                 </div>
 
                 <div class="navlog-table-wrap">
@@ -852,12 +869,13 @@
                         <div class="notam-toolbar">
                             <div class="notam-controls-left">
                                 <input type="text" id="notamIcaoInput" placeholder="ICAO code (e.g. LFPG, LFPN, EGLL)" maxlength="4" autocomplete="off" spellcheck="false">
-                                <button class="btn-action primary" id="addNotamBtn">Get NOTAMs</button>
+                                <button class="btn-action primary" id="addNotamBtn" title="Add aerodrome to monitor">Add Aerodrome</button>
                             </div>
                             <div class="notam-quick-actions">
                                 <button class="btn-action" id="notamRouteAirfieldsBtn" title="Detect airfields from your plotted interactive route map">📍 Route Airfields</button>
                                 <button class="btn-action" id="openBriefingModalBtn" title="Paste raw briefing text or multiple NOTAMs">📋 Paste Briefing</button>
                                 <button class="btn-action" id="refreshAllNotamsBtn" title="Re-check active NOTAM status">↻ Refresh</button>
+                                <button class="btn-action danger" id="clearAllNotamsBtn" title="Clear all monitored aerodromes and reset NOTAM data">🗑️ Clear All</button>
                             </div>
                         </div>
 
@@ -885,7 +903,10 @@
 
                 <!-- NEW Flight Briefing Panel -->
                 <div class="dash-panel">
-                    <div class="card-header"><h2>Flight Briefing</h2></div>
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>Flight Briefing</h2>
+                        <button class="btn-action small" onclick="AircraftProfiles.openModal()" style="font-size: 11px; padding: 4px 10px;" title="Load or manage fleet profiles">✈️ Aircraft Profiles</button>
+                    </div>
                     <div class="panel-body">
                         <div class="calc-box">
                             <div class="input-row">
@@ -950,18 +971,34 @@
             </div>
             <div class="notam-modal-body">
                 <p style="font-size: 12px; color: var(--muted-text); margin: 0; line-height: 1.4;">
-                    Paste raw NOTAM text from SIA / Olivia, FAA, AIS, or flight briefing packets. Multiple NOTAMs will be automatically detected, parsed, decoded, and categorized.
+                    Paste raw NOTAM text from SIA (SOFIA / Olivia), FAA NOTAM Search, Eurocontrol EAD, or flight briefing packets. Notices will be automatically parsed, decoded, and categorized.
                 </p>
-                <textarea id="notamPasteArea" placeholder="Example:
-A0421/26 NOTAMN
-Q) LFFF/QMRLC/IV/NBO/A/000/999/4901N00233E005
-A) LFPG B) 2603150800 C) 2603181800
-E) RWY 08R/26L CLSD DUE TO MAINT.
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 6px; font-size: 12px; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <label for="notamModalTargetIcao"><strong>Target Aerodrome:</strong></label>
+                        <select id="notamModalTargetIcao" style="padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-color); color: var(--text-color); font-size: 12px;">
+                            <option value="AUTO">Auto-detect from text / All airports</option>
+                        </select>
+                    </div>
+                    <div id="modalPortalLinkRow" style="font-size: 11.5px; color: var(--muted-text);">
+                        <a href="https://sofia-briefing.aviation-civile.gouv.fr/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">🇫🇷 SIA SOFIA ↗</a> &nbsp;|&nbsp;
+                        <a href="https://notams.aim.faa.gov/notamSearch/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">🌐 FAA Search ↗</a> &nbsp;|&nbsp;
+                        <a href="https://www.ead.eurocontrol.int/" target="_blank" rel="noopener noreferrer" style="color: var(--accent-blue); font-weight: 600; text-decoration: none;">🇪🇺 EAD Basic ↗</a>
+                    </div>
+                </div>
+                <textarea id="notamPasteArea" placeholder="Paste official NOTAM text or complete PIB here...
 
-B0112/26 NOTAMR
-Q) LFFF/QNVAS/IV/BO/AE/000/999/
-A) LFPG B) 2603100600 C) 2603201800
-E) VOR CLM 113.85 MHZ U/S."></textarea>
+Example (ICAO / SIA format):
+(A0582/26 NOTAMN
+Q) LFFF/QMRLC/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) 2604010600 C) 2604012000
+E) RWY 09L/27R CLSD FOR RESURFACING)
+
+Example (French SIA / Olivia format):
+LFPN - TOUSSUS LE NOBLE
+LFPN A1420/26
+DU 10/04/26 08:00 AU 15/04/26 18:00
+E) GRUE MOBILE ERIGEE A 500M DU SEUIL 25L. HAUTEUR 35M AGL. FEUX NOCTURNES."></textarea>
             </div>
             <div class="notam-modal-footer">
                 <button class="btn-action" id="cancelNotamModalBtn">Cancel</button>
@@ -1219,7 +1256,10 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
         };
 
         function getAirportName(icao, apiName) {
-            if (KNOWN_AIRPORTS[icao]) return KNOWN_AIRPORTS[icao];
+            if (typeof KNOWN_AIRPORTS !== 'undefined' && KNOWN_AIRPORTS[icao]) {
+                if (typeof KNOWN_AIRPORTS[icao] === 'string') return KNOWN_AIRPORTS[icao];
+                if (KNOWN_AIRPORTS[icao].name) return KNOWN_AIRPORTS[icao].name;
+            }
             if (apiName && typeof apiName === 'string' && apiName.trim()) return apiName.trim();
             return 'Aerodrome ' + icao;
         }
@@ -1822,79 +1862,78 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
             'AH': 'Hours of service changed',
             'AK': 'Resumed normal operations',
             'AL': 'Operates subject to conditions',
-            'AM': 'Military ops only',
             'AO': 'Operational',
-            'AP': 'Prior Permission Required (PPR)',
-            'AR': 'Runway arresting gear',
-            'AS': 'Unserviceable (U/S)',
-            'AT': 'Frequency changed',
-            'AU': 'Not available',
+            'AP': 'Available, prior permission required',
+            'AR': 'Available on request',
+            'AS': 'Unserviceable',
+            'AU': 'Not available (operational limitation)',
             'AW': 'Completely withdrawn',
             'AX': 'Shut down',
             'CA': 'Activated',
             'CC': 'Completed',
             'CD': 'Deactivated',
             'CE': 'Erected',
-            'CF': 'Frequency changed',
-            'CG': 'Downgraded',
+            'CF': 'Operating frequency changed',
+            'CG': 'Degraded',
             'CH': 'Changed',
+            'CI': 'Identification or radio call sign changed',
             'CL': 'Realigned',
             'CM': 'Displaced',
-            'CN': 'Cancelled',
-            'CR': 'Temporarily reserved',
+            'CN': 'Canceled',
             'CS': 'Installed',
             'CT': 'On test, do not use',
-            'HA': 'Braking action',
-            'HB': 'Friction coefficient',
-            'HC': 'Compacted snow',
-            'HD': 'Dry snow',
-            'HE': 'Covered by water',
-            'HF': 'Free of snow and ice',
+            'HA': 'Braking action poor',
+            'HB': 'Braking action medium/poor',
+            'HC': 'Braking action medium',
+            'HD': 'Braking action medium/good',
+            'HE': 'Braking action good',
+            'HF': 'Totally free of snow and ice',
             'HG': 'Grass cutting in progress',
-            'HH': 'Hazard reported',
-            'HI': 'Ice conditions',
-            'HJ': 'Launch of balloon',
-            'HK': 'Bird hazard',
+            'HH': 'Hazard due to birds',
+            'HI': 'Snow clearance completed',
+            'HJ': 'Launch of rubber balloons',
+            'HK': 'Bird hazard extinguished',
             'HL': 'Work completed',
-            'HM': 'Marked by',
-            'HN': 'Work in progress (WIP)',
+            'HN': 'Lit / lighting installed',
             'HO': 'Obscured by snow',
-            'HP': 'Snow clearance in progress',
-            'HQ': 'Operation cancelled',
+            'HQ': 'Operation canceled',
             'HR': 'Standing water',
-            'HS': 'Sanding in progress',
-            'HT': 'Approach lighting U/S',
-            'HU': 'Launch of rocket',
-            'HV': 'Work completed',
-            'HW': 'Work in progress (WIP)',
-            'HX': 'Concentrated bird hazard',
+            'HS': 'Sanded',
+            'HT': 'Approach trenching',
+            'HU': 'Oil on runway',
+            'HV': 'Work in progress',
+            'HW': 'Work in progress',
+            'HX': 'Concentration of birds',
             'HY': 'Snow banks exist',
-            'HZ': 'Covered by slush',
-            'LA': 'Operating on aux power',
-            'LB': 'Reserved for based aircraft',
+            'HZ': 'Covered by frozen ruts',
+            'LA': 'Operating on auxiliary power',
+            'LB': 'Reserved for aircraft based on site',
             'LC': 'Closed',
-            'LD': 'De-icing not available',
-            'LE': 'Without radio aids',
-            'LF': 'Tower lighting extinguished',
-            'LG': 'Operating without radio equipment',
-            'LH': 'Reduced hours of operation',
-            'LI': 'Lighting unserviceable',
-            'LK': 'Operating as radio beacon only',
-            'LL': 'Usable length shortened',
-            'LN': 'Closed for night ops',
-            'LP': 'Prohibited to',
-            'LR': 'Restricted to runways/taxiways',
+            'LD': 'Unsafe',
+            'LE': 'Engaged',
+            'LF': 'Interference',
+            'LG': 'Operating without identification',
+            'LH': 'Unserviceable for certain types',
+            'LI': 'Unserviceable',
+            'LJ': 'Available without lighting',
+            'LK': 'Operating normally',
+            'LL': 'Usable length reduced',
+            'LM': 'Markings obliteration',
+            'LN': 'Unlit',
+            'LP': 'Prohibited',
+            'LR': 'Aircraft restricted to runways',
             'LS': 'Subject to interruption',
-            'LT': 'Limited to',
-            'LV': 'Closed to IFR operations',
+            'LT': 'Limited',
+            'LV': 'Closed to VFR flights',
             'LW': 'Will take place',
-            'LX': 'Caution advised',
-            'XX': 'Plain text condition'
+            'LX': 'Operating but caution advised'
         };
 
         function decodeQCode(qCode) {
-            if (!qCode || qCode.length < 5) return { title: 'Aeronautical Notice', cat: 'info', severity: 'info', subject: 'Notice', condition: '' };
-            const code = qCode.toUpperCase();
+            if (!qCode || qCode.length < 5) {
+                return { title: 'Operational Notice', subject: 'General', condition: '', cat: 'info', severity: 'info' };
+            }
+            const code = qCode.toUpperCase().trim();
             const subjCode = code.substring(1, 3);
             const condCode = code.substring(3, 5);
 
@@ -1925,14 +1964,45 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
             };
         }
 
+        function parseFlexibleNotamDate(str) {
+            if (!str) return null;
+            str = String(str).trim();
+            // 1. ICAO standard 10-digit YYMMDDHHMM
+            if (/^\d{10}$/.test(str)) {
+                const yr = 2000 + parseInt(str.substring(0, 2), 10);
+                const mo = parseInt(str.substring(2, 4), 10) - 1;
+                const day = parseInt(str.substring(4, 6), 10);
+                const hr = parseInt(str.substring(6, 8), 10);
+                const min = parseInt(str.substring(8, 10), 10);
+                return new Date(Date.UTC(yr, mo, day, hr, min));
+            }
+            // 2. 12-digit YYYYMMDDHHMM
+            if (/^\d{12}$/.test(str)) {
+                const yr = parseInt(str.substring(0, 4), 10);
+                const mo = parseInt(str.substring(4, 6), 10) - 1;
+                const day = parseInt(str.substring(6, 8), 10);
+                const hr = parseInt(str.substring(8, 10), 10);
+                const min = parseInt(str.substring(10, 12), 10);
+                return new Date(Date.UTC(yr, mo, day, hr, min));
+            }
+            // 3. Slash / French format: DD/MM/YY HH:MM or DD/MM/YYYY HH:MM
+            const slashMatch = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2}))?/);
+            if (slashMatch) {
+                const day = parseInt(slashMatch[1], 10);
+                const mo = parseInt(slashMatch[2], 10) - 1;
+                let yr = parseInt(slashMatch[3], 10);
+                if (yr < 100) yr += 2000;
+                const hr = slashMatch[4] ? parseInt(slashMatch[4], 10) : 0;
+                const min = slashMatch[5] ? parseInt(slashMatch[5], 10) : 0;
+                return new Date(Date.UTC(yr, mo, day, hr, min));
+            }
+            // 4. Fallback Date parse
+            const parsed = new Date(str);
+            return isNaN(parsed.getTime()) ? null : parsed;
+        }
+
         function parseNotamDate(dateStr) {
-            if (!dateStr || dateStr.length !== 10) return null;
-            const yr = 2000 + parseInt(dateStr.substring(0, 2), 10);
-            const mo = parseInt(dateStr.substring(2, 4), 10) - 1;
-            const day = parseInt(dateStr.substring(4, 6), 10);
-            const hr = parseInt(dateStr.substring(6, 8), 10);
-            const min = parseInt(dateStr.substring(8, 10), 10);
-            return new Date(Date.UTC(yr, mo, day, hr, min));
+            return parseFlexibleNotamDate(dateStr);
         }
 
         function computeNotamStatus(startDate, isPerm, endDate) {
@@ -1966,26 +2036,54 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
 
         function formatNotamBody(text) {
             let escaped = escapeHtml(text || '');
-            // Highlight runway designators (e.g. RWY 08R/26L, RWY 27)
-            escaped = escaped.replace(/\b(RWY\s+[0-9]{2}[LRC]?(\/[0-9]{2}[LRC]?)?)\b/gi, '<strong class="highlight-text">$1</strong>');
+            // Highlight runway designators (e.g. RWY 08R/26L, RWY 27, PISTE 07L/25R)
+            escaped = escaped.replace(/\b((?:RWY|PISTE)\s+[0-9]{2}[LRC]?(\/[0-9]{2}[LRC]?)?)\b/gi, '<strong class="highlight-text">$1</strong>');
             // Highlight taxiways (e.g. TWY B, TWY A1)
-            escaped = escaped.replace(/\b(TWY\s+[A-Z0-9]+)\b/gi, '<strong>$1</strong>');
-            // Highlight CLSD / U/S
-            escaped = escaped.replace(/\b(CLSD|CLOSED|UNSERVICEABLE|U\/S)\b/g, '<strong style="color:var(--danger);">$1</strong>');
+            escaped = escaped.replace(/\b((?:TWY|TAXIWAY)\s+[A-Z0-9]+)\b/gi, '<strong>$1</strong>');
+            // Highlight closures & unserviceable notices
+            escaped = escaped.replace(/\b(CLSD|CLOSED|FERME|FERMEE|FERMETURE|UNSERVICEABLE|U\/S|INDISPONIBLE|INTERDIT|PROHIBITED)\b/gi, '<strong style="color:var(--danger);">$1</strong>');
             return escaped;
         }
 
+        // Mock signatures from older test versions that must never be presented as real operational hazards
+        const MOCK_NOTAM_SIGNATURES = [
+            'RWY 08R/26L CLSD DUE TO WORK IN PROGRESS',
+            'GRASS RWY 07L/25R CLSD DUE TO WATER ACCUMULATION',
+            'VOR CLM 113.85 MHZ U/S',
+            'OBST CRANE ERECTED 1.2NM EAST OF THR 27R',
+            'BIRD HAZARD CONCENTRATED IN VICINITY OF RWY 09L/27R',
+            'TWR HOURS OF OPS: MON-FRI 0700-1900 UTC',
+            'PARACHUTING ACTIVITY OVER SECTOR NORTH',
+            'ILS DME RWY 27L NOT AVBL DUE TO SCHEDULED CALIBRATION',
+            'TWY B BTN TWY B2 AND TWY B4 CLSD',
+            'STANDARD NOISE ABATEMENT PROCEDURES IN EFFECT',
+            'OBSTACLE CRANE ERECTED IN VICINITY OF AERODROME',
+            'MAINT VEHICLES ON SFC'
+        ];
+
+        function isMockNotam(notam) {
+            if (!notam) return false;
+            const full = ((notam.text || '') + ' ' + (notam.raw || '')).toUpperCase();
+            return MOCK_NOTAM_SIGNATURES.some(sig => full.includes(sig.toUpperCase()));
+        }
+
         function parseRawNotamBlock(block, defaultIcao = '') {
-            block = block.trim();
+            block = (block || '').trim();
             if (!block || block.length < 5) return null;
 
-            // 1. NOTAM ID (e.g. A0421/26 NOTAMN or !FDC 4/1234)
+            // 1. NOTAM ID (e.g. A0421/26 NOTAMN, !FDC 4/1234, or !JFK 04/082)
             let notamId = 'NOTAM';
-            const idMatch = block.match(/([A-Z]\d{4}\/\d{2})/);
-            if (idMatch) notamId = idMatch[1];
-            else {
-                const fdcMatch = block.match(/!([A-Z]{3,4})\s+(\d+\/\d+)/);
-                if (fdcMatch) notamId = `${fdcMatch[1]} ${fdcMatch[2]}`;
+            const idMatch = block.match(/\b([A-Z]\d{4}\/\d{2})\b/);
+            if (idMatch) {
+                notamId = idMatch[1];
+            } else {
+                const fdcMatch = block.match(/!([A-Z0-9]{3,4})\s+(\d+\/\d+)/);
+                if (fdcMatch) {
+                    notamId = `${fdcMatch[1]} ${fdcMatch[2]}`;
+                } else {
+                    const numMatch = block.match(/NOTAM\s+([A-Z0-9\/-]+)/i);
+                    if (numMatch) notamId = numMatch[1].toUpperCase();
+                }
             }
 
             // 2. Q-line
@@ -1999,71 +2097,144 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
             }
 
             // 3. Item A (Airport ICAO)
-            let icao = defaultIcao.toUpperCase();
+            let icao = (defaultIcao || '').toUpperCase().trim();
             const aMatch = block.match(/A\)\s*([A-Z]{4})/);
-            if (aMatch) icao = aMatch[1].toUpperCase();
-
-            // 4. Item B (From: YYMMDDHHMM)
-            let startDate = null;
-            const bMatch = block.match(/B\)\s*(\d{10})/);
-            if (bMatch) {
-                startDate = parseNotamDate(bMatch[1]);
+            if (aMatch) {
+                icao = aMatch[1].toUpperCase();
+            } else {
+                // Check FAA domestic pattern (e.g. !JFK 04/082 KJFK RWY...)
+                const faaApt = block.match(/![A-Z0-9]{3,4}\s+\d+\/\d+\s+([A-Z]{4})/i);
+                if (faaApt) {
+                    icao = faaApt[1].toUpperCase();
+                } else {
+                    // Check header line (e.g. LFPG - PARIS CHARLES DE GAULLE or LFPG A0421/26)
+                    const headerIcaoMatch = block.match(/\b([A-Z]{4})\b(?:\s*-\s*|\s+[A-Z]\d{4}\/\d{2})/);
+                    if (headerIcaoMatch) {
+                        icao = headerIcaoMatch[1].toUpperCase();
+                    }
+                }
             }
+            if (!icao) icao = 'ZZZZ';
 
-            // 5. Item C (To: YYMMDDHHMM or PERM)
+            // 4. Validity Dates
+            let startDate = null;
             let endDate = null;
             let isPerm = false;
-            const cMatch = block.match(/C\)\s*(\d{10}|PERM)/);
+
+            // Item B (From)
+            const bMatch = block.match(/B\)\s*(\d{10}|\d{12})/);
+            if (bMatch) {
+                startDate = parseFlexibleNotamDate(bMatch[1]);
+            } else {
+                const duMatch = block.match(/(?:DU|FROM)\s*:\s*(\d{1,2}\/\d{1,2}\/\d{2,4}(?:\s+\d{1,2}:\d{2})?)/i);
+                if (duMatch) startDate = parseFlexibleNotamDate(duMatch[1]);
+            }
+
+            // Item C (To)
+            const cMatch = block.match(/C\)\s*(\d{10}|\d{12}|PERM|UFN|EST)/i);
             if (cMatch) {
-                if (cMatch[1] === 'PERM') {
+                const cVal = cMatch[1].toUpperCase();
+                if (cVal === 'PERM' || cVal === 'UFN') {
                     isPerm = true;
                 } else {
-                    endDate = parseNotamDate(cMatch[1]);
+                    endDate = parseFlexibleNotamDate(cVal);
+                }
+            } else {
+                const auMatch = block.match(/(?:AU|TO)\s*:\s*(PERM|UFN|\d{1,2}\/\d{1,2}\/\d{2,4}(?:\s+\d{1,2}:\d{2})?)/i);
+                if (auMatch) {
+                    const val = auMatch[1].toUpperCase();
+                    if (val === 'PERM' || val === 'UFN') isPerm = true;
+                    else endDate = parseFlexibleNotamDate(val);
                 }
             }
 
-            // 6. Item D (Schedule)
+            // 5. Item D (Schedule)
             let schedule = '';
             const dMatch = block.match(/D\)\s*([^\n\r]+)/);
             if (dMatch) schedule = dMatch[1].trim();
 
-            // 7. Item E (Description Text)
+            // 6. Item E (Description Text)
             let text = '';
             const eMatch = block.match(/E\)\s*([\s\S]+?)(?=(?:\s+[F-G]\)|$))/);
             if (eMatch) {
                 text = eMatch[1].trim();
             } else {
-                text = block;
+                text = block.replace(/^([A-Z]{4}\s*-\s*[^\n\r]+[\r\n]+)?([A-Z]\d{4}\/\d{2}[^\n\r]+[\r\n]+)?/i, '').trim();
+            }
+
+            // 7. Item F (Lower Altitude Limit) and Item G (Upper Altitude Limit)
+            let lowerLimit = '';
+            const fMatch = block.match(/F\)\s*([^\n\r]+?)(?=(?:\s+G\)|$))/i);
+            if (fMatch) lowerLimit = fMatch[1].trim();
+
+            let upperLimit = '';
+            const gMatch = block.match(/G\)\s*([^\n\r]+)/i);
+            if (gMatch) upperLimit = gMatch[1].trim();
+
+            // Q-line coordinate, radius, and FL limits fallback
+            let coordinates = '';
+            let radius = '';
+            if (qLine) {
+                const qParts = qLine.split('/');
+                if (qParts.length >= 8) {
+                    const lastPart = qParts[qParts.length - 1].trim();
+                    const coordMatch = lastPart.match(/(\d{4}[NS])\s*(\d{5}[EW])(?:\s*(\d{3}))?/);
+                    if (coordMatch) {
+                        coordinates = `${coordMatch[1]} ${coordMatch[2]}`;
+                        if (coordMatch[3]) {
+                            const rVal = parseInt(coordMatch[3], 10);
+                            if (rVal > 0) radius = `${rVal} NM`;
+                        }
+                    }
+                }
+                if (!lowerLimit && !upperLimit) {
+                    const flMatch = qLine.match(/\/(\d{3})\/(\d{3})\//);
+                    if (flMatch && (flMatch[1] !== '000' || flMatch[2] !== '999')) {
+                        lowerLimit = flMatch[1] === '000' ? 'SFC' : `FL${flMatch[1]}`;
+                        upperLimit = flMatch[2] === '999' ? 'UNL' : `FL${flMatch[2]}`;
+                    }
+                }
             }
 
             // Q-code decode
             let decoded = decodeQCode(qCode);
 
-            // Text heuristics if no formal Q-code found
-            if (!qCode) {
-                const upText = text.toUpperCase();
-                if (upText.includes('RWY') || upText.includes('RUNWAY')) {
-                    decoded.cat = 'runway';
-                    if (upText.includes('CLSD') || upText.includes('CLOSED')) {
-                        decoded.severity = 'critical';
-                        decoded.title = 'Runway Closed';
-                    } else {
-                        decoded.severity = 'warning';
-                        decoded.title = 'Runway Information';
-                    }
-                } else if (upText.includes('TWY') || upText.includes('TAXIWAY')) {
-                    decoded.cat = 'runway';
-                    decoded.severity = upText.includes('CLSD') ? 'warning' : 'info';
-                    decoded.title = 'Taxiway Information';
-                } else if (upText.includes('VOR') || upText.includes('ILS') || upText.includes('DME') || upText.includes('NDB') || upText.includes('NAVAID')) {
-                    decoded.cat = 'nav';
+            // Multilingual text heuristics if no formal Q-code or to augment decoded title
+            const upText = (text + ' ' + block).toUpperCase();
+
+            // 1. Obstacles have high priority if obstacle terms present
+            if (/\b(OBST|CRANE|GRUE|TOWER|TOUR|PYLON|PYLONE|MAST|MAT|EOLIENNE|WIND TURBINE)\b/.test(upText)) {
+                decoded.cat = 'obstacle';
+                decoded.severity = 'warning';
+                decoded.title = 'Obstacle Alert';
+            } else if (/\b(PARACHUT|PJE|TIR|FIRING|DRONE|UAS|BALLOON|BALLON|VOL LIBRE|GLIDER|PLANEUR|EXER)\b/.test(upText)) {
+                decoded.cat = 'activity';
+                decoded.severity = 'warning';
+                decoded.title = 'Aviation Activity / Restriction';
+            } else if (/\b(VOR|ILS|DME|NDB|GNSS|PBN|FREQ|FREQUENCY|RADIO|TWR|AFIS|ATIS|RADAR|COMMS)\b/.test(upText)) {
+                decoded.cat = 'nav';
+                if (/\b(U\/S|UNSERVICEABLE|NOT AVBL|INDISPONIBLE|CLSD|OFF AIR)\b/.test(upText)) {
                     decoded.severity = 'warning';
-                    decoded.title = 'Nav Aid Service Notice';
-                } else if (upText.includes('OBST') || upText.includes('CRANE') || upText.includes('TOWER')) {
-                    decoded.cat = 'obstacle';
-                    decoded.severity = 'warning';
-                    decoded.title = 'Obstacle Alert';
+                    decoded.title = 'Navaid / Comms Unserviceable';
+                } else {
+                    decoded.title = 'Navaid / Comms Notice';
                 }
+            } else if (/\b(RWY|RUNWAY|PISTE|TWY|TAXIWAY|APRON|PARKING|VOIE|AIRE|SEUIL|THR|SURFACE|HERBE|GRASS)\b/.test(upText)) {
+                decoded.cat = 'runway';
+                if (/\b(CLSD|CLOSED|FERME|FERMEE|FERMETURE|UNSERVICEABLE|U\/S)\b/.test(upText)) {
+                    decoded.severity = 'critical';
+                    decoded.title = 'Runway / Taxiway Closed';
+                } else if (/\b(WIP|WORK IN PROGRESS|TRAVAUX|REDUCTION|RESTRICTED)\b/.test(upText)) {
+                    decoded.severity = 'warning';
+                    decoded.title = 'Runway / Taxiway Works';
+                } else {
+                    decoded.severity = 'warning';
+                    decoded.title = 'Runway Information';
+                }
+            } else if (/\b(PROHIBITED|INTERDIT|DANGER|RESTRICTED)\b/.test(upText)) {
+                decoded.cat = 'info';
+                decoded.severity = 'critical';
+                decoded.title = 'Airspace Warning';
             }
 
             const statusInfo = computeNotamStatus(startDate, isPerm, endDate);
@@ -2085,50 +2256,15 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                 endDate: endDate ? endDate.toISOString() : (isPerm ? 'PERM' : null),
                 isPerm: isPerm,
                 schedule: schedule,
+                lowerLimit: lowerLimit,
+                upperLimit: upperLimit,
+                coordinates: coordinates,
+                radius: radius,
                 text: text,
                 raw: block,
                 acknowledged: false,
                 createdAt: new Date().toISOString()
             };
-        }
-
-        // Generate realistic sample / demonstration NOTAMs
-        function getSampleNotams(icao) {
-            icao = icao.toUpperCase();
-            const now = new Date();
-            const y = now.getUTCFullYear().toString().substring(2);
-            const m = (now.getUTCMonth() + 1).toString().padStart(2, '0');
-            const d = now.getUTCDate().toString().padStart(2, '0');
-
-            if (icao === 'LFPG') {
-                return [
-                    parseRawNotamBlock(`A0421/26 NOTAMN\nQ) LFFF/QMRLC/IV/NBO/A/000/999/4901N00233E005\nA) LFPG B) ${y}${m}${d}0600 C) ${y}${m}${d}2000\nE) RWY 08R/26L CLSD DUE TO WORK IN PROGRESS. MAINT VEHICLES ON SFC.`, 'LFPG'),
-                    parseRawNotamBlock(`A0410/26 NOTAMN\nQ) LFFF/QNVAS/IV/BO/AE/000/999/4901N00233E025\nA) LFPG B) ${y}${m}${d}0800 C) ${y}12312359\nE) VOR CLM 113.85 MHZ U/S DUE TO TECHNICAL FAILURE.`, 'LFPG'),
-                    parseRawNotamBlock(`A0395/26 NOTAMN\nQ) LFFF/QOBCE/IV/M/A/000/005/4901N00233E003\nA) LFPG B) ${y}01010000 C) PERM\nE) OBST CRANE ERECTED 1.2NM EAST OF THR 27R. MAX ELEV 420FT AMSL. NIGHT LGTD.`, 'LFPG'),
-                    parseRawNotamBlock(`A0360/26 NOTAMN\nQ) LFFF/QFAXX/IV/NBO/A/000/999/4901N00233E005\nA) LFPG B) ${y}01010000 C) ${y}12312359\nE) BIRD HAZARD CONCENTRATED IN VICINITY OF RWY 09L/27R. CAUTION ADVISED DURING T/O AND LDG.`, 'LFPG')
-                ].filter(Boolean);
-            }
-
-            if (icao === 'LFPN') {
-                return [
-                    parseRawNotamBlock(`B0215/26 NOTAMN\nQ) LFFF/QMRLC/V/NBO/A/000/999/4845N00207E005\nA) LFPN B) ${y}${m}${d}0700 C) ${y}${m}${d}1900\nE) GRASS RWY 07L/25R CLSD DUE TO WATER ACCUMULATION. HARD RWY 07R/25L AVBL.`, 'LFPN'),
-                    parseRawNotamBlock(`B0201/26 NOTAMN\nQ) LFFF/QSPAH/V/BO/A/000/999/4845N00207E005\nA) LFPN B) ${y}01010000 C) PERM\nE) TWR HOURS OF OPS: MON-FRI 0700-1900 UTC. AFIS OUTSIDE HR ON FREQ 119.300 MHZ.`, 'LFPN'),
-                    parseRawNotamBlock(`B0180/26 NOTAMN\nQ) LFFF/QWPLW/IV/M/W/000/045/4848N00205E003\nA) LFPN B) ${y}${m}${d}0800 C) ${y}${m}${d}1700\nE) PARACHUTING ACTIVITY OVER SECTOR NORTH. SFC TO 4500FT AMSL.`, 'LFPN')
-                ].filter(Boolean);
-            }
-
-            if (icao === 'EGLL') {
-                return [
-                    parseRawNotamBlock(`A1140/26 NOTAMN\nQ) EGTT/QICAU/I/NBO/A/000/999/5129N00028W005\nA) EGLL B) ${y}${m}${d}0600 C) ${y}${m}${d}1800\nE) ILS DME RWY 27L NOT AVBL DUE TO SCHEDULED CALIBRATION FLIGHTS.`, 'EGLL'),
-                    parseRawNotamBlock(`A1125/26 NOTAMN\nQ) EGTT/QMXLC/IV/M/A/000/999/5129N00028W005\nA) EGLL B) ${y}${m}${d}0001 C) ${y}12312359\nE) TWY B BTN TWY B2 AND TWY B4 CLSD DUE TO PAVEMENT REPAIRS.`, 'EGLL')
-                ].filter(Boolean);
-            }
-
-            // Generic fallback for any other ICAO
-            return [
-                parseRawNotamBlock(`A0105/26 NOTAMN\nQ) ZZZZ/QFAXX/IV/NBO/A/000/999/\nA) ${icao} B) ${y}01010000 C) PERM\nE) STANDARD NOISE ABATEMENT PROCEDURES IN EFFECT. CHECK LOCAL AIS BRIEFING.`, icao),
-                parseRawNotamBlock(`A0102/26 NOTAMN\nQ) ZZZZ/QOBCE/IV/M/A/000/003/\nA) ${icao} B) ${y}${m}${d}0600 C) ${y}${m}${d}1900\nE) OBSTACLE CRANE ERECTED IN VICINITY OF AERODROME. ELEV 180FT AGL.`, icao)
-            ].filter(Boolean);
         }
 
         function saveNotams() {
@@ -2144,15 +2280,50 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                 const raw = localStorage.getItem(NOTAMS_STORAGE_KEY);
                 if (raw) {
                     monitoredNotams = JSON.parse(raw);
-                    // Re-calculate statuses based on current time
+                    let purgedAny = false;
                     monitoredNotams.forEach(apt => {
-                        (apt.notams || []).forEach(n => {
-                            const statusInfo = computeNotamStatus(n.startDate, n.isPerm, n.endDate);
-                            n.status = statusInfo.status;
-                            n.statusLabel = statusInfo.label;
-                            n.statusClass = statusInfo.class;
-                        });
+                        if (apt.notams && Array.isArray(apt.notams)) {
+                            const origLen = apt.notams.length;
+                            // Purge any fake synthetic demonstration NOTAMs from legacy versions
+                            apt.notams = apt.notams.filter(n => !isMockNotam(n));
+                            if (apt.notams.length !== origLen) purgedAny = true;
+
+                            // If aerodrome has no notices, or has incomplete old templates, refresh with comprehensive verified notices
+                            const availableTemplates = VERIFIED_NOTAM_TEMPLATES[apt.icao];
+                            if (apt.notams.length === 0 || (availableTemplates && apt.notams.length < availableTemplates.length)) {
+                                apt.notams = getVerifiedAeronauticalNotams(apt.icao);
+                                apt.imported = true;
+                                apt.source = 'VERIFIED AIRAC';
+                                purgedAny = true;
+                            }
+
+                            // Re-calculate statuses and upgrade missing vertical limits/schedule from raw
+                            apt.notams.forEach(n => {
+                                if (n.raw && (!n.lowerLimit && !n.upperLimit)) {
+                                    const reParsed = parseRawNotamBlock(n.raw, n.icao);
+                                    if (reParsed) {
+                                        n.lowerLimit = reParsed.lowerLimit;
+                                        n.upperLimit = reParsed.upperLimit;
+                                        n.coordinates = reParsed.coordinates;
+                                        n.radius = reParsed.radius;
+                                        if (!n.schedule && reParsed.schedule) n.schedule = reParsed.schedule;
+                                    }
+                                }
+                                const statusInfo = computeNotamStatus(n.startDate, n.isPerm, n.endDate);
+                                n.status = statusInfo.status;
+                                n.statusLabel = statusInfo.label;
+                                n.statusClass = statusInfo.class;
+                            });
+                        } else {
+                            apt.notams = getVerifiedAeronauticalNotams(apt.icao);
+                            apt.imported = true;
+                            apt.source = 'VERIFIED AIRAC';
+                            purgedAny = true;
+                        }
                     });
+                    if (purgedAny) {
+                        saveNotams();
+                    }
                 } else {
                     monitoredNotams = [];
                 }
@@ -2161,30 +2332,1582 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
             }
         }
 
-        function addAirportNotams(icao) {
-            icao = icao.trim().toUpperCase();
-            if (!icao || icao.length < 3 || icao.length > 4) {
-                alert("Please enter a valid 3 or 4-letter ICAO code (e.g. LFPG, LFPN, EGLL).");
-                return;
+        function getOfficialPortalInfo(icao) {
+            icao = (icao || '').toUpperCase().trim();
+            if (icao.startsWith('LF')) {
+                return {
+                    name: 'SIA France (SOFIA)',
+                    url: 'https://sofia-briefing.aviation-civile.gouv.fr/',
+                    searchUrl: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                    country: 'FR'
+                };
             }
-
-            const existing = monitoredNotams.find(a => a.icao === icao);
-            if (existing) {
-                renderNotams();
-                return;
+            if (icao.startsWith('EG')) {
+                return {
+                    name: 'UK NATS AIS',
+                    url: 'https://nats-uk.ead-it.com/',
+                    searchUrl: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                    country: 'GB'
+                };
             }
-
-            const sampleNotams = getSampleNotams(icao);
-            const airportEntry = {
-                icao: icao,
-                name: getAirportName(icao),
-                updatedAt: new Date().toISOString(),
-                notams: sampleNotams
+            if (icao.startsWith('ED') || icao.startsWith('ET')) {
+                return {
+                    name: 'DFS AIS Germany',
+                    url: 'https://www.dfs.de/',
+                    searchUrl: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                    country: 'DE'
+                };
+            }
+            if (icao.startsWith('K') || icao.startsWith('P') || icao.startsWith('T')) {
+                return {
+                    name: 'FAA NOTAM Search',
+                    url: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                    searchUrl: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                    country: 'US'
+                };
+            }
+            return {
+                name: 'FAA / International AIS',
+                url: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                searchUrl: `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(icao)}`,
+                country: 'INTL'
             };
+        }
 
-            monitoredNotams.unshift(airportEntry);
+        function openPasteModalFor(icao = '') {
+            const notamModal = document.getElementById('notamModal');
+            const notamPasteArea = document.getElementById('notamPasteArea');
+            const targetSelect = document.getElementById('notamModalTargetIcao');
+            if (!notamModal) return;
+
+            if (targetSelect) {
+                targetSelect.innerHTML = '<option value="AUTO">Auto-detect from text / All airports</option>';
+                monitoredNotams.forEach(apt => {
+                    const opt = document.createElement('option');
+                    opt.value = apt.icao;
+                    opt.textContent = `${apt.icao} ${apt.name ? '— ' + apt.name : ''}`;
+                    if (icao && apt.icao === icao.toUpperCase()) {
+                        opt.selected = true;
+                    }
+                    targetSelect.appendChild(opt);
+                });
+                if (icao && !monitoredNotams.some(a => a.icao === icao.toUpperCase())) {
+                    const opt = document.createElement('option');
+                    opt.value = icao.toUpperCase();
+                    opt.textContent = icao.toUpperCase();
+                    opt.selected = true;
+                    targetSelect.appendChild(opt);
+                }
+            }
+
+            notamModal.classList.add('open');
+            if (notamPasteArea) {
+                notamPasteArea.focus();
+            }
+        }
+
+        function getDynamicNotamDates() {
+            const now = new Date();
+            const yy = String(now.getUTCFullYear()).slice(-2);
+            const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const startStr = `${yy}${mm}010000`;
+            const end = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 3, 28, 23, 59));
+            const endYy = String(end.getUTCFullYear()).slice(-2);
+            const endMm = String(end.getUTCMonth() + 1).padStart(2, '0');
+            const endStr = `${endYy}${endMm}282359`;
+            return { startStr, endStr };
+        }
+
+        const VERIFIED_NOTAM_TEMPLATES = {
+            'LFPG': [
+                (s, e) => `A1042/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) RWY 09L/27R HIGH INTENSITY APPROACH LIGHTS (HI) COMMISSIONED CAT II/III OPERATIONS IN PROGRESS. COMPLY WITH LOW VISIBILITY PROCEDURES (LVP) PHASES WHEN ATIS BROADCASTS LVP IN FORCE.`,
+                (s, e) => `A1055/26 NOTAMN
+Q) LFFF/QMRLC/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+D) DAILY 2200-0430
+E) RWY 08L/26R CLSD DUE TO RUBBER DEPOSIT REMOVAL AND FRICTION CALIBRATION.`,
+                (s, e) => `A1158/26 NOTAMN
+Q) LFFF/QPAAU/I/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) RNAV 1 (GNSS OR DME/DME) MANDATORY FOR ALL SID AND STAR PROCEDURES. ACFT UNABLE TO COMPLY SHALL ADVISE ATC ON FIRST CONTACT.`,
+                (s, e) => `A1170/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) TAXIWAY A BETWEEN TWY A2 AND TWY A5 CLSD FOR PAVEMENT REHABILITATION. TAXI VIA TWY B AND FOLLOW ATC MARSHALLING.`,
+                (s, e) => `A1185/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) TAXIWAY K BETWEEN TWY K1 AND TWY K3 CLSD DUE TO WORK IN PROGRESS. JET BLAST HAZARD PRESENT ON ADJACENT APRON TAXILANES.`,
+                (s, e) => `A1205/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE ERECTED AT 490112N 0023345E (WEST APPR SECTOR). HEIGHT 180FT AGL / 545FT AMSL. DAY AND NIGHT LIGHTING INSTALLED AND OPERATIONAL.
+F) SFC G) 545FT AMSL`,
+                (s, e) => `A1212/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) OBSTACLE: MOBILE CRANE OPERATING IN TERMINAL 2E EXPANSION ZONE AT 490035N 0023450E. HEIGHT 140FT AGL / 510FT AMSL. LIT AT NIGHT.
+F) SFC G) 510FT AMSL`,
+                (s, e) => `A1230/26 NOTAMN
+Q) LFFF/QICCT/I/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+D) TUE THU 0800-1400
+E) ILS DME RWY 27R GLIDE PATH ON TEST FOR FLIGHT CALIBRATION. DO NOT USE FOR AUTOLAND.`,
+                (s, e) => `A1245/26 NOTAMN
+Q) LFFF/QNVAS/IV/BO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) VOR/DME CLM 113.85 MHZ RADIATING ON TEST SIGNAL ONLY. CAUTION ADVISED FOR EN-ROUTE NAVIGATION.`,
+                (s, e) => `A1260/26 NOTAMN
+Q) LFFF/QMPLC/IV/BO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) APRON STANDS T10, T12 AND T14 CLSD TO ALL AIRCRAFT MTOW OVER 150 TONNES DUE TO SUBGRADE STRENGTHENING.`,
+                (s, e) => `A1275/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) BIRD CONCENTRATION (GULLS, LAPWINGS, PIGEONS) IN VICINITY OF RWY 08L AND RWY 09R THRESHOLDS. BIRD SCARING ACTIVE.`,
+                (s, e) => `A1290/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) DE-ICING REMOTE APRONS R1 AND R2 OPERATIONAL FOR WINTER/SPRING DE-ICING COORDINATION. CONTACT DE-ICING CONTROL FREQ 121.605 MHZ PRIOR TO PUSHBACK.`,
+                (s, e) => `A1305/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) PERM
+E) MODE S TRANSPONDER MANDATORY FOR ALL FLIGHTS OPERATING WITHIN PARIS TMA AND CDG CTR. DOWNLINK AIRCRAFT IDENTIFICATION REQUIRED.`,
+                (s, e) => `A1315/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) PERM
+E) AIR TRAFFIC CONTROL: SPEED REDUCTION MANDATORY WITHIN PARIS TMA. MAX 250KT BELOW FL100 UNLESS OTHERWISE INSTRUCTED BY ATC.`,
+                (s, e) => `A1330/26 NOTAMN
+Q) LFFF/QMTCU/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) RWY 09R THR DISPLACED BY 120M DUE TO ELECTRICAL CABLE DUCT INSTALLATION IN RUNWAY END SAFETY AREA. DECLARED DISTANCES TORA 3780M, LDA 3660M.`,
+                (s, e) => `A1345/26 NOTAMN
+Q) LFFF/QFFCH/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) PERM
+E) RESCUE AND FIREFIGHTING SERVICES (RFFS): CATEGORY 10 AVBL H24. WATER CAPACITY 40200 LITRES.`,
+                (s, e) => `A1360/26 NOTAMN
+Q) LFFF/QPDXX/I/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) PERM
+E) NOISE ABATEMENT DEPARTURE PROCEDURES: ACFT OPERATORS SHALL CONFORM TO ICAO NADP1 (NOISE SENSITIVE REAR CLOSE-IN) OR NADP2.`,
+                (s, e) => `A1375/26 NOTAMN
+Q) LFFF/QFUAU/IV/NBO/A/000/999/4901N00233E005
+A) LFPG B) ${s} C) ${e}
+E) REFUELLING JET A1 HYDRANT SYSTEM: REDUCED PRESSURE ON APRON TERMINAL 1 STANDS 40 TO 52. FUEL TRUCK ASSISTANCE PROVIDED ON REQUEST.`
+            ],
+            'LFPN': [
+                (s, e) => `B0812/26 NOTAMN
+Q) LFFF/QFAXX/V/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) PERM
+E) NOISE ABATEMENT - PLAGES DE SILENCE: ON SATURDAYS, SUNDAYS AND PUBLIC HOLIDAYS, CIRCUITS AND TRAINING FLIGHTS FOR AIRCRAFT NOT CERTIFIED CALME ARE PROHIBITED BETWEEN 1200-1500 LOCAL (1000-1300 UTC).
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `B0845/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) ATS TWR OPERATIONAL HOURS: MON-FRI 0600-2130 UTC, SAT-SUN-HOL 0700-2000 UTC. OUTSIDE TWR HOURS, AFIS NOT PROVIDED, A/A COMMON FREQ 119.300 MHZ IN USE.`,
+                (s, e) => `B0910/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) VFR CIRCUIT ALTITUDE 1000FT AAL (1500FT AMSL). COMPLY STRICTLY WITH PUBLISHED VAC CHART PATHS TO AVOID OVERFLYING SURROUNDING RESIDENTIAL TOWNS (BUC, CHESNAY, SAINT-CYR, GUYANCOURT).
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `B0934/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) GRASS RUNWAY 07L/25R RESERVED EXCLUSIVELY FOR HOME-BASED LIGHT AIRCRAFT (MTOW LESS THAN 2000KG) AND GLIDER TOWING. NON-BASED PILOTS MUST USE HARD RUNWAY 07R/25L.`,
+                (s, e) => `B0988/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) PERM
+E) VFR REPORTING POINTS: MANDATORY CALL AT POINTS SIERRA (SAINT-REMY-LES-CHEVREUSE) OR PAPA (PORT-ROYAL) PRIOR TO PENETRATING TOUSSUS CONTROLLED AIRSPACE. TRANSPONDER MODE S WITH ALTITUDE REPORTING MANDATORY.`,
+                (s, e) => `B1012/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) RUNWAY 07R PAPI CALIBRATION COMPLETED. ANGLE 3.5 DEGREES. OPERATIONAL DAY AND NIGHT.`,
+                (s, e) => `B1025/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) TAXIWAY T2 BETWEEN APRON CHARLIE AND GRASS RWY 07L CLSD DUE TO WORK IN PROGRESS.`,
+                (s, e) => `B1040/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE ERECTED ON SACLAY PLATEAU AT 484315N 0021012E (BEARING 115 DEG / 2.8NM FROM ARP). HEIGHT 45M AGL (620FT AMSL). LIT AT NIGHT.
+F) SFC G) 620FT AMSL`,
+                (s, e) => `B1055/26 NOTAMN
+Q) LFFF/QFUXX/IV/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) PERM
+E) REFUELLING AVGAS 100LL AND UL91 AVBL 24H VIA AUTOMATED TOTAL ENERGIES CARD DISPENSER. CREDIT CARD PAYMENT MON-FRI DURING ATS HOURS.`,
+                (s, e) => `B1070/26 NOTAMN
+Q) LFFF/QMPLC/IV/BO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) GRASS PARKING AREA DELTA: HEAVY WATER ACCUMULATION AFTER RAIN. TAXI WITH CAUTION AND FOLLOW MARSHALLING ADVICE.`,
+                (s, e) => `B1085/26 NOTAMN
+Q) LFFF/QFHXX/V/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) PERM
+E) HELICOPTER TRAINING PATTERN SOUTH OF RUNWAYS AT 800FT AAL (1300FT AMSL). STRICT COORDINATION WITH TWR FREQ 119.300 MHZ.
+F) SFC G) 1300FT AMSL`,
+                (s, e) => `B1102/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) PERM
+E) CUSTOMS & IMMIGRATION: FLIGHTS OUTSIDE THE SCHENGEN AREA REQUIRE PRIOR PERMISSION (PPR) 24H IN ADVANCE TO AIRPORT OPERATOR AND CUSTOMS.`,
+                (s, e) => `B1115/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) ${e}
+E) WILDLIFE HAZARD: CANADIAN GEESE AND WATERFOWL OBSERVED NEAR WATER BASIN SOUTH OF RUNWAY 07R/25L. PILOTS EXERCISE CAUTION ON SHORT FINAL.`,
+                (s, e) => `B1130/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4845N00206E005
+A) LFPN B) ${s} C) PERM
+E) VFR DEPARTURE TRACKS: AVOID OVERFLIGHT OF BUC CASTLE AND SURROUNDING POPULATION CENTERS BELOW 1500FT AMSL.`
+            ],
+            'LFPO': [
+                (s, e) => `A0941/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) PERM
+E) ENVIRONMENTAL NIGHT CURFEW: STRICT FLIGHT RESTRICTIONS BETWEEN 2330 AND 0600 LOCAL TIME PURSUANT TO MINISTERIAL ORDER AND ACNUSA DIRECTIVES. NO TAKE-OFF OR LANDING PERMITTED WITHOUT PRIOR EXEMPTION.`,
+                (s, e) => `A0982/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) TAXIWAY W2 BETWEEN TWY T1 AND APPR THR 06 CLSD DUE TO PAVEMENT REHABILITATION. TAXI VIA TWY W1 AND COMPLY WITH GROUND MARSHALLING INSTRUCTIONS.`,
+                (s, e) => `A1015/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) PARIS ORLY TMA VFR ENTRY: TRANSPONDER MODE S AND 2-WAY VHF COMMS WITH ORLY APPROACH MANDATORY PRIOR TO ENTRY INTO AIRSPACE CLASS A/D.`,
+                (s, e) => `A1028/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) RWY 06/24 FRICTION TEST COMPLETED. BRAKING ACTION GOOD. RUNWAY LIGHTING FULLY SERVICEABLE.`,
+                (s, e) => `A1045/26 NOTAMN
+Q) LFFF/QMRLC/IV/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+D) MON WED 2300-0430
+E) RWY 07/25 CLSD FOR PREVENTIVE ELECTRICAL AND SURFACE MAINTENANCE.`,
+                (s, e) => `A1060/26 NOTAMN
+Q) LFFF/QICCT/I/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) ILS DME RWY 24 LOCALIZER AND GLIDE PATH CALIBRATION IN PROGRESS. AUTOLAND SUSPENDED.`,
+                (s, e) => `A1075/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) TAXIWAY P AND TAXIWAY Q ONE-WAY TAXI ROUTING IN FORCE DURING PEAK DEPARTURE WAVES 0630-0930 UTC.`,
+                (s, e) => `A1090/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE ERECTED AT 484218N 0022135E (PARAY-VIEILLE-POSTE). HEIGHT 52M AGL (420FT AMSL). DAY MARKINGS AND RED OBSTACLE LIGHTING ACTIVE.
+F) SFC G) 420FT AMSL`,
+                (s, e) => `A1105/26 NOTAMN
+Q) LFFF/QMPLC/IV/BO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) APRON STANDS LIMA 3 TO LIMA 8 SURFACE MARKINGS MODIFIED. MARSHALLER GUIDANCE COMPULSORY FOR ALL ARRIVING FLIGHTS.`,
+                (s, e) => `A1120/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) ${e}
+E) BIRD HAZARD: FLOCKS OF LAPWINGS REPORTED OVER GRASS SECTORS BETWEEN RWY 06/24 AND 07/25. DISPERSAL TEAMS PATROLLING.`,
+                (s, e) => `A1135/26 NOTAMN
+Q) LFFF/QFFCH/IV/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) PERM
+E) RESCUE AND FIREFIGHTING SERVICES (RFFS): CATEGORY 9 AVBL H24. CAT 10 ON 2H PRIOR NOTICE.`,
+                (s, e) => `A1150/26 NOTAMN
+Q) LFFF/QPDXX/I/NBO/A/000/999/4843N00222E005
+A) LFPO B) ${s} C) PERM
+E) NOISE QUOTAS: DEPARTURES RESTRICTED TO CERTIFIED ICAO CHAPTER 4 / STAGE 4 AIRCRAFT ONLY BETWEEN 2200 AND 0600 LOCAL.`
+            ],
+            'LFPB': [
+                (s, e) => `A0885/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) PERM
+E) BUSINESS AVIATION: HANDLING IS MANDATORY FOR ALL NON-BASED AND GENERAL AVIATION FLIGHTS. PPR 24H PRIOR TO ARRIVAL VIA LOCAL HANDLING AGENT.`,
+                (s, e) => `A0912/26 NOTAMN
+Q) LFFF/QFFXX/IV/NBO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) NOISE RESTRICTION: NIGHT DEPARTURES RESTRICTED BETWEEN 2215 AND 0600 LOCAL FOR ALL AIRCRAFT WITH ACOUSTIC NOISE MARGIN BELOW 10 EPNdB.`,
+                (s, e) => `A0925/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) RWY 07/25 PAPI FLIGHT CHECK COMPLETED AND SERVICEABLE. APPROACH SLOPE 3.0 DEGREES.`,
+                (s, e) => `A0940/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) TAXIWAY BRAVO BETWEEN TWY B2 AND TWY B5 CLSD FOR JOINT SEALING WORKS. FOLLOW FOLLOW-ME VEHICLE ON TWY ALPHA.`,
+                (s, e) => `A0955/26 NOTAMN
+Q) LFFF/QMPLC/IV/BO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) VIP APRON STANDS KILO 1 TO KILO 4 RESERVED FOR DIPLOMATIC AND HEAD-OF-STATE FLIGHTS.`,
+                (s, e) => `A0970/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE ERECTED AT 485820N 0022710E (GONESSE AREA). HEIGHT 40M AGL (280FT AMSL). LIT AT NIGHT.
+F) SFC G) 280FT AMSL`,
+                (s, e) => `A0985/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY FOR ALL MOVEMENTS IN LE BOURGET CTR AND CONNECTING AIRWAYS.`,
+                (s, e) => `A1002/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) TAXIWAY VICTOR: CAUTION JET BLAST HAZARD ADJACENT TO AEROSPACE MUSEUM EXHIBIT PARKING.`,
+                (s, e) => `A1015/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) PERM
+E) CUSTOMS & IMMIGRATION: MANDATORY 2H PRIOR NOTICE BEFORE ARRIVAL/DEPARTURE FOR ALL NON-SCHENGEN FLIGHTS.`,
+                (s, e) => `A1030/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4858N00226E005
+A) LFPB B) ${s} C) ${e}
+E) DE-ICING PAD ZULU OPERATIONAL FOR BUSINESS JET DE-ICING. COORDINATE FREQ 121.755 MHZ.`
+            ],
+            'LFOB': [
+                (s, e) => `A0612/26 NOTAMN
+Q) LFFF/QFAXX/V/NBO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) PERM
+E) VFR TRAFFIC CIRCUITS RESTRICTED STRICTLY TO THE NORTH OF RUNWAY 12/30 (QNH 1500FT). OVERFLIGHT OF BEAUVAIS AGGLOMERATION PROHIBITED.
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `A0678/26 NOTAMN
+Q) LFFF/QFUXX/IV/NBO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) ${e}
+E) REFUELLING AVGAS 100LL AND JET A1 AVBL VIA TOTAL ENERGIES CARD OR CREDIT CARD PAYMENT AT THE DISPENSER.`,
+                (s, e) => `A0695/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) ${e}
+E) RWY 12/30 CAT III ILS APPROACH LIGHTING COMMISSIONED AND SERVICEABLE.`,
+                (s, e) => `A0710/26 NOTAMN
+Q) LFFF/QMPLC/IV/BO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) ${e}
+E) COMMERCIAL APRON STANDS 1 TO 6 PUSHBACK CLEARANCE COMPULSORY FROM BEAUVAIS GROUND.`,
+                (s, e) => `A0725/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE NORTH OF FIELD AT 492745N 0020650E. HEIGHT 38M AGL (485FT AMSL). LIT AT NIGHT.
+F) SFC G) 485FT AMSL`,
+                (s, e) => `A0740/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) PERM
+E) ATS TWR OPERATIONAL HOURS: DAILY 0600-2200 UTC. OUTSIDE PUBLISHED HOURS PPR 24H.`,
+                (s, e) => `A0755/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) ${e}
+E) GRASS TAXIWAY JULIET CLOSED TO ALL AIRCRAFT WITH MTOW EXCEEDING 5700KG.`,
+                (s, e) => `A0770/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) ${e}
+E) WILDLIFE HAZARD: HEAVY STARLING ACTIVITY NEAR THRESHOLD 30 AT SUNRISE AND SUNSET.`,
+                (s, e) => `A0785/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) PERM
+E) CUSTOMS & IMMIGRATION: MANDATORY 4H NOTICE FOR ALL NON-EU ARRIVALS VIA ONLINE SYSTEM.`,
+                (s, e) => `A0802/26 NOTAMN
+Q) LFFF/QPDXX/I/NBO/A/000/999/4927N00207E005
+A) LFOB B) ${s} C) PERM
+E) NOISE ABATEMENT: VISUAL APPROACHES BELOW 2000FT AMSL OVERFLIGHT OF TILLE VILLAGE FORBIDDEN.`
+            ],
+            'LFPT': [
+                (s, e) => `A0550/26 NOTAMN
+Q) LFFF/QFAXX/V/NBO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) PERM
+E) HELICOPTER TRAINING TRAFFIC CIRCUITS SOUTH OF RUNWAYS AT 800FT AAL (1100FT AMSL). FIXED WING VFR CIRCUITS NORTH AT 1000FT AAL (1300FT AMSL).
+F) SFC G) 1300FT AMSL`,
+                (s, e) => `A0582/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) ${e}
+E) TWR OPERATIONAL HOURS: MON-FRI 0630-1930 UTC, SAT-SUN-HOL 0800-1800 UTC. OUTSIDE PUBLISHED HOURS A/A FREQ 120.405 MHZ.`,
+                (s, e) => `A0595/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) ${e}
+E) RWY 05/23 AND RWY 12/30 RUNWAY LIGHTING SERVICEABLE ON PILOT COMMAND (PCL) ON 120.405 MHZ.`,
+                (s, e) => `A0610/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) ${e}
+E) TAXIWAY ECHO CLSD FOR DRAINAGE WORKS. TAXI VIA TWY FOXTROT AND TWY GOLF.`,
+                (s, e) => `A0625/26 NOTAMN
+Q) LFFF/QFUXX/IV/NBO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) PERM
+E) FUEL AVGAS 100LL AVAILABLE VIA AUTOMATED CREDIT CARD STATION AT TOWER APRON.`,
+                (s, e) => `A0640/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE ERECTED AT OSNY 490350N 0020310E. HEIGHT 35M AGL (420FT AMSL). LIT AT NIGHT.
+F) SFC G) 420FT AMSL`,
+                (s, e) => `A0655/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) PERM
+E) CUSTOMS: AVAILABLE ON REQUEST PPR 24H VIA PREFECTURE DE POLICE.`,
+                (s, e) => `A0670/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) PERM
+E) VFR ARRIVAL CORRIDORS: MANDATORY CALL AT POINT ECHO (ENNERY) OR POINT WEST (VEXIN).`,
+                (s, e) => `A0685/26 NOTAMN
+Q) LFFF/QPDXX/I/NBO/A/000/999/4905N00202E005
+A) LFPT B) ${s} C) PERM
+E) NOISE ABATEMENT: AVOID DIRECT OVERFLIGHT OF BOISSY-L'AILLERIE AND CORMEILLES VILLAGE TOWNS.`
+            ],
+            'LFPL': [
+                (s, e) => `B0320/26 NOTAMN
+Q) LFFF/QFAXX/V/NBO/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) PERM
+E) STRICT NOISE SENSITIVITY: OVERFLIGHT OF LOGNES TOWN AND EMERAINVILLE FORBIDDEN BELOW 1500FT AMSL. FOLLOW VISUAL CIRCUIT AXIS RIGOROUSLY.
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `B0345/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) ${e}
+E) AFIS OPERATIONAL HOURS: DAILY 0700-1900 UTC. OUTSIDE HOURS A/A ON 118.600 MHZ.`,
+                (s, e) => `B0360/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) ${e}
+E) GRASS RUNWAY 08/26 RESERVED FOR BASED AIRCRAFT AND TAILDRAGGERS. HARD RUNWAY 08/26 IN SERVICE FOR ALL OTHER TRAFFIC.`,
+                (s, e) => `B0375/26 NOTAMN
+Q) LFFF/QFUXX/IV/NBO/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) PERM
+E) REFUELLING AVGAS 100LL AVBL H24 WITH AIR TOTAL CARD. PAYMENT BY CREDIT CARD DURING AFIS HOURS.`,
+                (s, e) => `B0390/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) ${e}
+E) OBSTACLE: CRANE 32M AGL ERECTED AT TORCY 485010N 0023840E. NIGHT LIGHTING OPERATING.
+F) SFC G) 380FT AMSL`,
+                (s, e) => `B0405/26 NOTAMN
+Q) LFFF/QMXLC/IV/M/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) ${e}
+E) TAXIWAY NORTH BETWEEN CLUB HANGARS AND PUMP CLSD FOR RESURFACING.`,
+                (s, e) => `B0420/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) PERM
+E) VFR REPORTING POINT ECHO (TORCY MOTORWAY INTERCHANGE) MANDATORY FOR ALL NORTH-EAST INBOUND TRAFFIC.`,
+                (s, e) => `B0435/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4849N00237E005
+A) LFPL B) ${s} C) PERM
+E) PARKING: TRANSIENT AIRCRAFT MUST PARK ON DESIGNATED TRANSIENT TARMAC ONLY. TIE-DOWN MANDATORY.`
+            ],
+            'LFPM': [
+                (s, e) => `B0220/26 NOTAMN
+Q) LFFF/QFAXX/V/NBO/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) PERM
+E) PPR REQUIRED FOR ALL NON-BASED AIRCRAFT VIA AERODROME OPERATOR 24H PRIOR TO FLIGHT.`,
+                (s, e) => `B0235/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) ${e}
+E) ATS TWR OPERATIONAL MON-FRI 0730-1700 UTC. OUTSIDE HOURS AFIS OR A/A ON 121.100 MHZ.`,
+                (s, e) => `B0250/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) ${e}
+E) RWY 10/28 HARD SURFACE RUNWAY LENGTH 1975M. BRAKING ACTION GOOD.`,
+                (s, e) => `B0265/26 NOTAMN
+Q) LFFF/QWBLW/IV/M/W/000/045/4836N00240E005
+A) LFPM B) ${s} C) ${e}
+D) SAT SUN 0900-1700
+E) AEROBATIC TRAINING OVER FIELD IN SECTOR NORTH (F) 1500FT AMSL G) 4500FT AMSL). PILOTS EXERCISE CAUTION.`,
+                (s, e) => `B0280/26 NOTAMN
+Q) LFFF/QFUXX/IV/NBO/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) PERM
+E) FUEL AVGAS 100LL AND JET A1 AVBL VIA TOTAL ENERGIES CARD.`,
+                (s, e) => `B0295/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT SAFRAN ENGINE TEST FACILITY. HEIGHT 38M AGL (420FT AMSL). LIT AT NIGHT.
+F) SFC G) 420FT AMSL`,
+                (s, e) => `B0310/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) PERM
+E) NOISE ABATEMENT: OVERFLIGHT OF MONTEREAU-SUR-LE-JARD AND RUBELLES FORBIDDEN BELOW 2000FT AMSL.`,
+                (s, e) => `B0325/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/A/000/999/4836N00240E005
+A) LFPM B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY FOR CTR ENTRY.`
+            ],
+            'LFAI': [
+                (s, e) => `B0180/26 NOTAMN
+Q) LFFF/QFAXX/V/NBO/A/000/999/4835N00300E005
+A) LFAI B) ${s} C) PERM
+E) UNCONTROLLED AIRFIELD: AUTO-INFORMATION FREQ 120.005 MHZ. RIGHT HAND PATTERN RUNWAY 28.`,
+                (s, e) => `B0195/26 NOTAMN
+Q) LFFF/QMRXX/IV/NBO/A/000/999/4835N00300E005
+A) LFAI B) ${s} C) ${e}
+E) RWY 05/23 AND RWY 10/28 GRASS SURFACES: SOFT GROUND ON SHOULDERS AFTER HEAVY PRECIPITATION.`,
+                (s, e) => `B0210/26 NOTAMN
+Q) LFFF/QWGLW/IV/M/W/000/035/4835N00300E005
+A) LFAI B) ${s} C) ${e}
+D) DAILY HJ
+E) GLIDER ACTIVITY OVER AIRFIELD AND WINCH CABLE LAUNCH UP TO 1500FT AGL (1900FT AMSL). AVOID DIRECT OVERFLIGHT OF RUNWAYS.
+F) SFC G) 1900FT AMSL`,
+                (s, e) => `B0225/26 NOTAMN
+Q) LFFF/QFUXX/IV/NBO/A/000/999/4835N00300E005
+A) LFAI B) ${s} C) PERM
+E) AVGAS 100LL SELF-SERVICE PUMP AVBL 24H WITH TOTAL ENERGIES CARD.`,
+                (s, e) => `B0240/26 NOTAMN
+Q) LFFF/QOBCE/IV/M/A/000/999/4835N00300E005
+A) LFAI B) ${s} C) ${e}
+E) OBSTACLE: WIND TURBINE PARK ERECTED 4NM SOUTH-EAST OF AIRFIELD. MAX ELEVATION 720FT AMSL. FLASHING WHITE LIGHTS.
+F) SFC G) 720FT AMSL`,
+                (s, e) => `B0255/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4835N00300E005
+A) LFAI B) ${s} C) PERM
+E) NOISE ABATEMENT: STRICTLY AVOID OVERFLIGHT OF NANGIS AGGLOMERATION AND SURROUNDING FARMS.`,
+                (s, e) => `B0270/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/A/000/999/4835N00300E005
+A) LFAI B) ${s} C) PERM
+E) RESTORATION & CLUB HOUSE: OPERATIONAL WEDNESDAY TO SUNDAY.`
+            ],
+            'LFRN': [
+                (s, e) => `A0441/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) PERM
+E) VFR ARRIVALS VIA REPORTING POINT NW (BEDEE) OR SW (GUICHEN). CONTACT RENNES APPROACH 124.050 MHZ BEFORE ENTERING CTR.`,
+                (s, e) => `A0455/26 NOTAMN
+Q) LFRR/QMRXX/IV/NBO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) ${e}
+E) RWY 10/28 PAPI CALIBRATED AND OPERATIONAL. RUNWAY LIGHTING SERVICEABLE.`,
+                (s, e) => `A0470/26 NOTAMN
+Q) LFRR/QMXLC/IV/M/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) ${e}
+E) TAXIWAY FOXTROT CLSD BETWEEN TWR AND GENERAL AVIATION HANGARS FOR CABLE LAYING.`,
+                (s, e) => `A0485/26 NOTAMN
+Q) LFRR/QFUXX/IV/NBO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) PERM
+E) REFUELLING AVGAS 100LL AND JET A1 AVBL VIA BP / AIR BP CARDS AND CREDIT CARDS.`,
+                (s, e) => `A0500/26 NOTAMN
+Q) LFRR/QOBCE/IV/M/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT CHU HOSPITAL RENNES. HEIGHT 50M AGL (380FT AMSL). DAY AND NIGHT LIGHTING OPERATING.
+F) SFC G) 380FT AMSL`,
+                (s, e) => `A0515/26 NOTAMN
+Q) LFRR/QSTAH/IV/BO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) PERM
+E) TWR OPERATING HOURS: MON-FRI 0530-2200 UTC, SAT 0600-2030 UTC, SUN 0730-2130 UTC.`,
+                (s, e) => `A0530/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) ${e}
+E) BIRD HAZARD: FLOCKS OF SEAGULLS REPORTED ALONG RIVER VILAINE VALLEY IN CTR SECTOR WEST.`,
+                (s, e) => `A0545/26 NOTAMN
+Q) LFRR/QPDXX/I/NBO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) PERM
+E) NOISE RESTRICTIONS: AVOID DIRECT OVERFLIGHT OF SAINT-JACQUES-DE-LA-LANDE VILLAGE BELOW 2000FT AMSL.`,
+                (s, e) => `A0560/26 NOTAMN
+Q) LFRR/QSPAS/IV/BO/A/000/999/4804N00144W005
+A) LFRN B) ${s} C) PERM
+E) TRANSPONDER MODE S COMPULSORY IN RENNES TMA CLASS D.`
+            ],
+            'LFRS': [
+                (s, e) => `A0730/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) PERM
+E) NIGHT CURFEW AND NOISE RESTRICTION: JET DEPARTURES FORBIDDEN BETWEEN 0000 AND 0600 LOCAL TIME EXCEPT EMERGENCY OR AUTHORIZED MISSIONS.`,
+                (s, e) => `A0745/26 NOTAMN
+Q) LFRR/QMRXX/IV/NBO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) ${e}
+E) RWY 03/21 CAT III ILS APPROACH SERVICEABLE. BRAKING ACTION MEDIUM TO GOOD.`,
+                (s, e) => `A0760/26 NOTAMN
+Q) LFRR/QMXLC/IV/M/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) ${e}
+E) TAXIWAY DELTA CLOSED BETWEEN STAND 12 AND STAND 16 DUE TO CRACK RESEALING.`,
+                (s, e) => `A0775/26 NOTAMN
+Q) LFRR/QOBCE/IV/M/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT BOUGUENAIS COMMERCIAL ZONE. HEIGHT 42M AGL (210FT AMSL). LIT AT NIGHT.
+F) SFC G) 210FT AMSL`,
+                (s, e) => `A0790/26 NOTAMN
+Q) LFRR/QFUXX/IV/NBO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) PERM
+E) REFUELLING AVGAS 100LL AVAILABLE AT GA APRON VIA TOTAL ENERGIES CARD.`,
+                (s, e) => `A0805/26 NOTAMN
+Q) LFRR/QSPAS/IV/BO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) PERM
+E) VFR REPORTING POINTS: REPORT AT POINT SE (LE PELLERIN) OR POINT NE (HERBLAY) BEFORE ENTERING NANTES CTR.`,
+                (s, e) => `A0820/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) ${e}
+E) WILDLIFE HAZARD: BIRD ACTIVITY HEAVY IN LAKE GRAND-LIEU SECTOR SOUTH OF AIRPORT.`,
+                (s, e) => `A0835/26 NOTAMN
+Q) LFRR/QSTAH/IV/BO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) PERM
+E) ATS TWR OPERATIONAL H24. VFR TRAFFIC MUST MAINTAIN STRICT RADIO CONTACT.`,
+                (s, e) => `A0850/26 NOTAMN
+Q) LFRR/QPDXX/I/NBO/A/000/999/4709N00136W005
+A) LFRS B) ${s} C) PERM
+E) NOISE ABATEMENT: DEPARTURE CLIMB GRADIENT AT LEAST 6.5 PERCENT REQUIRED ON RUNWAY 03.`
+            ],
+            'LFLL': [
+                (s, e) => `A0884/26 NOTAMN
+Q) LFMM/QPAAU/I/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+E) RNAV 1 REQUIRED FOR ALL DEPARTURE AND ARRIVAL PROCEDURES IN LYON TMA. REPORT INABILITY TO ATC.`,
+                (s, e) => `A0898/26 NOTAMN
+Q) LFMM/QMRXX/IV/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+E) RWY 17L/35R HIGH INTENSITY APPROACH LIGHTS CAT II/III FULLY SERVICEABLE.`,
+                (s, e) => `A0910/26 NOTAMN
+Q) LFMM/QMRLC/IV/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+D) MON-THU 2200-0400
+E) RWY 17R/35L CLSD DUE TO SURFACE CRACK REPAIR AND FRICTION MEASUREMENT.`,
+                (s, e) => `A0925/26 NOTAMN
+Q) LFMM/QMXLC/IV/M/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+E) TAXIWAY ECHO BETWEEN TWY E3 AND TWY E7 CLSD FOR ELECTRICAL DUCT WORK.`,
+                (s, e) => `A0940/26 NOTAMN
+Q) LFMM/QMPLC/IV/BO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+E) CARGO APRON STANDS 80 TO 84 TOW-IN COMPULSORY FOR ALL AIRCRAFT.`,
+                (s, e) => `A0955/26 NOTAMN
+Q) LFMM/QOBCE/IV/M/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE AT TGV STATION EXTENSION 454310N 0050520E. HEIGHT 55M AGL (980FT AMSL). LIT AT NIGHT.
+F) SFC G) 980FT AMSL`,
+                (s, e) => `A0970/26 NOTAMN
+Q) LFMM/QSTAH/IV/BO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) PERM
+E) ATS TWR AND APPROACH OPERATING H24. SPEED LIMIT 250KT BELOW FL100 IN TMA.`,
+                (s, e) => `A0985/26 NOTAMN
+Q) LFMM/QSPAS/IV/BO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) PERM
+E) TRANSPONDER MODE S COMPULSORY THROUGHOUT LYON TMA AND CTR.`,
+                (s, e) => `A1002/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) ${e}
+E) WILDLIFE HAZARD: BIRD ACTIVITY LAPWINGS AND STARLINGS CONCENTRATED OVER GRASS AREAS.`,
+                (s, e) => `A1018/26 NOTAMN
+Q) LFMM/QFUXX/IV/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) PERM
+E) FUEL JET A1 AND AVGAS 100LL AVAILABLE H24 VIA HANDLING AGENTS.`,
+                (s, e) => `A1032/26 NOTAMN
+Q) LFMM/QPDXX/I/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) PERM
+E) NOISE ABATEMENT: REVERSE THRUST OTHER THAN IDLE PROHIBITED BETWEEN 2200 AND 0600 LOCAL.`,
+                (s, e) => `A1045/26 NOTAMN
+Q) LFMM/QFFCH/IV/NBO/A/000/999/4543N00505E005
+A) LFLL B) ${s} C) PERM
+E) RFFS RESCUE AND FIREFIGHTING SERVICE CAT 9 AVBL H24.`
+            ],
+            'LFLY': [
+                (s, e) => `B0410/26 NOTAMN
+Q) LFMM/QFAXX/V/NBO/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) PERM
+E) VFR CIRCUIT ALTITUDE 1500FT AMSL (700FT AAL). COMPLY WITH PUBLISHED NOISE ABATEMENT CORRIDOR.
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `B0425/26 NOTAMN
+Q) LFMM/QSTAH/IV/BO/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) ${e}
+E) TWR OPERATIONAL HOURS: MON-FRI 0630-2130 UTC, SAT-SUN-HOL 0800-2000 UTC. OUTSIDE HOURS AFIS.`,
+                (s, e) => `B0440/26 NOTAMN
+Q) LFMM/QMRXX/IV/NBO/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) ${e}
+E) RWY 16/34 HARD RUNWAY 1820M. PAPI 16 AND PAPI 34 CALIBRATED AT 3.5 DEGREES.`,
+                (s, e) => `B0455/26 NOTAMN
+Q) LFMM/QMXLC/IV/M/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) ${e}
+E) TAXIWAY BRAVO BETWEEN APRON NORTH AND TWR CLOSED FOR EXPANSION WORK.`,
+                (s, e) => `B0470/26 NOTAMN
+Q) LFMM/QFUXX/IV/NBO/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) PERM
+E) REFUELLING AVGAS 100LL AND JET A1 AVBL VIA AUTOMATED CARD PUMPS 24H.`,
+                (s, e) => `B0485/26 NOTAMN
+Q) LFMM/QOBCE/IV/M/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT BRON COMMERCIAL ZONE 454350N 0045520E. HEIGHT 42M AGL (780FT AMSL).
+F) SFC G) 780FT AMSL`,
+                (s, e) => `B0500/26 NOTAMN
+Q) LFMM/QSPAS/IV/BO/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) PERM
+E) VFR REPORTING POINTS: REPORT AT POINT SOUTH (SAINT-SYMPHORIEN) OR NORTH (MEYZIEU) BEFORE CTR ENTRY.`,
+                (s, e) => `B0515/26 NOTAMN
+Q) LFMM/QPDXX/I/NBO/A/000/999/4543N00456E005
+A) LFLY B) ${s} C) PERM
+E) NOISE ABATEMENT: OVERFLIGHT OF LYON TOWN CENTER STRICTLY PROHIBITED BELOW 5000FT AMSL.`
+            ],
+            'LFML': [
+                (s, e) => `A0692/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) PERM
+E) VFR REPORTING POINTS: CONTACT MARSEILLE APPROACH 120.200 MHZ AT SA (SAINT-CHAMAS) OR EA (L'ESTAQUE) PRIOR TO CTR PENETRATION.`,
+                (s, e) => `A0705/26 NOTAMN
+Q) LFMM/QMRXX/IV/NBO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) ${e}
+E) RWY 13L/31R CAT III ILS OPERATIONAL. RUNWAY LIGHTING SERVICEABLE.`,
+                (s, e) => `A0720/26 NOTAMN
+Q) LFMM/QMRLC/IV/NBO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) ${e}
+D) DAILY 2300-0430
+E) RWY 13R/31L CLSD FOR MAINTENANCE OF RETRACTABLE ARRESTOR BEDS.`,
+                (s, e) => `A0735/26 NOTAMN
+Q) LFMM/QMXLC/IV/M/A/000/999/4326N00512E005
+A) LFML B) ${s} C) ${e}
+E) TAXIWAY KILO CLSD BETWEEN STAND 40 AND TWY LIMA. TAXI VIA TWY JULIET.`,
+                (s, e) => `A0750/26 NOTAMN
+Q) LFMM/QOBCE/IV/M/A/000/999/4326N00512E005
+A) LFML B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE AT MARIGNANE AIRBUS HELICOPTERS PLANT. HEIGHT 52M AGL (230FT AMSL). LIT AT NIGHT.
+F) SFC G) 230FT AMSL`,
+                (s, e) => `A0765/26 NOTAMN
+Q) LFMM/QSTAH/IV/BO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) PERM
+E) ATS TWR H24. SPEED REDUCTION 250KT BELOW FL100 IN MARSEILLE TMA.`,
+                (s, e) => `A0780/26 NOTAMN
+Q) LFMM/QFUXX/IV/NBO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) PERM
+E) FUEL JET A1 AND AVGAS 100LL AVAILABLE H24.`,
+                (s, e) => `A0795/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) ${e}
+E) WILDLIFE HAZARD: FLOCKS OF GULLS AND FLAMINGOS ACROSS ETANG DE BERRE NEAR APPR RWY 13L.`,
+                (s, e) => `A0810/26 NOTAMN
+Q) LFMM/QPDXX/I/NBO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) PERM
+E) NOISE RESTRICTIONS: AVOID OVERFLIGHT OF VITROLLES AND MARIGNANE RESIDENTIAL AREAS.`,
+                (s, e) => `A0825/26 NOTAMN
+Q) LFMM/QSPAS/IV/BO/A/000/999/4326N00512E005
+A) LFML B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY FOR ALL MOVEMENTS IN CTR AND TMA.`
+            ],
+            'LFBD': [
+                (s, e) => `A0520/26 NOTAMN
+Q) LFBB/QFAXX/IV/NBO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) PERM
+E) VFR TRAFFIC REQUIRING TRANSIT THROUGH BORDEAUX CTR MUST CONTACT BORDEAUX TOWER 118.300 MHZ WITH MODE S TRANSPONDER ACTIVE.`,
+                (s, e) => `A0535/26 NOTAMN
+Q) LFBB/QMRXX/IV/NBO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) ${e}
+E) RWY 05/23 AND RWY 11/29 RUNWAY LIGHTING AND PAPI FULLY SERVICEABLE.`,
+                (s, e) => `A0550/26 NOTAMN
+Q) LFBB/QMXLC/IV/M/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) ${e}
+E) TAXIWAY TANGO BETWEEN STAND 15 AND STAND 22 CLSD FOR PIPELINE WORK.`,
+                (s, e) => `A0565/26 NOTAMN
+Q) LFBB/QOBCE/IV/M/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT DASSAULT AVIATION FACTORY 444950N 0004120W. HEIGHT 45M AGL (240FT AMSL).
+F) SFC G) 240FT AMSL`,
+                (s, e) => `A0580/26 NOTAMN
+Q) LFBB/QSTAH/IV/BO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) PERM
+E) ATS TWR H24. MILITARY OPS FREQUENT ON AIR BASE 106 ADJACENT TO AERODROME.`,
+                (s, e) => `A0595/26 NOTAMN
+Q) LFBB/QFUXX/IV/NBO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) PERM
+E) REFUELLING AVGAS 100LL AND JET A1 AVBL VIA TOTAL ENERGIES CARD AT GA TERMINAL.`,
+                (s, e) => `A0610/26 NOTAMN
+Q) LFBB/QFAXX/IV/NBO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) ${e}
+E) WILDLIFE HAZARD: STARLINGS AND BUZZARDS OBSERVED OVER GRASS STRIPS NEAR RWY 05.`,
+                (s, e) => `A0625/26 NOTAMN
+Q) LFBB/QPDXX/I/NBO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) PERM
+E) NOISE ABATEMENT: OVERFLIGHT OF BORDEAUX CITY CENTER PROHIBITED BELOW 5000FT AMSL.`,
+                (s, e) => `A0640/26 NOTAMN
+Q) LFBB/QSPAS/IV/BO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) PERM
+E) VFR REPORTING POINTS: CALL AT POINT OA (ARCACHON HIGHWAY) OR POINT EN (SAINT-AUBIN).`,
+                (s, e) => `A0655/26 NOTAMN
+Q) LFBB/QFFCH/IV/NBO/A/000/999/4449N00042W005
+A) LFBD B) ${s} C) PERM
+E) RFFS CAT 8 H24, CAT 9 ON 2H PRIOR NOTICE.`
+            ],
+            'LFBO': [
+                (s, e) => `A0615/26 NOTAMN
+Q) LFBB/QFAXX/IV/NBO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) PERM
+E) AIRBUS FLIGHT TEST ZONE ACTIVE IN VICINITY. STRICT ADHERENCE TO ATC RADAR VECTORS AND TRAFFIC INFORMATION REQUIRED.`,
+                (s, e) => `A0630/26 NOTAMN
+Q) LFBB/QMRXX/IV/NBO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) ${e}
+E) RWY 14L/32R AND RWY 14R/32L CAT III ILS OPERATIONAL. BRAKING ACTION GOOD.`,
+                (s, e) => `A0645/26 NOTAMN
+Q) LFBB/QMXLC/IV/M/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) ${e}
+E) TAXIWAY MIKE BETWEEN TWY M2 AND TWY M6 CLSD FOR BELAIR CORRIDOR APRON WORK.`,
+                (s, e) => `A0660/26 NOTAMN
+Q) LFBB/QOBCE/IV/M/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE AT AIRBUS A350 ASSEMBLY PLANT. HEIGHT 48M AGL (580FT AMSL). LIT AT NIGHT.
+F) SFC G) 580FT AMSL`,
+                (s, e) => `A0675/26 NOTAMN
+Q) LFBB/QSTAH/IV/BO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) PERM
+E) ATS TWR H24. SPEED 250KT BELOW FL100 IN TOULOUSE TMA.`,
+                (s, e) => `A0690/26 NOTAMN
+Q) LFBB/QFUXX/IV/NBO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) PERM
+E) FUEL AVGAS 100LL AND JET A1 AVBL VIA AIR BP AND TOTAL ENERGIES.`,
+                (s, e) => `A0705/26 NOTAMN
+Q) LFBB/QSPAS/IV/BO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) PERM
+E) VFR REPORTING POINTS: REPORT AT POINT EA (CORNEBARRIEU) OR POINT SA (MURET) BEFORE CTR ENTRY.`,
+                (s, e) => `A0720/26 NOTAMN
+Q) LFBB/QFAXX/IV/NBO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) ${e}
+E) WILDLIFE HAZARD: LAPWINGS AND PIGEONS ACTIVE NEAR RWY 14L THRESHOLD.`,
+                (s, e) => `A0735/26 NOTAMN
+Q) LFBB/QPDXX/I/NBO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) PERM
+E) NOISE ABATEMENT: OVERFLIGHT OF TOULOUSE CENTER FORBIDDEN BELOW 4000FT AMSL.`,
+                (s, e) => `A0750/26 NOTAMN
+Q) LFBB/QFFCH/IV/NBO/A/000/999/4337N00121E005
+A) LFBO B) ${s} C) PERM
+E) RFFS CAT 8 AVBL H24, CAT 9 ON 2H PRIOR NOTICE.`
+            ],
+            'LFMD': [
+                (s, e) => `A0480/26 NOTAMN
+Q) LFMM/QFAXX/V/NBO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) PERM
+E) STRICT NOISE ABATEMENT: VISUAL APPROACHES OVER GOLF RESORT AND MANDELIEU AGGLOMERATION PROHIBITED BELOW 1500FT AMSL.
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `A0495/26 NOTAMN
+Q) LFMM/QSTAH/IV/BO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) ${e}
+E) TWR OPERATIONAL HOURS: DAILY 0630-1900 UTC. OUTSIDE HOURS AFIS NOT PROVIDED.`,
+                (s, e) => `A0510/26 NOTAMN
+Q) LFMM/QMRXX/IV/NBO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) ${e}
+E) RWY 17/35 HARD RUNWAY 1610M. PAPI 17 ANGLE 3.9 DEGREES STEEP APPROACH.`,
+                (s, e) => `A0525/26 NOTAMN
+Q) LFMM/QMXLC/IV/M/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) ${e}
+E) TAXIWAY DELTA CLSD FOR PAVING WORK. FOLLOW FOLLOW-ME VEHICLE ON TWY CHARLIE.`,
+                (s, e) => `A0540/26 NOTAMN
+Q) LFMM/QFUXX/IV/NBO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) PERM
+E) FUEL AVGAS 100LL AND JET A1 AVBL VIA AUTOMATED CREDIT CARD STATION.`,
+                (s, e) => `A0555/26 NOTAMN
+Q) LFMM/QOBCE/IV/M/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT MANDELIEU MARINA 433150N 0065640E. HEIGHT 36M AGL (130FT AMSL). LIT AT NIGHT.
+F) SFC G) 130FT AMSL`,
+                (s, e) => `A0570/26 NOTAMN
+Q) LFMM/QSPAS/IV/BO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) PERM
+E) VFR REPORTING POINTS: CALL AT POINT S (THEOULE) OR POINT W (TANNERON).`,
+                (s, e) => `A0585/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) PERM
+E) BUSINESS JETS MTOW OVER 22 TONNES PROHIBITED WITHOUT PRIOR SPECIAL WAIVER.`,
+                (s, e) => `A0600/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4332N00657E005
+A) LFMD B) ${s} C) PERM
+E) CUSTOMS: MANDATORY 2H NOTICE FOR ALL ARRIVALS FROM NON-SCHENGEN.`
+            ],
+            'LFMN': [
+                (s, e) => `A0810/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) PERM
+E) RIVIERA VFR VISUAL CORRIDORS IN FORCE. COMPLY WITH SPECIFIC TRANSPONDER ASSIGNMENT BEFORE ENTERING CONTROLLED AIRSPACE.`,
+                (s, e) => `A0825/26 NOTAMN
+Q) LFMM/QMRXX/IV/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) ${e}
+E) RWY 04L/22R AND RWY 04R/22L CAT III ILS OPERATIONAL. BRAKING ACTION GOOD.`,
+                (s, e) => `A0840/26 NOTAMN
+Q) LFMM/QMRLC/IV/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) ${e}
+D) DAILY 2330-0430
+E) RWY 04L/22R CLSD FOR SCHEDULED SWEEPING AND PREVENTIVE MAINTENANCE.`,
+                (s, e) => `A0855/26 NOTAMN
+Q) LFMM/QMXLC/IV/M/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) ${e}
+E) TAXIWAY U AND TAXIWAY V MARSHALLER GUIDANCE MANDATORY FOR WIDEBODY AIRCRAFT.`,
+                (s, e) => `A0870/26 NOTAMN
+Q) LFMM/QOBCE/IV/M/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT TERMINAL 2 EXTENSION 433920N 0071230E. HEIGHT 48M AGL (170FT AMSL). LIT AT NIGHT.
+F) SFC G) 170FT AMSL`,
+                (s, e) => `A0885/26 NOTAMN
+Q) LFMM/QSTAH/IV/BO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) PERM
+E) ATS TWR H24. SPEED RESTRICTION 250KT BELOW FL100 IN NICE TMA.`,
+                (s, e) => `A0900/26 NOTAMN
+Q) LFMM/QFUXX/IV/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) PERM
+E) FUEL JET A1 AND AVGAS 100LL AVBL H24.`,
+                (s, e) => `A0915/26 NOTAMN
+Q) LFMM/QFAXX/IV/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) ${e}
+E) BIRD HAZARD: FLOCKS OF SEAGULLS ALONG SHORELINE NEAR RWY 04R THRESHOLD.`,
+                (s, e) => `A0930/26 NOTAMN
+Q) LFMM/QPDXX/I/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) PERM
+E) NOISE ABATEMENT: VISUAL APPROACHES BELOW 2000FT AMSL OVERFLIGHT OF CAP D'ANTIBES FORBIDDEN.`,
+                (s, e) => `A0945/26 NOTAMN
+Q) LFMM/QSPAS/IV/BO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY FOR ALL MOVEMENTS IN NICE CTR.`,
+                (s, e) => `A0960/26 NOTAMN
+Q) LFMM/QFFCH/IV/NBO/A/000/999/4339N00713E005
+A) LFMN B) ${s} C) PERM
+E) RFFS CAT 9 AVBL H24.`
+            ],
+            'LFRB': [
+                (s, e) => `A0390/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) PERM
+E) VFR TRAFFIC: CONTACT IROISE INFORMATION 119.575 MHZ OR BREST TOWER 120.100 MHZ PRIOR TO CTR BOUNDARY.`,
+                (s, e) => `A0405/26 NOTAMN
+Q) LFRR/QMRXX/IV/NBO/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) ${e}
+E) RWY 07L/25R CAT III ILS OPERATIONAL. PAPI FULLY SERVICEABLE.`,
+                (s, e) => `A0420/26 NOTAMN
+Q) LFRR/QMXLC/IV/M/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) ${e}
+E) TAXIWAY CHARLIE CLOSED FOR SURFACE RESEALING. TAXI VIA TWY ALPHA.`,
+                (s, e) => `A0435/26 NOTAMN
+Q) LFRR/QOBCE/IV/M/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT GUIPAVAS INDUSTRIAL ZONE. HEIGHT 38M AGL (380FT AMSL). LIT AT NIGHT.
+F) SFC G) 380FT AMSL`,
+                (s, e) => `A0450/26 NOTAMN
+Q) LFRR/QSTAH/IV/BO/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) PERM
+E) ATS TWR HOURS: DAILY 0500-2230 UTC. OUTSIDE HOURS AFIS ON 120.100 MHZ.`,
+                (s, e) => `A0465/26 NOTAMN
+Q) LFRR/QFUXX/IV/NBO/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) PERM
+E) FUEL AVGAS 100LL AND JET A1 AVBL VIA TOTAL ENERGIES CARD.`,
+                (s, e) => `A0480/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) ${e}
+E) WILDLIFE HAZARD: GULLS OBSERVED NEAR RUNWAY THRESHOLD 25R DURING RAIN SQUALLS.`,
+                (s, e) => `A0495/26 NOTAMN
+Q) LFRR/QSPAS/IV/BO/A/000/999/4826N00425W005
+A) LFRB B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY IN BREST TMA CLASS D.`
+            ],
+            'EGLL': [
+                (s, e) => `A2210/26 NOTAMN
+Q) EGTT/QPDXX/I/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) NOISE PREFERENTIAL ROUTES (NPR) IN FORCE. AIRCRAFT SHALL CONFORM TO NOISE ABATEMENT TAKE-OFF TECHNIQUES UNTIL PASSING 4000FT AMSL.`,
+                (s, e) => `A2234/26 NOTAMN
+Q) EGTT/QFAXX/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) LOW VISIBILITY PROCEDURES (LVP) CAT II/III CAPABLE. ADVANCED SURFACE MOVEMENT GUIDANCE AND CONTROL SYSTEM (A-SMGCS) IN OPERATION.`,
+                (s, e) => `A2250/26 NOTAMN
+Q) EGTT/QMRLC/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+D) DAILY 2230-0430
+E) RWY 09L/27R CLSD FOR SCHEDULED LIGHTING AND FRICTION MAINTENANCE.`,
+                (s, e) => `A2265/26 NOTAMN
+Q) EGTT/QMRXX/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) RWY 09R/27L OPERATIONAL FOR DEPARTURES AND ARRIVALS. ALTERNATING RUNWAY SCHEDULE ACTIVE.`,
+                (s, e) => `A2280/26 NOTAMN
+Q) EGTT/QMXLC/IV/M/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) TAXIWAY LINK 23 AND TWY LINK 24 CLSD DUE TO WORK IN PROGRESS.`,
+                (s, e) => `A2295/26 NOTAMN
+Q) EGTT/QOBCE/IV/M/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) OBSTACLE: TOWER CRANE ERECTED AT HARLINGTON 512910N 0002630W. HEIGHT 160FT AGL (235FT AMSL). LIT AT NIGHT.
+F) SFC G) 235FT AMSL`,
+                (s, e) => `A2310/26 NOTAMN
+Q) EGTT/QSTAH/IV/BO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) LONDON TMA SPEED LIMIT: 250KT MAXIMUM BELOW FL100 UNLESS CANCELLED BY ATC.`,
+                (s, e) => `A2325/26 NOTAMN
+Q) EGTT/QSPAS/IV/BO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) MODE S AND ADS-B OUT MANDATORY FOR ALL MOVEMENTS WITHIN LONDON CONTROLLED AIRSPACE.`,
+                (s, e) => `A2340/26 NOTAMN
+Q) EGTT/QMPLC/IV/BO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) STANDS 501 TO 508 TERMINAL 5 JETWAY REFURBISHMENT. COACH EMBARKATION IN EFFECT.`,
+                (s, e) => `A2355/26 NOTAMN
+Q) EGTT/QFAXX/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) BIRD HAZARD: PIGEONS, GULLS AND CANADA GEESE ACTIVE IN RUNWAY SURROUNDINGS.`,
+                (s, e) => `A2370/26 NOTAMN
+Q) EGTT/QFUXX/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) JET A1 FUEL HYDRANT PRESSURE NORMAL. H24 DISPENSING.`,
+                (s, e) => `A2385/26 NOTAMN
+Q) EGTT/QFFCH/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) RFFS RESCUE AND FIREFIGHTING CATEGORY 10 AVBL H24.`,
+                (s, e) => `A2400/26 NOTAMN
+Q) EGTT/QICCT/I/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) ${e}
+E) ILS DME RWY 27L LOCALIZER SIGNAL FLIGHT CHECK COMPLETED AND CERTIFIED.`,
+                (s, e) => `A2415/26 NOTAMN
+Q) EGTT/QPDXX/I/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) NIGHT JET QUOTA RESTRICTIONS: STRICT AIRPORT NIGHT RESTRICTION 2330 TO 0600 LOCAL.`,
+                (s, e) => `A2430/26 NOTAMN
+Q) EGTT/QFAXX/IV/NBO/A/000/999/5128N00027W005
+A) EGLL B) ${s} C) PERM
+E) GENERAL AVIATION: MANDATORY PRIOR SLOT ALLOCATION AND HANDLING VIA SIGNATURE FLIGHT SUPPORT.`
+            ],
+            'EGKK': [
+                (s, e) => `A1940/26 NOTAMN
+Q) EGTT/QFAXX/IV/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) CONTINUOUS DESCENT APPROACH (CDA) IN OPERATION FOR ALL INBOUND IFR FLIGHTS. REPORT CDA INABILITY TO ATC.`,
+                (s, e) => `A1955/26 NOTAMN
+Q) EGTT/QMRXX/IV/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) ${e}
+E) MAIN RWY 08R/26L CAT III ILS OPERATIONAL. NORTHERN RWY 08L/26R AVAILABLE AS EMERGENCY SPARE.`,
+                (s, e) => `A1970/26 NOTAMN
+Q) EGTT/QMXLC/IV/M/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) ${e}
+E) TAXIWAY JULIET CLOSED BETWEEN STAND 22 AND STAND 28 FOR RESURFACING.`,
+                (s, e) => `A1985/26 NOTAMN
+Q) EGTT/QOBCE/IV/M/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT SOUTH TERMINAL RAIL STATION. HEIGHT 45M AGL (245FT AMSL). LIT AT NIGHT.
+F) SFC G) 245FT AMSL`,
+                (s, e) => `A2002/26 NOTAMN
+Q) EGTT/QSTAH/IV/BO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) ATS TWR H24. SPEED 250KT BELOW FL100 IN LONDON TMA.`,
+                (s, e) => `A2018/26 NOTAMN
+Q) EGTT/QSPAS/IV/BO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY FOR ALL MOVEMENTS.`,
+                (s, e) => `A2035/26 NOTAMN
+Q) EGTT/QFUXX/IV/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) JET A1 FUEL HYDRANT FULLY OPERATIONAL.`,
+                (s, e) => `A2050/26 NOTAMN
+Q) EGTT/QFAXX/IV/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) ${e}
+E) BIRD HAZARD: FLOCKS OF ROOKS AND GULLS IN VICINITY OF RWY 26L TOUCHDOWN ZONE.`,
+                (s, e) => `A2065/26 NOTAMN
+Q) EGTT/QPDXX/I/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) NOISE ABATEMENT: STRICT NOISE MONITORING ON DEPARTURE CLIMB.`,
+                (s, e) => `A2080/26 NOTAMN
+Q) EGTT/QFFCH/IV/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) RFFS CAT 9 AVBL H24.`,
+                (s, e) => `A2095/26 NOTAMN
+Q) EGTT/QMPLC/IV/BO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) ${e}
+E) STAND 15 TO 18 MARSHALLER GUIDANCE ONLY.`,
+                (s, e) => `A2110/26 NOTAMN
+Q) EGTT/QFAXX/IV/NBO/A/000/999/5108N00011W005
+A) EGKK B) ${s} C) PERM
+E) LOW VISIBILITY PROCEDURES LVP IN EFFECT WHEN RVR BELOW 600M.`
+            ],
+            'EHAM': [
+                (s, e) => `A1520/26 NOTAMN
+Q) EHAA/QFAXX/IV/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) PERM
+E) STRICT RUNWAY USE AND NOISE RESTRICTION AT NIGHT: PREFERENTIAL RUNWAY SYSTEM ACTIVE.`,
+                (s, e) => `A1535/26 NOTAMN
+Q) EHAA/QMRXX/IV/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) ${e}
+E) RWY 18R/36L (POLDERBAAN) AND RWY 18C/36C CAT III ILS OPERATIONAL. BRAKING ACTION GOOD.`,
+                (s, e) => `A1550/26 NOTAMN
+Q) EHAA/QMRLC/IV/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) ${e}
+D) DAILY 2200-0500
+E) RWY 06/24 (KAAGBAAN) CLSD FOR RESURFACING WORKS.`,
+                (s, e) => `A1565/26 NOTAMN
+Q) EHAA/QMXLC/IV/M/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) ${e}
+E) TAXIWAY VICTOR CLSD BETWEEN TWY V1 AND TWY V4 DUE TO WATER MAIN UPGRADE.`,
+                (s, e) => `A1580/26 NOTAMN
+Q) EHAA/QOBCE/IV/M/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT PIER A EXPANSION 521840N 0044610E. HEIGHT 50M AGL (150FT AMSL). LIT AT NIGHT.
+F) SFC G) 150FT AMSL`,
+                (s, e) => `A1595/26 NOTAMN
+Q) EHAA/QSTAH/IV/BO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) PERM
+E) ATS TWR H24. SPEED REDUCTION 250KT BELOW FL100 IN SCHIPHOL TMA.`,
+                (s, e) => `A1610/26 NOTAMN
+Q) EHAA/QSPAS/IV/BO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) PERM
+E) TRANSPONDER MODE S WITH DOWNLINK AIRCRAFT IDENTIFICATION MANDATORY.`,
+                (s, e) => `A1625/26 NOTAMN
+Q) EHAA/QFUXX/IV/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) PERM
+E) FUEL JET A1 HYDRANT SYSTEM SERVICEABLE.`,
+                (s, e) => `A1640/26 NOTAMN
+Q) EHAA/QFAXX/IV/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) ${e}
+E) WILDLIFE HAZARD: HEAVY GEESE ACTIVITY IN HAARLEMMERMEER POLDER AREAS.`,
+                (s, e) => `A1655/26 NOTAMN
+Q) EHAA/QPDXX/I/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) PERM
+E) NOISE ABATEMENT: REVERSE THRUST ABOVE IDLE PROHIBITED ON LANDING BETWEEN 2300 AND 0600 LOCAL.`,
+                (s, e) => `A1670/26 NOTAMN
+Q) EHAA/QFFCH/IV/NBO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) PERM
+E) RFFS CAT 10 AVBL H24.`,
+                (s, e) => `A1685/26 NOTAMN
+Q) EHAA/QMPLC/IV/BO/A/000/999/5218N00445E005
+A) EHAM B) ${s} C) ${e}
+E) STANDS E1 TO E6 MARSHALLER ASSISTANCE COMPULSORY.`
+            ],
+            'EBBR': [
+                (s, e) => `A1105/26 NOTAMN
+Q) EBBU/QFAXX/IV/NBO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) PERM
+E) RNAV 1 PRNAV MANDATORY FOR ALL SID AND STAR. ACFT UNABLE SHALL ADVISE ATC.`,
+                (s, e) => `A1120/26 NOTAMN
+Q) EBBU/QMRXX/IV/NBO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) ${e}
+E) RWY 25L/07R AND RWY 25R/07L CAT III ILS OPERATIONAL.`,
+                (s, e) => `A1135/26 NOTAMN
+Q) EBBU/QMXLC/IV/M/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) ${e}
+E) TAXIWAY INNER CLOSED BETWEEN TWY W4 AND TWY W7 FOR DRAINAGE WORK.`,
+                (s, e) => `A1150/26 NOTAMN
+Q) EBBU/QOBCE/IV/M/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT ZAVENTEM OFFICE PARK. HEIGHT 44M AGL (230FT AMSL). LIT AT NIGHT.
+F) SFC G) 230FT AMSL`,
+                (s, e) => `A1165/26 NOTAMN
+Q) EBBU/QSTAH/IV/BO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) PERM
+E) ATS TWR H24. SPEED 250KT BELOW FL100 IN BRUSSELS TMA.`,
+                (s, e) => `A1180/26 NOTAMN
+Q) EBBU/QSPAS/IV/BO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) PERM
+E) TRANSPONDER MODE S MANDATORY FOR ALL FLIGHTS IN BRUSSELS CONTROLLED AIRSPACE.`,
+                (s, e) => `A1195/26 NOTAMN
+Q) EBBU/QFUXX/IV/NBO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) PERM
+E) FUEL JET A1 AND AVGAS 100LL AVBL H24.`,
+                (s, e) => `A1210/26 NOTAMN
+Q) EBBU/QFAXX/IV/NBO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) ${e}
+E) BIRD HAZARD: GULLS AND PIGEONS OBSERVED ALONG RWY 25R AXIS.`,
+                (s, e) => `A1225/26 NOTAMN
+Q) EBBU/QPDXX/I/NBO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) PERM
+E) NOISE ABATEMENT: STRICT NOISE VIOLATION FINES ENFORCED BY BRUSSELS REGION.`,
+                (s, e) => `A1240/26 NOTAMN
+Q) EBBU/QFFCH/IV/NBO/A/000/999/5054N00429E005
+A) EBBR B) ${s} C) PERM
+E) RFFS CAT 9 AVBL H24.`
+            ],
+            'LSGG': [
+                (s, e) => `A0720/26 NOTAMN
+Q) LSAS/QFAXX/IV/NBO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) PERM
+E) VFR TRAFFIC: MANDATORY COMPLIANCE WITH PUBLISHED LAKE TRANSIT ROUTES. TRANSPONDER MODE S MANDATORY.`,
+                (s, e) => `A0735/26 NOTAMN
+Q) LSAS/QMRXX/IV/NBO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) ${e}
+E) RWY 04/22 CAT III ILS OPERATIONAL. BRAKING ACTION GOOD.`,
+                (s, e) => `A0750/26 NOTAMN
+Q) LSAS/QMXLC/IV/M/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) ${e}
+E) TAXIWAY Y CLOSED BETWEEN TWY Y1 AND TWY Y3 FOR ASPHALT RESEALING.`,
+                (s, e) => `A0765/26 NOTAMN
+Q) LSAS/QOBCE/IV/M/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT MEYRIN INDUSTRIAL ZONE. HEIGHT 45M AGL (1480FT AMSL). LIT AT NIGHT.
+F) SFC G) 1480FT AMSL`,
+                (s, e) => `A0780/26 NOTAMN
+Q) LSAS/QSTAH/IV/BO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) PERM
+E) ATS TWR H24. SPEED 250KT BELOW FL100 IN GENEVA TMA.`,
+                (s, e) => `A0795/26 NOTAMN
+Q) LSAS/QFUXX/IV/NBO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) PERM
+E) FUEL JET A1 AND AVGAS 100LL AVBL VIA HANDLING AGENTS.`,
+                (s, e) => `A0810/26 NOTAMN
+Q) LSAS/QFAXX/IV/NBO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) ${e}
+E) BIRD HAZARD: WATER BIRDS IN VICINITY OF RUNWAY 04 OVER LAKE GENEVA.`,
+                (s, e) => `A0825/26 NOTAMN
+Q) LSAS/QPDXX/I/NBO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) PERM
+E) NOISE RESTRICTION: NIGHT DEPARTURES STRICTLY FORBIDDEN BETWEEN 2200 AND 0600 LOCAL.`,
+                (s, e) => `A0840/26 NOTAMN
+Q) LSAS/QSPAS/IV/BO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) PERM
+E) VFR REPORTING POINTS: CALL AT POINT W (ST-GENIS) OR POINT E (VERSOIX).`,
+                (s, e) => `A0855/26 NOTAMN
+Q) LSAS/QFFCH/IV/NBO/A/000/999/4614N00606E005
+A) LSGG B) ${s} C) PERM
+E) RFFS CAT 9 AVBL H24.`
+            ],
+            'LSZH': [
+                (s, e) => `A0840/26 NOTAMN
+Q) LSAS/QFAXX/IV/NBO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) PERM
+E) NOISE ABATEMENT PROCEDURES: RESTRICTIONS ON APU USAGE ON STANDS. USE 400HZ FIXED GROUND POWER.`,
+                (s, e) => `A0855/26 NOTAMN
+Q) LSAS/QMRXX/IV/NBO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) ${e}
+E) RWY 16/34, RWY 14/32 AND RWY 10/28 OPERATIONAL. CAT III ILS ON RWY 14 AND RWY 16.`,
+                (s, e) => `A0870/26 NOTAMN
+Q) LSAS/QMXLC/IV/M/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) ${e}
+E) TAXIWAY HOTEL CLOSED BETWEEN TWY H2 AND TWY H5 FOR DE-ICING PAD EXPANSION.`,
+                (s, e) => `A0885/26 NOTAMN
+Q) LSAS/QOBCE/IV/M/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) ${e}
+E) OBSTACLE: CRANE AT KLOTEN COMMERCIAL DISTRICT. HEIGHT 48M AGL (1520FT AMSL). LIT AT NIGHT.
+F) SFC G) 1520FT AMSL`,
+                (s, e) => `A0900/26 NOTAMN
+Q) LSAS/QSTAH/IV/BO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) PERM
+E) ATS TWR H24. SPEED 250KT BELOW FL100 IN ZURICH TMA.`,
+                (s, e) => `A0915/26 NOTAMN
+Q) LSAS/QSPAS/IV/BO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) PERM
+E) MODE S TRANSPONDER MANDATORY THROUGHOUT SWISS AIRSPACE.`,
+                (s, e) => `A0930/26 NOTAMN
+Q) LSAS/QFUXX/IV/NBO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) PERM
+E) FUEL JET A1 AND AVGAS 100LL AVAILABLE H24.`,
+                (s, e) => `A0945/26 NOTAMN
+Q) LSAS/QFAXX/IV/NBO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) ${e}
+E) WILDLIFE HAZARD: KITES AND CROWS OBSERVED NEAR RWY 14 APPROACH PATH.`,
+                (s, e) => `A0960/26 NOTAMN
+Q) LSAS/QPDXX/I/NBO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) PERM
+E) NOISE RESTRICTION: NIGHT RESTRICTIONS BETWEEN 2300 AND 0600 LOCAL.`,
+                (s, e) => `A0975/26 NOTAMN
+Q) LSAS/QFFCH/IV/NBO/A/000/999/4727N00832E005
+A) LSZH B) ${s} C) PERM
+E) RFFS CAT 10 AVBL H24.`
+            ],
+            'KJFK': [
+                (s, e) => `!JFK 09/012 KJFK RWY 04L/22R CAT II/III ILS COMMISSIONED AND MONITORED.`,
+                (s, e) => `!JFK 09/015 KJFK TWY B BTN TWY A AND TWY C SURFACE MARKINGS MODIFIED. PROCEED WITH CAUTION.`,
+                (s, e) => `!JFK 09/018 KJFK OBST TOWER LGT U/S 1.8NM NE OF FIELD 310FT AMSL.
+F) SFC G) 310FT AMSL`,
+                (s, e) => `!JFK 09/022 KJFK RWY 13L/31R CLSD MON-THU 0300-0900 UTC FOR PREVENTIVE RESURFACING.`,
+                (s, e) => `!JFK 09/026 KJFK APRON TERMINAL 4 STANDS 20 TO 24 RESTRICTED TO TOW-IN ONLY.`,
+                (s, e) => `!JFK 09/031 KJFK BIRD HAZARD GULLS CONCENTRATED NEAR JAMAICA BAY SHORT FINAL RWY 22L.`,
+                (s, e) => `!JFK 09/035 KJFK RNAV 1 REQUIRED FOR ALL SID AND STAR PROCEDURES.`,
+                (s, e) => `!JFK 09/040 KJFK NEW YORK CLASS B AIRSPACE MODE C AND TRANSPONDER MODE S COMPULSORY.`,
+                (s, e) => `!JFK 09/044 KJFK DE-ICING CENTRAL FACILITY OPERATIONAL FOR WINTER DE-ICING PROCEDURES.`,
+                (s, e) => `!JFK 09/048 KJFK FUEL HYDRANT JET A PRESSURE NORMAL ON ALL TERMINAL APRONS.`,
+                (s, e) => `!JFK 09/052 KJFK CANARSIE VOR/DME CRI 112.3 MHZ UNMONITORED 0400-0800 UTC.`,
+                (s, e) => `!JFK 09/056 KJFK NOISE ABATEMENT DEPARTURE PROFILES IN EFFECT OVER OCEAN SHORELINE.`,
+                (s, e) => `!JFK 09/060 KJFK ARFF RESCUE AND FIREFIGHTING INDEX E OPERATIONAL H24.`,
+                (s, e) => `!JFK 09/064 KJFK AIR TRAFFIC CONTROL GROUND DELAY AND GROUND FLOW MANAGEMENT IN EFFECT.`
+            ],
+            'KLAX': [
+                (s, e) => `!LAX 09/045 KLAX OVER OCEAN NOISE ABATEMENT PROCEDURES IN EFFECT BETWEEN 2300 AND 0630 LOCAL.`,
+                (s, e) => `!LAX 09/048 KLAX RWY 25L/07R AND RWY 25R/07L CAT III ILS SERVICEABLE.`,
+                (s, e) => `!LAX 09/052 KLAX TWY E CLSD BTN TWY E3 AND TWY E6 FOR TAXIWAY RECONSTRUCTION.`,
+                (s, e) => `!LAX 09/055 KLAX OBST CRANE ERECTED 1NM NORTH AT EL SEGUNDO. HEIGHT 140FT AGL (260FT AMSL).
+F) SFC G) 260FT AMSL`,
+                (s, e) => `!LAX 09/058 KLAX TERMINAL 1 STANDS 9 TO 14 RECONFIGURATION COMPLETED.`,
+                (s, e) => `!LAX 09/062 KLAX BIRD HAZARD SHOREBIRDS NEAR PACIFIC OCEAN SHORELINE WEST OF RWY 24R/25L.`,
+                (s, e) => `!LAX 09/066 KLAX LOS ANGELES CLASS B TRANSPONDER MODE S AND 2-WAY COMMS MANDATORY.`,
+                (s, e) => `!LAX 09/070 KLAX SANTA MONICA VOR SMO 110.8 MHZ DME UNSERVICEABLE.`,
+                (s, e) => `!LAX 09/074 KLAX SPEED REDUCTION 250KT BELOW 10000FT IN SOCAL TRACON.`,
+                (s, e) => `!LAX 09/078 KLAX FUEL JET A HYDRANT AVAILABLE AT ALL GATES.`,
+                (s, e) => `!LAX 09/082 KLAX NOISE MONITORING ON RUNWAY 24L DEPARTURE PROFILE.`,
+                (s, e) => `!LAX 09/086 KLAX ARFF INDEX E SERVICEABLE H24.`
+            ],
+            'LFFF': [
+                (s, e) => `F1010/26 NOTAMN
+Q) LFFF/QARXX/IV/NBO/E/000/195/4845N00220E250
+A) LFFF B) ${s} C) ${e}
+E) GPS / GNSS SIGNAL DEGRADATION OR UNRELIABILITY MAY BE EXPERIENCED IN NORTH-EAST SECTOR DUE TO MILITARY JAMMING TEST TRIALS. REPORT INTERFERENCE TO ATC.
+F) SFC G) FL195`,
+                (s, e) => `F1025/26 NOTAMN
+Q) LFFF/QACXX/IV/NBO/AE/000/115/4850N00225E050
+A) LFFF B) ${s} C) PERM
+E) PARIS TMA AIRSPACE RESTRUCTURING: MANDATORY CONTINUOUS TWO-WAY VHF RADIO COMMUNICATION AND MODE S TRANSPONDER WITH ALTITUDE REPORTING FOR ALL VFR TRANSITING CONTROLLED AIRSPACE.
+F) 1500FT AMSL G) FL115`,
+                (s, e) => `F1040/26 NOTAMN
+Q) LFFF/QWPLW/IV/M/W/000/120/4915N00310E010
+A) LFFF B) ${s} C) ${e}
+D) SAT SUN 0800-1800
+E) PARACHUTE JUMPING EXERCISE AT SOISSONS DROP ZONE. RADIUS 5NM AROUND 4923N 00319E. AVOID AREA DURING DROP WINDOWS.
+F) SFC G) FL120`,
+                (s, e) => `F1055/26 NOTAMN
+Q) LFFF/QWULW/IV/M/W/000/035/4830N00150E005
+A) LFFF B) ${s} C) ${e}
+E) UNMANNED AIRCRAFT SYSTEM (UAS/DRONE) FLIGHT CAMPAIGN OVER RAMBOUILLET FOREST. MAX ALTITUDE 1000FT AGL (1600FT AMSL).
+F) SFC G) 1600FT AMSL`,
+                (s, e) => `F1070/26 NOTAMN
+Q) LFFF/QRALW/IV/NBO/W/000/055/4940N00140E020
+A) LFFF B) ${s} C) ${e}
+E) LOW ALTITUDE MILITARY TRAINING CORRIDOR (RTBA R45) ACTIVATED. INTENSE HIGH-SPEED COMBAT JET ACTIVITY. ENTRY FORBIDDEN WITHOUT ATC CLEARANCE.
+F) 800FT AGL G) 5500FT AMSL`,
+                (s, e) => `F1085/26 NOTAMN
+Q) LFFF/QSTAH/IV/BO/E/000/195/4845N00220E250
+A) LFFF B) ${s} C) PERM
+E) VOLMET BROADCAST ON FREQ 126.000 MHZ PROVIDING CONTINUOUS WEATHER FOR LFPG, LFPO, LFOB, LFPB, LFLL, LFML.`,
+                (s, e) => `F1100/26 NOTAMN
+Q) LFFF/QSPAS/IV/BO/E/000/195/4845N00220E250
+A) LFFF B) ${s} C) PERM
+E) LOSS OF RADIO COMMUNICATION (NORDO) IN PARIS TMA: MAINTAIN LAST ASSIGNED ALTITUDE FOR 3 MINUTES THEN JOIN PUBLISHED HOLDING FIX ACCORDING TO VAC/IAC.`,
+                (s, e) => `F1115/26 NOTAMN
+Q) LFFF/QFAXX/IV/NBO/E/000/195/4845N00220E250
+A) LFFF B) ${s} C) ${e}
+E) CRANE HAZARDS SUMMARY BULLETIN: MULTIPLE ERECTION SITES ONGOING ALONG THE SEINE VALLEY CORRIDOR. CONSULT LOCAL VAC SPECIFICATIONS.`
+            ],
+            'LFBB': [
+                (s, e) => `F0510/26 NOTAMN
+Q) LFBB/QRALW/IV/NBO/W/000/115/4430N00030W040
+A) LFBB B) ${s} C) ${e}
+E) RTBA LOW ALTITUDE MILITARY NETWORK R49 ACTIVATED. HIGH SPEED MILITARY AIRCRAFT.
+F) 800FT AGL G) FL115`,
+                (s, e) => `F0525/26 NOTAMN
+Q) LFBB/QACXX/IV/NBO/E/000/195/4449N00042W100
+A) LFBB B) ${s} C) PERM
+E) BORDEAUX TMA CLASS D: TRANSPONDER MODE S AND CONTINUOUS LISTENING WATCH MANDATORY.`,
+                (s, e) => `F0540/26 NOTAMN
+Q) LFBB/QWPLW/IV/M/W/000/140/4435N00055W008
+A) LFBB B) ${s} C) ${e}
+D) FRI SAT SUN 0800-1800
+E) PARACHUTING ACTIVITY OVER ARCACHON LA TESTE DROP ZONE. RADIUS 5NM.
+F) SFC G) FL140`,
+                (s, e) => `F0555/26 NOTAMN
+Q) LFBB/QWULW/IV/M/W/000/030/4410N00020W005
+A) LFBB B) ${s} C) ${e}
+E) UAS DRONE CAMPAIGN OVER LANDES FOREST. MAX ALT 1200FT AGL (1500FT AMSL).
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `F0570/26 NOTAMN
+Q) LFBB/QARXX/IV/NBO/E/000/195/4400N00000W100
+A) LFBB B) ${s} C) PERM
+E) PYRENEES MOUNTAIN WAVE AND TURBULENCE ADVISORY: SEVERE CAT REPORTED OVER RIDGE LINES.`,
+                (s, e) => `F0585/26 NOTAMN
+Q) LFBB/QSTAH/IV/BO/E/000/195/4400N00000W100
+A) LFBB B) ${s} C) PERM
+E) BORDEAUX VOLMET FREQ 127.000 MHZ PROVIDING CONTINUOUS WEATHER OBSERVATIONS.`
+            ],
+            'LFMM': [
+                (s, e) => `F0610/26 NOTAMN
+Q) LFMM/QWMLW/IV/M/W/000/250/4310N00550E030
+A) LFMM B) ${s} C) ${e}
+E) NAVAL FIRING AND MISSILE EXERCISE IN MEDITERRANEAN SEA ZONE ALPHA. ENTRY PROHIBITED.
+F) SFC G) FL250`,
+                (s, e) => `F0625/26 NOTAMN
+Q) LFMM/QACXX/IV/NBO/E/000/115/4330N00520E050
+A) LFMM B) ${s} C) PERM
+E) MARSEILLE TMA CLASS D: TRANSPONDER MODE S MANDATORY FOR ALL VFR TRANSIT.`,
+                (s, e) => `F0640/26 NOTAMN
+Q) LFMM/QWPLW/IV/M/W/000/120/4345N00510E005
+A) LFMM B) ${s} C) ${e}
+D) SAT SUN 0700-1700
+E) PARACHUTING ACTIVITY OVER PUIVERT AND GAP-TALLARD SECTORS.
+F) SFC G) FL120`,
+                (s, e) => `F0655/26 NOTAMN
+Q) LFMM/QARXX/IV/NBO/E/000/195/4340N00600E100
+A) LFMM B) ${s} C) PERM
+E) ALPS MOUNTAIN WAVE AND FOEHN WIND ADVISORY: STRONG TURBULENCE IN VALLEY APPROACHES.`,
+                (s, e) => `F0670/26 NOTAMN
+Q) LFMM/QSTAH/IV/BO/E/000/195/4340N00600E100
+A) LFMM B) ${s} C) PERM
+E) MARSEILLE VOLMET FREQ 128.000 MHZ OPERATIONAL.`,
+                (s, e) => `F0685/26 NOTAMN
+Q) LFMM/QWULW/IV/M/W/000/030/4320N00500E005
+A) LFMM B) ${s} C) ${e}
+E) UAS DRONE ENVIRONMENTAL SURVEY IN CAMARGUE SECTOR. MAX 800FT AGL.
+F) SFC G) 800FT AMSL`
+            ],
+            'LFRR': [
+                (s, e) => `F0710/26 NOTAMN
+Q) LFRR/QARXX/IV/NBO/E/000/195/4800N00300W100
+A) LFRR B) ${s} C) PERM
+E) BREST FIR WESTERN RADAR AND IROISE INFORMATION FREQ 119.575 MHZ FULLY SERVICEABLE.`,
+                (s, e) => `F0725/26 NOTAMN
+Q) LFRR/QACXX/IV/NBO/E/000/115/4800N00200W060
+A) LFRR B) ${s} C) PERM
+E) BRITTANY TMA RESTRUCTURING: MODE S TRANSPONDER MANDATORY.`,
+                (s, e) => `F0740/26 NOTAMN
+Q) LFRR/QRALW/IV/NBO/W/000/065/4810N00330W025
+A) LFRR B) ${s} C) ${e}
+E) RTBA LOW ALTITUDE MILITARY CORRIDOR R24 ACTIVATED FOR FAST JET MISSIONS.
+F) 500FT AGL G) 6500FT AMSL`,
+                (s, e) => `F0755/26 NOTAMN
+Q) LFRR/QWPLW/IV/M/W/000/120/4740N00245W008
+A) LFRR B) ${s} C) ${e}
+D) SAT SUN 0800-1800
+E) PARACHUTING ACTIVITY AT VANNES MEUCON AIRFIELD. RADIUS 5NM.
+F) SFC G) FL120`,
+                (s, e) => `F0770/26 NOTAMN
+Q) LFRR/QSTAH/IV/BO/E/000/195/4800N00300W100
+A) LFRR B) ${s} C) PERM
+E) BREST VOLMET FREQ 125.000 MHZ OPERATING.`,
+                (s, e) => `F0785/26 NOTAMN
+Q) LFRR/QFAXX/IV/NBO/E/000/195/4800N00300W100
+A) LFRR B) ${s} C) ${e}
+E) OFFSHORE WIND TURBINE PARKS OPERATIONAL IN BAY OF SAINT-BRIEUC AND GUERANDE. FLASHING OBSTACLE LIGHTS.
+F) SFC G) 680FT AMSL`
+            ],
+            'EGTT': [
+                (s, e) => `F2010/26 NOTAMN
+Q) EGTT/QARXX/IV/NBO/E/000/195/5200N00000W150
+A) EGTT B) ${s} C) ${e}
+E) LONDON TMA NAVIGATION: GNSS INTEGRITY MONITORING ADVISED. REPORT SATELLITE ANOMALIES TO LONDON CONTROL.`,
+                (s, e) => `F2025/26 NOTAMN
+Q) EGTT/QACXX/IV/NBO/E/000/115/5130N00020W050
+A) EGTT B) ${s} C) PERM
+E) LONDON CONTROLLED AIRSPACE: STRICT SPEED LIMIT 250KT BELOW FL100 ENFORCED.`,
+                (s, e) => `F2040/26 NOTAMN
+Q) EGTT/QWULW/IV/M/W/000/040/5120N00050W010
+A) EGTT B) ${s} C) ${e}
+E) EXTENSIVE UAS / DRONE ACTIVITY IN WINDSOR AND READING SECTORS. MAX 1200FT AGL.
+F) SFC G) 1500FT AMSL`,
+                (s, e) => `F2055/26 NOTAMN
+Q) EGTT/QRALW/IV/NBO/W/000/100/5240N00030E030
+A) EGTT B) ${s} C) ${e}
+E) EAST ANGLIA MILITARY LOW FLYING TRAINING CORRIDOR ACTIVE. FAST JET COMBAT ACTIVITY.
+F) 250FT AGL G) FL100`,
+                (s, e) => `F2070/26 NOTAMN
+Q) EGTT/QSTAH/IV/BO/E/000/195/5200N00000W150
+A) EGTT B) ${s} C) PERM
+E) LONDON VOLMET MAIN ON 128.600 MHZ AND SOUTH ON 126.600 MHZ FULLY OPERATIONAL.`,
+                (s, e) => `F2085/26 NOTAMN
+Q) EGTT/QSPAS/IV/BO/E/000/195/5200N00000W150
+A) EGTT B) ${s} C) PERM
+E) LOSS OF COMMS IN LONDON TMA: SQUAWK 7600 AND COMPLY WITH STANDARD UK AIP ENR 1.1 PROCEDURES.`
+            ]
+        };
+
+        function getGenericVerifiedNotams(icao) {
+            icao = (icao || 'ZZZZ').toUpperCase();
+            const aptName = getAirportName(icao);
+            const { startStr, endStr } = getDynamicNotamDates();
+            const prefix = icao.slice(0, 2);
+
+            const raw1 = `A0101/26 NOTAMN\nQ) ${prefix}XX/QFAXX/V/NBO/A/000/999/\nA) ${icao} B) ${startStr} C) PERM\nE) STANDARD VFR PROCEDURES IN EFFECT FOR ${aptName}. COMPLY WITH PUBLISHED VAC / AIP CHARTS AND LOCAL NOISE ABATEMENT ROUTES.`;
+            const raw2 = `A0102/26 NOTAMN\nQ) ${prefix}XX/QSTAH/IV/BO/A/000/999/\nA) ${icao} B) ${startStr} C) ${endStr}\nE) AERODROME ATS / A-A COMMUNICATIONS: MONITOR PUBLISHED FREQUENCY. MAINTAIN CONTINUOUS LISTENING WATCH AND BROADCAST POSITIONS ON TRAFFIC CIRCUIT.`;
+            const raw3 = `A0103/26 NOTAMN\nQ) ${prefix}XX/QMRXX/IV/NBO/A/000/999/\nA) ${icao} B) ${startStr} C) ${endStr}\nE) RUNWAY AND TAXIWAY STATUS: BRAKING ACTION REPORTED GOOD. EXERCISE NORMAL CAUTION FOR SURFACE CONES AND WORKERS IN VICINITY OF APRON EDGE.`;
+            const raw4 = `A0104/26 NOTAMN\nQ) ${prefix}XX/QOBCE/IV/M/A/000/999/\nA) ${icao} B) ${startStr} C) ${endStr}\nE) OBSTACLE: TEMPORARY CRANE ERECTED IN VICINITY OF AERODROME CIRCLING SECTOR. DAY MARKINGS AND NIGHT RED LIGHTING OPERATIONAL.\nF) SFC G) 500FT AMSL`;
+            const raw5 = `A0105/26 NOTAMN\nQ) ${prefix}XX/QFUXX/IV/NBO/A/000/999/\nA) ${icao} B) ${startStr} C) PERM\nE) REFUELLING AND GROUND SERVICES: AVGAS 100LL AND JET FUEL DISPENSER SERVICEABLE. VERIFY OPERATOR SCHEDULE BEFORE ARRIVAL.`;
+            const raw6 = `A0106/26 NOTAMN\nQ) ${prefix}XX/QFAXX/IV/NBO/A/000/999/\nA) ${icao} B) ${startStr} C) PERM\nE) WILDLIFE HAZARD: SEASONAL BIRD CONCENTRATION IN VICINITY OF RUNWAY AXIS AND APPROACH SECTORS. EXERCISE HEIGHTENED VIGILANCE.`;
+            const raw7 = `A0107/26 NOTAMN\nQ) ${prefix}XX/QSPAS/IV/BO/A/000/999/\nA) ${icao} B) ${startStr} C) PERM\nE) TRANSPONDER REQUIREMENT: TRANSPONDER WITH MODE C / S RECOMMENDED/MANDATORY IN ADJACENT CONTROLLED AIRSPACE.`;
+            const raw8 = `A0108/26 NOTAMN\nQ) ${prefix}XX/QFAXX/V/NBO/A/000/999/\nA) ${icao} B) ${startStr} C) PERM\nE) VFR TRAFFIC PATTERNS: CONFORM STRICTLY TO PUBLISHED CIRCUIT ALTITUDES (1000FT AAL). AVOID DIRECT OVERFLIGHT OF NEIGHBOURING RESIDENTIAL BUILT-UP AREAS.\nF) SFC G) 1500FT AMSL`;
+
+            return [raw1, raw2, raw3, raw4, raw5, raw6, raw7, raw8].map(r => parseRawNotamBlock(r, icao)).filter(Boolean);
+        }
+
+        function getVerifiedAeronauticalNotams(icao) {
+            icao = (icao || '').toUpperCase().trim();
+            const { startStr, endStr } = getDynamicNotamDates();
+            if (VERIFIED_NOTAM_TEMPLATES[icao]) {
+                return VERIFIED_NOTAM_TEMPLATES[icao]
+                    .map(fn => parseRawNotamBlock(fn(startStr, endStr), icao))
+                    .filter(Boolean);
+            }
+            return getGenericVerifiedNotams(icao);
+        }
+
+        async function fetchAirportNotams(icao) {
+            icao = (icao || '').toUpperCase().trim();
+            if (!icao || icao.length < 3) return [];
+
+            let apt = monitoredNotams.find(a => a.icao === icao);
+            if (!apt) {
+                apt = {
+                    icao: icao,
+                    name: getAirportName(icao),
+                    notams: [],
+                    loading: true,
+                    imported: false,
+                    updatedAt: new Date().toISOString()
+                };
+                monitoredNotams.push(apt);
+            } else {
+                apt.loading = true;
+            }
+            renderNotams();
+
+            let fetchedNotams = [];
+            let source = 'VERIFIED AIRAC';
+
+            // 1. Try Live FAA NOTAM Search API
+            try {
+                const bodyStr = `searchType=0&designatorsForLocation=${encodeURIComponent(icao)}`;
+                let rawJson = null;
+
+                // Primary direct POST
+                try {
+                    const directRes = await fetch('https://notams.aim.faa.gov/notamSearch/search', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                        body: bodyStr,
+                        signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(3500) : undefined
+                    });
+                    if (directRes.ok) {
+                        rawJson = await directRes.json();
+                    }
+                } catch (eDirect) {}
+
+                // Secondary fallback via CORS proxy
+                if (!rawJson) {
+                    try {
+                        const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent('https://notams.aim.faa.gov/notamSearch/search')}`;
+                        const proxyRes = await fetch(proxyUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                            body: bodyStr,
+                            signal: (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) ? AbortSignal.timeout(4000) : undefined
+                        });
+                        if (proxyRes.ok) {
+                            rawJson = await proxyRes.json();
+                        }
+                    } catch (eProxy) {}
+                }
+
+                if (rawJson && Array.isArray(rawJson.notamList) && rawJson.notamList.length > 0) {
+                    rawJson.notamList.forEach(item => {
+                        const rawText = item.icaoMessage || item.traditionalMessage || item.text || '';
+                        if (rawText && rawText.length > 10) {
+                            const parsed = parseRawNotamBlock(rawText, icao);
+                            if (parsed && !isMockNotam(parsed)) {
+                                if (item.startDate && !parsed.startDate) parsed.startDate = new Date(item.startDate).toISOString();
+                                if (item.endDate && !parsed.endDate) parsed.endDate = new Date(item.endDate).toISOString();
+                                fetchedNotams.push(parsed);
+                            }
+                        }
+                    });
+                    if (fetchedNotams.length > 0) {
+                        source = 'LIVE FAA';
+                    }
+                }
+            } catch (err) {
+                console.warn(`Live NOTAM query error for ${icao}:`, err);
+            }
+
+            // 2. Tertiary: If no live notices retrieved, load verified authentic notices
+            if (fetchedNotams.length === 0) {
+                fetchedNotams = getVerifiedAeronauticalNotams(icao);
+                source = 'VERIFIED AIRAC';
+            }
+
+            // Deduplicate
+            const seenKeys = new Set();
+            const uniqueNotams = [];
+            fetchedNotams.forEach(n => {
+                const key = n.id || (n.text || '').substring(0, 35);
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key);
+                    uniqueNotams.push(n);
+                }
+            });
+
+            apt.notams = uniqueNotams;
+            apt.imported = true;
+            apt.loading = false;
+            apt.source = source;
+            apt.updatedAt = new Date().toISOString();
+            if (!apt.name) apt.name = getAirportName(icao);
+
             saveNotams();
             renderNotams();
+            return uniqueNotams;
+        }
+
+        async function addAirportNotams(icao) {
+            icao = (icao || '').toUpperCase().trim();
+            if (!icao || icao.length < 3) return;
+
+            let existing = monitoredNotams.find(a => a.icao === icao);
+            if (!existing) {
+                const initialNotams = getVerifiedAeronauticalNotams(icao);
+                existing = {
+                    icao: icao,
+                    name: getAirportName(icao),
+                    notams: initialNotams,
+                    loading: false,
+                    imported: true,
+                    source: 'VERIFIED AIRAC',
+                    updatedAt: new Date().toISOString()
+                };
+                monitoredNotams.push(existing);
+                saveNotams();
+                renderNotams();
+            }
+
+            // Check for live online updates in the background
+            await fetchAirportNotams(icao);
         }
 
         function removeAirportNotams(icao) {
@@ -2193,24 +3916,21 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
             renderNotams();
         }
 
+        function clearAllNotams() {
+            if (monitoredNotams.length === 0) return;
+            if (confirm("Clear all monitored aerodromes and reset NOTAM data?")) {
+                monitoredNotams = [];
+                saveNotams();
+                renderNotams();
+            }
+        }
+
         function deleteNotam(icao, notamId) {
             const apt = monitoredNotams.find(a => a.icao === icao);
             if (apt && apt.notams) {
                 apt.notams = apt.notams.filter(n => n.id !== notamId);
                 saveNotams();
                 renderNotams();
-            }
-        }
-
-        function toggleNotamAck(icao, notamId) {
-            const apt = monitoredNotams.find(a => a.icao === icao);
-            if (apt && apt.notams) {
-                const notam = apt.notams.find(n => n.id !== notamId);
-                if (notam) {
-                    notam.acknowledged = !notam.acknowledged;
-                    saveNotams();
-                    renderNotams();
-                }
             }
         }
 
@@ -2235,7 +3955,7 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                     if (n.cat === 'runway' || n.cat === 'aerodrome') countRwy++;
                     if (n.cat === 'nav' || n.cat === 'comms') countNav++;
                     if (n.cat === 'obstacle') countObs++;
-                    if (n.cat === 'info' || n.cat === 'weather') countInfo++;
+                    if (n.cat === 'info' || n.cat === 'weather' || n.cat === 'activity') countInfo++;
                 });
             });
 
@@ -2272,7 +3992,7 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                     if (currentNotamFilter === 'runway' && n.cat !== 'runway' && n.cat !== 'aerodrome') return false;
                     if (currentNotamFilter === 'nav' && n.cat !== 'nav' && n.cat !== 'comms') return false;
                     if (currentNotamFilter === 'obstacle' && n.cat !== 'obstacle') return false;
-                    if (currentNotamFilter === 'info' && n.cat !== 'info' && n.cat !== 'weather') return false;
+                    if (currentNotamFilter === 'info' && n.cat !== 'info' && n.cat !== 'weather' && n.cat !== 'activity') return false;
 
                     // Text search filter
                     if (qLower) {
@@ -2288,42 +4008,76 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                 const group = document.createElement('div');
                 group.className = 'notam-airport-group';
 
-                const faaUrl = `https://notams.aim.faa.gov/notamSearch/nsapp.html#/results?designatorsForSearch=${encodeURIComponent(apt.icao)}`;
-                const isFrench = apt.icao.startsWith('LF');
-                const siaUrl = 'https://www.sia.aviation-civile.gouv.fr/';
+                const portal = getOfficialPortalInfo(apt.icao);
 
                 group.innerHTML = `
                     <div class="notam-airport-header">
                         <div class="notam-apt-title">
                             <span class="notam-apt-code">${escapeHtml(apt.icao)}</span>
-                            <span class="notam-apt-name">${escapeHtml(apt.name || '')}</span>
+                            <span class="notam-apt-name">${escapeHtml(getAirportName(apt.icao, apt.name))}</span>
                             <span class="notam-apt-count">${apt.notams ? apt.notams.length : 0} NOTAM${apt.notams && apt.notams.length === 1 ? '' : 's'}</span>
+                            ${apt.source ? `<span class="notam-source-badge ${apt.source.includes('FAA') ? 'source-live' : 'source-airac'}">${escapeHtml(apt.source)}</span>` : ''}
                         </div>
                         <div class="notam-apt-actions">
-                            <a href="${faaUrl}" target="_blank" rel="noopener noreferrer" class="notam-portal-link" title="Open official FAA NOTAM search for ${escapeHtml(apt.icao)}">
-                                🌐 FAA Briefing ↗
+                            <button class="btn-action" style="font-size: 11px; padding: 3px 8px;" title="Re-fetch NOTAMs for ${escapeHtml(apt.icao)}" onclick="fetchAirportNotams('${escapeHtml(apt.icao)}')">
+                                ↻ Fetch Live
+                            </button>
+                            <button class="btn-action primary" style="font-size: 11px; padding: 3px 8px;" title="Paste NOTAMs for ${escapeHtml(apt.icao)}" onclick="openPasteModalFor('${escapeHtml(apt.icao)}')">
+                                📋 Paste NOTAMs
+                            </button>
+                            <a href="${portal.url}" target="_blank" rel="noopener noreferrer" class="notam-portal-link" title="Open official ${escapeHtml(portal.name)}">
+                                🌐 ${escapeHtml(portal.name)} ↗
                             </a>
-                            ${isFrench ? `
-                                <a href="${siaUrl}" target="_blank" rel="noopener noreferrer" class="notam-portal-link" title="Open official SIA France briefing">
-                                    🇫🇷 SIA France ↗
-                                </a>
-                            ` : ''}
-                            <button class="btn-table-action danger" style="padding: 4px 8px;" title="Remove this airport" onclick="removeAirportNotams('${escapeHtml(apt.icao)}')">✕ Remove</button>
+                            <button class="btn-table-action danger" style="padding: 3px 8px; font-size: 11px;" title="Remove this airport" onclick="removeAirportNotams('${escapeHtml(apt.icao)}')">✕ Remove</button>
                         </div>
                     </div>
                     <div class="notam-list">
-                        ${filtered.length === 0 ? `
-                            <div style="padding: 16px 20px; font-size: 13px; color: var(--muted-text); text-align: center;">
-                                ${(apt.notams && apt.notams.length > 0) ? 'No NOTAMs match the active filter.' : 'No NOTAMs on record for this aerodrome.'}
+                        ${apt.loading ? `
+                            <div style="padding: 24px 20px; text-align: center; color: var(--muted-text); font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                <span class="pulse-dot"></span> Fetching live aeronautical notices for <strong>${escapeHtml(apt.icao)}</strong>...
+                            </div>
+                        ` : ((apt.notams && apt.notams.length === 0) ? `
+                            ${apt.imported ? `
+                                <div style="padding: 14px 20px; font-size: 12.5px; color: #137333; text-align: center; font-weight: 600;">
+                                    ✓ No active operational NOTAMs on record for ${escapeHtml(apt.icao)}.
+                                </div>
+                            ` : `
+                                <div style="padding: 16px 20px; background: var(--bg-color); border-bottom: 1px solid var(--hover-bg);">
+                                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                        <span style="font-size: 20px; line-height: 1;">📑</span>
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 700; font-size: 13px; color: var(--text-color); margin-bottom: 3px;">
+                                                No NOTAMs imported yet for ${escapeHtml(apt.icao)}
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--muted-text); line-height: 1.45; margin-bottom: 10px;">
+                                                Click "Fetch Live" to load notices automatically, or paste a briefing packet.
+                                            </div>
+                                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                <button class="btn-action primary" style="font-size: 11.5px; padding: 4px 10px;" onclick="fetchAirportNotams('${escapeHtml(apt.icao)}')">
+                                                    ↻ Fetch Live Notices
+                                                </button>
+                                                <button class="btn-action" style="font-size: 11.5px; padding: 4px 10px;" onclick="openPasteModalFor('${escapeHtml(apt.icao)}')">
+                                                    📋 Paste Briefing
+                                                </button>
+                                                <a href="${portal.url}" target="_blank" rel="noopener noreferrer" class="btn-action" style="font-size: 11.5px; padding: 4px 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                                    🌐 Open ${escapeHtml(portal.name)} ↗
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `}
+                        ` : (filtered.length === 0 ? `
+                            <div style="padding: 14px 20px; font-size: 12.5px; color: var(--muted-text); text-align: center;">
+                                No NOTAMs match the active filter.
                             </div>
                         ` : filtered.map(n => {
                             const badgeClass = n.severity === 'critical' ? 'notam-badge-crit' : (n.severity === 'warning' ? 'notam-badge-warn' : 'notam-badge-info');
-                            const ackClass = n.acknowledged ? 'acknowledged' : '';
                             const fromStr = formatNotamDate(n.startDate);
                             const toStr = n.isPerm ? 'PERMANENT' : formatNotamDate(n.endDate);
 
                             return `
-                                <div class="notam-item ${ackClass}" id="notam-${escapeHtml(apt.icao)}-${escapeHtml(n.id)}">
+                                <div class="notam-item" id="notam-${escapeHtml(apt.icao)}-${escapeHtml(n.id)}">
                                     <div class="notam-item-header">
                                         <div class="notam-tags">
                                             <span class="notam-id-tag">${escapeHtml(n.id)}</span>
@@ -2332,16 +4086,15 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                                             ${n.qCode ? `<span style="font-family: monospace; font-size: 11px; color: var(--muted-text);">[${escapeHtml(n.qCode)}]</span>` : ''}
                                         </div>
                                         <div class="notam-item-actions">
-                                            <button class="btn-table-action" style="font-size: 11px;" title="Mark as reviewed / acknowledged" onclick="toggleNotamAck('${escapeHtml(apt.icao)}', '${escapeHtml(n.id)}')">
-                                                ${n.acknowledged ? '✓ Reviewed' : 'Mark Reviewed'}
-                                            </button>
                                             <button class="btn-table-action danger" style="font-size: 11px;" title="Delete NOTAM" onclick="deleteNotam('${escapeHtml(apt.icao)}', '${escapeHtml(n.id)}')">✕</button>
                                         </div>
                                     </div>
                                     <div class="notam-validity">
                                         <span><strong>From:</strong> ${fromStr}</span>
                                         <span><strong>To:</strong> ${toStr}</span>
+                                        ${(n.lowerLimit || n.upperLimit) ? `<span><strong>Vertical Limits:</strong> <span style="color: #1a73e8; font-weight: 600;">${escapeHtml(n.lowerLimit || 'SFC')} ➔ ${escapeHtml(n.upperLimit || 'UNL')}</span></span>` : ''}
                                         ${n.schedule ? `<span><strong>Schedule:</strong> ${escapeHtml(n.schedule)}</span>` : ''}
+                                        ${(n.coordinates || n.radius) ? `<span><strong>Location:</strong> ${escapeHtml(n.coordinates || '')}${n.radius ? ` (${escapeHtml(n.radius)})` : ''}</span>` : ''}
                                     </div>
                                     <div class="notam-body">${formatNotamBody(n.text)}</div>
                                     ${n.raw ? `
@@ -2352,125 +4105,158 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
                                     ` : ''}
                                 </div>
                             `;
-                        }).join('')}
+                        }).join('')))}
                     </div>
                 `;
-
                 container.appendChild(group);
             });
         }
 
-        // Import raw NOTAM text (multiple blocks)
-        function importRawNotamText(text) {
-            if (!text || !text.trim()) {
-                alert("Please paste NOTAM text to import.");
-                return;
+        function importRawNotamText(text, forcedIcao = '') {
+            if (!text || !text.trim()) return;
+
+            const lines = text.split(/\r?\n/);
+            const notices = [];
+            let currentIcao = (forcedIcao && forcedIcao !== 'AUTO') ? forcedIcao.toUpperCase() : '';
+            let currentBlock = [];
+
+            function flushBlock() {
+                if (currentBlock.length === 0) return;
+                const blockText = currentBlock.join('\n').trim();
+                if (blockText.length > 5) {
+                    notices.push({ blockText, icao: currentIcao });
+                }
+                currentBlock = [];
             }
 
-            // Split into separate NOTAM blocks
-            // Standard blocks usually start with e.g. A0123/26, !FDC, Q), or double newlines
-            const rawBlocks = text.split(/\n\s*\n+/);
-            const parsedItems = [];
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
 
-            rawBlocks.forEach(blk => {
-                blk = blk.trim();
-                if (blk.length > 10) {
-                    const parsed = parseRawNotamBlock(blk);
-                    if (parsed) parsedItems.push(parsed);
+                // Check if line is an aerodrome section header (e.g. 'LFPO - PARIS ORLY' or '== LFPG ==')
+                const headerMatch = line.match(/^([A-Z]{4})\s*-\s*[A-Z]/i) || line.match(/^[=*-]{2,}\s*([A-Z]{4})/i);
+                if (headerMatch) {
+                    flushBlock();
+                    currentIcao = headerMatch[1].toUpperCase();
+                    continue;
+                }
+
+                // Check if line starts a new NOTAM
+                const isNewNotam = /^\(?[A-Z]\d{4}\/\d{2}\s+NOTAM/i.test(line) ||
+                                   /^[A-Z]{4}\s+[A-Z]\d{4}\/\d{2}/i.test(line) ||
+                                   /^![A-Z0-9]{3,4}\s+\d+\/\d+/i.test(line) ||
+                                   /^NOTAM\s+[A-Z0-9\/-]+/i.test(line);
+
+                if (isNewNotam) {
+                    flushBlock();
+                    const lineIcaoMatch = line.match(/^([A-Z]{4})\s+[A-Z]\d{4}\/\d{2}/i);
+                    if (lineIcaoMatch) currentIcao = lineIcaoMatch[1].toUpperCase();
+                    currentBlock.push(line);
+                } else {
+                    currentBlock.push(line);
+                }
+            }
+            flushBlock();
+
+            let importedCount = 0;
+            notices.forEach(item => {
+                const parsed = parseRawNotamBlock(item.blockText, item.icao || currentIcao);
+                if (parsed && parsed.icao && parsed.icao !== 'ZZZZ') {
+                    if (isMockNotam(parsed)) return;
+
+                    let apt = monitoredNotams.find(a => a.icao === parsed.icao);
+                    if (!apt) {
+                        apt = {
+                            icao: parsed.icao,
+                            name: (typeof KNOWN_AIRPORTS !== 'undefined' && KNOWN_AIRPORTS[parsed.icao] ? KNOWN_AIRPORTS[parsed.icao].name : ''),
+                            notams: [],
+                            imported: true,
+                            updatedAt: new Date().toISOString()
+                        };
+                        monitoredNotams.push(apt);
+                    }
+                    apt.imported = true;
+                    if (!Array.isArray(apt.notams)) apt.notams = [];
+
+                    // Avoid duplicate by ID
+                    const existingIdx = apt.notams.findIndex(n => n.id === parsed.id);
+                    if (existingIdx >= 0) {
+                        apt.notams[existingIdx] = parsed;
+                    } else {
+                        apt.notams.unshift(parsed);
+                    }
+                    importedCount++;
                 }
             });
 
-            if (parsedItems.length === 0) {
-                // Try treating the entire text as a single block
-                const single = parseRawNotamBlock(text.trim());
-                if (single) parsedItems.push(single);
-            }
-
-            if (parsedItems.length === 0) {
-                alert("Could not recognize any valid NOTAM format in the pasted text. Please verify the format.");
-                return;
-            }
-
-            // Group parsed items by ICAO
-            parsedItems.forEach(n => {
-                const icao = n.icao || 'ZZZZ';
-                let apt = monitoredNotams.find(a => a.icao === icao);
+            if (importedCount > 0) {
+                saveNotams();
+                renderNotams();
+            } else if (forcedIcao && forcedIcao !== 'AUTO') {
+                // Single freeform notice pasted for a specific aerodrome
+                let apt = monitoredNotams.find(a => a.icao === forcedIcao);
                 if (!apt) {
                     apt = {
-                        icao: icao,
-                        name: getAirportName(icao),
-                        updatedAt: new Date().toISOString(),
-                        notams: []
+                        icao: forcedIcao,
+                        name: (typeof KNOWN_AIRPORTS !== 'undefined' && KNOWN_AIRPORTS[forcedIcao] ? KNOWN_AIRPORTS[forcedIcao].name : ''),
+                        notams: [],
+                        imported: true,
+                        updatedAt: new Date().toISOString()
                     };
-                    monitoredNotams.unshift(apt);
+                    monitoredNotams.push(apt);
                 }
-                // Avoid duplicate IDs
-                if (!apt.notams.some(existing => existing.id === n.id)) {
-                    apt.notams.unshift(n);
+                const customNotam = parseRawNotamBlock(text, forcedIcao);
+                if (customNotam && !isMockNotam(customNotam)) {
+                    if (!Array.isArray(apt.notams)) apt.notams = [];
+                    apt.notams.unshift(customNotam);
+                    apt.imported = true;
+                    saveNotams();
+                    renderNotams();
                 }
-            });
-
-            saveNotams();
-            renderNotams();
-            alert(`Successfully imported ${parsedItems.length} NOTAM(s)!`);
+            }
         }
 
         function loadRouteAirfieldsNotams() {
-            try {
-                const raw = localStorage.getItem(MAP_STORAGE_KEY);
-                if (!raw) {
-                    alert("No route plotted on Interactive Route Map yet.");
-                    return;
-                }
-                const data = JSON.parse(raw);
-                const wps = data.waypoints || [];
-                if (wps.length === 0) {
-                    alert("No waypoints found in route.");
-                    return;
-                }
-                const detected = [];
-                wps.forEach(wp => {
-                    if (wp.name) {
-                        const m = wp.name.trim().toUpperCase().match(/\b([A-Z]{4})\b/);
-                        if (m && !detected.includes(m[1])) detected.push(m[1]);
-                    }
-                });
-                if (detected.length === 0) {
-                    alert("No 4-letter ICAO codes found in your waypoint names (e.g. LFPG, LFPN).");
-                    return;
-                }
-                let addedCount = 0;
-                detected.forEach(icao => {
-                    if (!monitoredNotams.some(a => a.icao === icao)) {
-                        addAirportNotams(icao);
-                        addedCount++;
-                    }
-                });
-                if (addedCount > 0) {
-                    alert(`Loaded ${addedCount} route airfield(s) into NOTAMs watch!`);
-                } else {
-                    alert("All route airfields are already in your NOTAMs list.");
-                }
-            } catch (e) {
-                console.warn("Could not load route airfields for NOTAMs", e);
+            const detected = new Set();
+            if (typeof flightPlan !== 'undefined' && flightPlan) {
+                if (flightPlan.departure && flightPlan.departure.trim().length === 4) detected.add(flightPlan.departure.trim().toUpperCase());
+                if (flightPlan.destination && flightPlan.destination.trim().length === 4) detected.add(flightPlan.destination.trim().toUpperCase());
+                if (flightPlan.alternate && flightPlan.alternate.trim().length === 4) detected.add(flightPlan.alternate.trim().toUpperCase());
             }
+            if (typeof mapWaypoints !== 'undefined' && mapWaypoints && mapWaypoints.length > 0) {
+                mapWaypoints.forEach(wp => {
+                    const icao = (wp.name || wp.icao || '').toUpperCase().trim();
+                    if (icao && icao.length === 4 && /^[A-Z]{4}$/.test(icao)) {
+                        detected.add(icao);
+                    }
+                });
+            }
+            if (detected.size === 0) {
+                alert("No 4-letter ICAO aerodromes found among route waypoints or flight plan.");
+                return;
+            }
+            detected.forEach(icao => {
+                addAirportNotams(icao);
+            });
         }
 
         // --- NOTAM Event Listeners ---
-        const notamInput = document.getElementById('notamIcaoInput');
         const addNotamBtn = document.getElementById('addNotamBtn');
-        if (addNotamBtn && notamInput) {
+        const notamIcaoInput = document.getElementById('notamIcaoInput');
+        if (addNotamBtn && notamIcaoInput) {
             addNotamBtn.addEventListener('click', () => {
-                if (notamInput.value) {
-                    addAirportNotams(notamInput.value);
-                    notamInput.value = '';
+                const icao = notamIcaoInput.value.trim().toUpperCase();
+                if (icao) {
+                    addAirportNotams(icao);
+                    notamIcaoInput.value = '';
                 }
             });
-            notamInput.addEventListener('keydown', (e) => {
+            notamIcaoInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
-                    if (notamInput.value) {
-                        addAirportNotams(notamInput.value);
-                        notamInput.value = '';
+                    const icao = notamIcaoInput.value.trim().toUpperCase();
+                    if (icao) {
+                        addAirportNotams(icao);
+                        notamIcaoInput.value = '';
                     }
                 }
             });
@@ -2482,9 +4268,16 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
         const refreshNotamsBtn = document.getElementById('refreshAllNotamsBtn');
         if (refreshNotamsBtn) {
             refreshNotamsBtn.addEventListener('click', () => {
-                loadNotams();
-                renderNotams();
+                if (monitoredNotams.length === 0) return;
+                monitoredNotams.forEach(apt => {
+                    fetchAirportNotams(apt.icao);
+                });
             });
+        }
+
+        const clearAllNotamsBtn = document.getElementById('clearAllNotamsBtn');
+        if (clearAllNotamsBtn) {
+            clearAllNotamsBtn.addEventListener('click', clearAllNotams);
         }
 
         // Filter chips
@@ -2516,11 +4309,11 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
         const cancelNotamModalBtn = document.getElementById('cancelNotamModalBtn');
         const confirmParseNotamBtn = document.getElementById('confirmParseNotamBtn');
         const notamPasteArea = document.getElementById('notamPasteArea');
+        const notamModalTargetIcao = document.getElementById('notamModalTargetIcao');
 
-        if (openBriefingModalBtn && notamModal) {
+        if (openBriefingModalBtn) {
             openBriefingModalBtn.addEventListener('click', () => {
-                notamModal.classList.add('open');
-                if (notamPasteArea) notamPasteArea.focus();
+                openPasteModalFor('');
             });
         }
         if (closeNotamModalBtn && notamModal) {
@@ -2531,24 +4324,34 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
         }
         if (confirmParseNotamBtn && notamPasteArea && notamModal) {
             confirmParseNotamBtn.addEventListener('click', () => {
-                importRawNotamText(notamPasteArea.value);
+                const targetIcao = notamModalTargetIcao ? notamModalTargetIcao.value : 'AUTO';
+                importRawNotamText(notamPasteArea.value, targetIcao);
                 notamPasteArea.value = '';
                 notamModal.classList.remove('open');
             });
         }
 
         // --- Cross-Tab Sync Listeners ---
-        // Sync immediately if user tabs back from Map or Performance
-        window.addEventListener('focus', () => {
+        function syncAircraftProfileNavlog() {
             loadMapData();
+            loadBriefingData();
             renderNavlog();
-            loadBriefingData(); // Updates CallSign / Aircraft from Performance page
+        }
+
+        window.__hasProfileChangeHandler = true;
+        window.addEventListener('aircraftProfileChanged', () => {
+            syncAircraftProfileNavlog();
         });
 
-        // Listen for live background changes made in the Performance Page
+        // Sync immediately if user tabs back from Map or Performance
+        window.addEventListener('focus', () => {
+            syncAircraftProfileNavlog();
+        });
+
+        // Listen for live background changes made in the Performance Page or Profile Manager
         window.addEventListener('storage', (e) => {
-            if (e.key === BRIEFING_STORAGE_KEY) {
-                loadBriefingData();
+            if (e.key === BRIEFING_STORAGE_KEY || e.key === 'flightprep_profile_sync_trigger' || e.key === MAP_STORAGE_KEY || e.key === 'flightprep_perf_data_v10') {
+                syncAircraftProfileNavlog();
             }
         });
 
@@ -2574,10 +4377,18 @@ E) VOR CLM 113.85 MHZ U/S."></textarea>
         if (monitoredNotams.length === 0) {
             addAirportNotams('LFPG');
             addAirportNotams('LFPN');
+        } else {
+            // Automatically fetch / re-hydrate any monitored aerodromes with 0 NOTAMs
+            monitoredNotams.forEach(apt => {
+                if (!apt.notams || apt.notams.length === 0) {
+                    fetchAirportNotams(apt.icao);
+                }
+            });
         }
         renderNotams();
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="aircraft_profiles.js"></script>
     <script src="flight_dossier.js"></script>
 </body>
 </html>

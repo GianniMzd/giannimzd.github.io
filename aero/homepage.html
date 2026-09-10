@@ -370,6 +370,12 @@
             <a href="checklists.html">Checklists</a>
             <a href="emergency.html">Emergency Procedures</a>
             
+            <!-- AIRCRAFT PROFILE MANAGER BUTTON -->
+            <div style="padding: 0 16px; margin: 12px 0 6px 0;">
+                <button type="button" onclick="AircraftProfiles.openModal()" style="width: 100%; padding: 10px 12px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 4px; background: var(--accent-green, #188038); color: #fff; border: 2px solid var(--border-color);" title="Import, export, or select aircraft profiles">
+                    <span>✈️</span> Aircraft Profiles
+                </button>
+            </div>
         </nav>
 
         <section class="hero-section">
@@ -427,6 +433,14 @@
                     <div class="module-title" style="color: var(--accent-orange);">Emergency Procedures</div>
                     <div class="module-desc">Memory items, quick-action emergency checklists, glide calculator &amp; 121.5 VHF script</div>
                 </a>
+                <a href="javascript:void(0)" onclick="AircraftProfiles.openModal()" class="module-card" style="border-color: var(--accent-green); cursor: pointer;">
+                    <div class="module-card-header">
+                        <span class="module-code" style="color: var(--accent-green);">06 // FLEET</span>
+                        <span class="module-arrow" style="color: var(--accent-green);">&rarr;</span>
+                    </div>
+                    <div class="module-title" style="color: var(--accent-green);">Aircraft Profiles &amp; Fleet</div>
+                    <div class="module-desc">Load manufacturer POH presets (C172, DR400, PA28, DA40, C152), import &amp; export JSON profiles across all tools</div>
+                </a>
             </div>
         </section>
     </main>
@@ -444,5 +458,6 @@
             root.classList.toggle('dark-mode');
         });
     </script>
+    <script src="aircraft_profiles.js"></script>
 </body>
 </html>

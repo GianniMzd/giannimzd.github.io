@@ -685,6 +685,37 @@
             const cleanList = (Array.isArray(apt.notams) ? apt.notams : []).filter(n => {
                 const full = ((n.text || '') + ' ' + (n.raw || '')).toUpperCase();
                 return !MOCK_SIGNATURES.some(sig => full.includes(sig.toUpperCase()));
+            }).map(n => {
+                if (n.raw) {
+                    if (!n.lowerLimit && !n.upperLimit) {
+                        const fMatch = n.raw.match(/F\)\s*([^\n\r]+?)(?=(?:\s+G\)|$))/i);
+                        if (fMatch) n.lowerLimit = fMatch[1].trim();
+                        const gMatch = n.raw.match(/G\)\s*([^\n\r]+)/i);
+                        if (gMatch) n.upperLimit = gMatch[1].trim();
+                        if (!n.lowerLimit && !n.upperLimit) {
+                            const flMatch = n.raw.match(/\/(\d{3})\/(\d{3})\//);
+                            if (flMatch && (flMatch[1] !== '000' || flMatch[2] !== '999')) {
+                                n.lowerLimit = flMatch[1] === '000' ? 'SFC' : `FL${flMatch[1]}`;
+                                n.upperLimit = flMatch[2] === '999' ? 'UNL' : `FL${flMatch[2]}`;
+                            }
+                        }
+                    }
+                    if (!n.schedule) {
+                        const dMatch = n.raw.match(/D\)\s*([^\n\r]+)/i);
+                        if (dMatch) n.schedule = dMatch[1].trim();
+                    }
+                    if (!n.coordinates) {
+                        const coordMatch = n.raw.match(/(\d{4}[NS])\s*(\d{5}[EW])(?:\s*(\d{3}))?/);
+                        if (coordMatch) {
+                            n.coordinates = `${coordMatch[1]} ${coordMatch[2]}`;
+                            if (coordMatch[3] && !n.radius) {
+                                const r = parseInt(coordMatch[3], 10);
+                                if (r > 0) n.radius = `${r} NM`;
+                            }
+                        }
+                    }
+                }
+                return n;
             });
             return { ...apt, notams: cleanList };
         });
@@ -722,7 +753,7 @@
                                 <strong style="font-size: 13px; font-family: monospace;">${escapeHtml(apt.icao)}</strong>
                                 <span style="font-size: 12px; font-weight: 700; color: #222;">${escapeHtml(apt.name || (typeof KNOWN_AIRPORTS !== 'undefined' && KNOWN_AIRPORTS[apt.icao] && KNOWN_AIRPORTS[apt.icao].name) || 'Aerodrome')}</span>
                             </div>
-                            <span style="font-size: 11px; font-weight: 700; color: #555;">${notamList.length} Active NOTAM${notamList.length === 1 ? '' : 's'}</span>
+                            <span style="font-size: 11px; font-weight: 700; color: #555;">${notamList.length} Active NOTAM${notamList.length === 1 ? '' : 's'}${apt.source ? ` • <span style="font-size: 9.5px; color: #1a73e8; font-weight: 800;">${escapeHtml(apt.source)}</span>` : ''}</span>
                         </div>
 
                         <!-- NOTAMs List -->
@@ -747,6 +778,9 @@
                                 const fromDateStr = formatDossierNotamDate(n.startDate);
                                 const toDateStr = n.isPerm ? 'PERM' : formatDossierNotamDate(n.endDate);
 
+                                const vertLimits = (n.lowerLimit || n.upperLimit) ? `${n.lowerLimit || 'SFC'} ➔ ${n.upperLimit || 'UNL'}` : '';
+                                const locInfo = (n.coordinates || n.radius) ? `${n.coordinates || ''}${n.radius ? ` (${n.radius})` : ''}` : '';
+
                                 return `
                                     <div style="border-bottom: 1px solid #eee; padding: 7px 0; font-size: 11px; line-height: 1.4;">
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
@@ -761,6 +795,13 @@
                                                 ${escapeHtml(fromDateStr)} ➔ ${escapeHtml(toDateStr)}
                                             </div>
                                         </div>
+                                        ${(vertLimits || n.schedule || locInfo) ? `
+                                            <div style="font-size: 9.5px; color: #555; margin-bottom: 4px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                                ${vertLimits ? `<span><strong>Alt:</strong> <span style="color: #1a73e8; font-weight: 700;">${escapeHtml(vertLimits)}</span></span>` : ''}
+                                                ${n.schedule ? `<span><strong>Sched:</strong> ${escapeHtml(n.schedule)}</span>` : ''}
+                                                ${locInfo ? `<span><strong>Loc:</strong> ${escapeHtml(locInfo)}</span>` : ''}
+                                            </div>
+                                        ` : ''}
                                         <div style="font-family: 'SFMono-Regular', Consolas, Menlo, monospace; font-size: 10px; color: #222; white-space: pre-wrap; background: #fafafa; padding: 5px 8px; border-radius: 3px; border-left: 2px solid #555;">
                                             ${escapeHtml(n.text || n.raw || 'No details available')}
                                         </div>

@@ -868,6 +868,12 @@
             <a href="perfo.html" class="highlight">Aircraft Performance</a>
             <a href="checklists.html">Checklists</a>
             <a href="emergency.html">Emergency Procedures</a>
+            <!-- AIRCRAFT PROFILE MANAGER BUTTON -->
+            <div style="padding: 0 16px; margin: 12px 0 6px 0;">
+                <button type="button" class="btn-action primary" onclick="AircraftProfiles.openModal()" style="width: 100%; padding: 10px 12px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);" title="Import, export, or select aircraft profiles">
+                    <span>✈️</span> Aircraft Profiles
+                </button>
+            </div>
             
             <!-- EXPORT FLIGHT DOSSIER BUTTON -->
             <div class="sidebar-export-wrap">
@@ -889,6 +895,9 @@
                     <p>Mass &amp; Balance computation, CG envelope safety validation, V-speeds reference, and fuel range estimator.</p>
                 </div>
                 <div class="page-heading-actions">
+                    <button type="button" class="btn-action primary" onclick="AircraftProfiles.openModal()" style="font-weight: 800; font-size: 12px; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 4px; cursor: pointer;" title="Import, export, or select manufacturer POH profile">
+                        <span>✈️</span> Manage Aircraft Profiles
+                    </button>
                     <div class="unit-selector-toolbar">
                         <span class="unit-toolbar-label">Units</span>
                         <div class="unit-select-group">
@@ -934,6 +943,11 @@
                     <div class="card">
                         <div class="card-header">
                             <h2>Aircraft Profile</h2>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="btn-action small" onclick="AircraftProfiles.openModal('presets')" title="Load manufacturer POH preset">⚡ Presets</button>
+                                <button class="btn-action small" onclick="AircraftProfiles.openModal('import')" title="Import aircraft profile from JSON">📥 Import</button>
+                                <button class="btn-action small" onclick="AircraftProfiles.openModal('export')" title="Export aircraft profile to JSON">📤 Export</button>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="form-grid cols-3">
@@ -1811,10 +1825,27 @@
         }
 
         // ---------- Cross-Tab Event Listeners ----------
+        function reloadAndRenderAll() {
+            loadState();
+            syncFromFlightPrep();
+            renderSpeeds();
+            renderWB();
+            computeWB();
+            computeRange();
+        }
+
+        window.__hasProfileChangeHandler = true;
+        window.addEventListener('aircraftProfileChanged', () => {
+            reloadAndRenderAll();
+        });
+
         window.addEventListener('focus', syncFromFlightPrep);
         window.addEventListener('storage', (e) => {
             if (e.key === BRIEFING_STORAGE_KEY) {
                 syncFromFlightPrep();
+            }
+            if (e.key === 'flightprep_profile_sync_trigger' || e.key === STORAGE_KEY) {
+                reloadAndRenderAll();
             }
         });
 
@@ -1952,7 +1983,9 @@
         renderSpeeds(); 
         renderWB();
         computeWB();
+        computeRange();
     </script>
+    <script src="aircraft_profiles.js"></script>
     <script src="flight_dossier.js"></script>
 </body>
 </html>
