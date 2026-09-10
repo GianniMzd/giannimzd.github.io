@@ -663,15 +663,51 @@
         // 4. PAGE 4: AERODROME NOTAMS (SELECTED AIRFIELDS)
         // ---------------------------------------------------------
         let notamsHtml = '';
-        const monitoredNotamsList = Array.isArray(notamsData) ? notamsData : [];
+        const rawNotamsList = Array.isArray(notamsData) ? notamsData : [];
+
+        // Filter out any mock NOTAM signatures from legacy versions
+        const MOCK_SIGNATURES = [
+            'RWY 08R/26L CLSD DUE TO WORK IN PROGRESS',
+            'GRASS RWY 07L/25R CLSD DUE TO WATER ACCUMULATION',
+            'VOR CLM 113.85 MHZ U/S',
+            'OBST CRANE ERECTED 1.2NM EAST OF THR 27R',
+            'BIRD HAZARD CONCENTRATED IN VICINITY OF RWY 09L/27R',
+            'TWR HOURS OF OPS: MON-FRI 0700-1900 UTC',
+            'PARACHUTING ACTIVITY OVER SECTOR NORTH',
+            'ILS DME RWY 27L NOT AVBL DUE TO SCHEDULED CALIBRATION',
+            'TWY B BTN TWY B2 AND TWY B4 CLSD',
+            'STANDARD NOISE ABATEMENT PROCEDURES IN EFFECT',
+            'OBSTACLE CRANE ERECTED IN VICINITY OF AERODROME',
+            'MAINT VEHICLES ON SFC'
+        ];
+
+        const monitoredNotamsList = rawNotamsList.map(apt => {
+            const cleanList = (Array.isArray(apt.notams) ? apt.notams : []).filter(n => {
+                const full = ((n.text || '') + ' ' + (n.raw || '')).toUpperCase();
+                return !MOCK_SIGNATURES.some(sig => full.includes(sig.toUpperCase()));
+            });
+            return { ...apt, notams: cleanList };
+        });
+
+        const formatDossierNotamDate = (dVal) => {
+            if (!dVal) return 'ACTIVE';
+            if (dVal === 'PERM') return 'PERM';
+            const d = new Date(dVal);
+            if (isNaN(d.getTime())) return String(dVal);
+            const day = d.getUTCDate().toString().padStart(2, '0');
+            const mo = d.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }).toUpperCase();
+            const hh = d.getUTCHours().toString().padStart(2, '0');
+            const mm = d.getUTCMinutes().toString().padStart(2, '0');
+            return `${day} ${mo} ${hh}:${mm}Z`;
+        };
 
         if (monitoredNotamsList.length === 0) {
             notamsHtml = `
                 <div style="padding: 30px; text-align: center; border: 1px dashed #999; background: #fafafa; border-radius: 4px; color: #555; font-size: 12px;">
                     <div style="font-size: 28px; margin-bottom: 8px;">📋</div>
-                    <strong style="font-size: 14px; color: #222;">No NOTAMs Monitored for this Flight</strong>
+                    <strong style="font-size: 14px; color: #222;">No Aerodromes Monitored for this Flight</strong>
                     <div style="margin-top: 6px; color: #666; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.5;">
-                        To include NOTAMs in this section, add aerodrome ICAO codes in the NOTAMs briefing module on the Flight Preparation page.
+                        To include operational NOTAMs in this section, add aerodrome ICAO codes or click "Route Airfields" in the NOTAMs module on the Flight Preparation page.
                     </div>
                 </div>
             `;
@@ -684,7 +720,7 @@
                         <div style="background: #f1efe9; padding: 6px 12px; border-bottom: 1px solid #000; display: flex; justify-content: space-between; align-items: center;">
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <strong style="font-size: 13px; font-family: monospace;">${escapeHtml(apt.icao)}</strong>
-                                <span style="font-size: 12px; font-weight: 700; color: #222;">${escapeHtml(apt.name || (KNOWN_AIRPORTS[apt.icao] && KNOWN_AIRPORTS[apt.icao].name) || 'Aerodrome')}</span>
+                                <span style="font-size: 12px; font-weight: 700; color: #222;">${escapeHtml(apt.name || (typeof KNOWN_AIRPORTS !== 'undefined' && KNOWN_AIRPORTS[apt.icao] && KNOWN_AIRPORTS[apt.icao].name) || 'Aerodrome')}</span>
                             </div>
                             <span style="font-size: 11px; font-weight: 700; color: #555;">${notamList.length} Active NOTAM${notamList.length === 1 ? '' : 's'}</span>
                         </div>
@@ -692,9 +728,15 @@
                         <!-- NOTAMs List -->
                         <div style="padding: 8px 12px;">
                             ${notamList.length === 0 ? `
-                                <div style="padding: 10px; color: #188038; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                                    <span>✓</span> No active operational NOTAMs filed for this aerodrome.
-                                </div>
+                                ${apt.imported ? `
+                                    <div style="padding: 10px; color: #188038; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                                        <span>✓</span> 0 active operational NOTAMs on record for this aerodrome.
+                                    </div>
+                                ` : `
+                                    <div style="padding: 10px; color: #b06000; background: #fffdf5; border: 1px dashed #e0a800; border-radius: 3px; font-size: 11px; display: flex; align-items: center; gap: 8px;">
+                                        <span>⚠️</span> <strong>Pending Briefing Import:</strong> No NOTAMs recorded for ${escapeHtml(apt.icao)}. Verify official national AIS / PIB before flight.
+                                    </div>
+                                `}
                             ` : notamList.map(n => {
                                 const sev = n.severity || 'info';
                                 let sevBg = '#f0f0f0', sevCol = '#333';
@@ -702,6 +744,8 @@
                                 else if (sev === 'warning') { sevBg = '#fef7e0'; sevCol = '#b06000'; }
 
                                 const catLabel = (n.cat || 'GENERAL').toUpperCase();
+                                const fromDateStr = formatDossierNotamDate(n.startDate);
+                                const toDateStr = n.isPerm ? 'PERM' : formatDossierNotamDate(n.endDate);
 
                                 return `
                                     <div style="border-bottom: 1px solid #eee; padding: 7px 0; font-size: 11px; line-height: 1.4;">
@@ -714,7 +758,7 @@
                                                 ${n.title ? `<span style="font-weight: 700; color: #222; font-size: 10.5px;">${escapeHtml(n.title)}</span>` : ''}
                                             </div>
                                             <div style="font-size: 9.5px; color: #666; font-family: monospace;">
-                                                ${escapeHtml(n.startDateStr || 'ACTIVE')} ➔ ${escapeHtml(n.endDateStr || (n.isPerm ? 'PERM' : 'UFN'))}
+                                                ${escapeHtml(fromDateStr)} ➔ ${escapeHtml(toDateStr)}
                                             </div>
                                         </div>
                                         <div style="font-family: 'SFMono-Regular', Consolas, Menlo, monospace; font-size: 10px; color: #222; white-space: pre-wrap; background: #fafafa; padding: 5px 8px; border-radius: 3px; border-left: 2px solid #555;">
@@ -858,15 +902,6 @@
                     <!-- Selected Airfields Weather Cards -->
                     ${weatherCardsHtml}
 
-                    <!-- General Weather Briefing Summary (if present) -->
-                    ${weatherData.summary ? `
-                        <div style="border: 1.5px solid #000; padding: 10px 12px; background: #fdfdfd; margin-top: 10px;">
-                            <strong style="font-size: 11px; text-transform: uppercase; display: block; margin-bottom: 4px;">General Enroute Weather Notes</strong>
-                            <div style="font-family: 'SFMono-Regular', Consolas, Menlo, monospace; font-size: 10.5px; color: #222; white-space: pre-wrap; line-height: 1.4;">
-                                ${escapeHtml(weatherData.summary)}
-                            </div>
-                        </div>
-                    ` : ''}
 
                     <div style="display: flex; justify-content: space-between; font-size: 9.5px; color: #777; border-top: 1px solid #ddd; padding-top: 8px; margin-top: 14px;">
                         <span>VFR minimums: 1500ft ceiling / 5 km visibility &bull; Check updated reports prior to takeoff</span>
