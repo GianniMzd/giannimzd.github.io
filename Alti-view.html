@@ -29,6 +29,8 @@
       --status-bg: #ecfdf5;
       --status-color: #065f46;
       --status-border: #a7f3d0;
+      --shot-border: #d4cfc7;
+      --shot-bg: #1c202a;
     }
 
     [data-theme="dark"] {
@@ -49,6 +51,8 @@
       --status-bg: #064e3b;
       --status-color: #6ee7b7;
       --status-border: #047857;
+      --shot-border: #2e3444;
+      --shot-bg: #0b0d13;
     }
 
     *,
@@ -249,35 +253,8 @@
       margin-bottom: 1.2rem;
     }
 
-    .header-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-      margin-top: 1rem;
-    }
-
-    .header-links a {
-      font-size: 0.82rem;
-      color: var(--link);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      background: var(--accent-light);
-      padding: 0.3rem 0.75rem;
-      border-radius: 4px;
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-    }
-
-    .header-links a:hover {
-      background: var(--accent);
-      color: #ffffff;
-      border-color: var(--accent);
-    }
-
     .section {
-      padding-top: 2.2rem;
+      padding-top: 2.5rem;
     }
 
     .section-title {
@@ -297,6 +274,60 @@
       color: var(--news-text);
       text-align: justify;
       margin-bottom: 1.1rem;
+    }
+
+    /* Screenshots & Mockup Framing */
+    .screenshot-frame {
+      border: 1px solid var(--shot-border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--shot-bg);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      margin: 1.8rem 0 2.2rem;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+
+    .screenshot-frame:hover {
+      border-color: var(--accent);
+    }
+
+    .screenshot-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.22);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .screenshot-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .screenshot-bar-title {
+      margin-left: 6px;
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.55);
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    .screenshot-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .screenshot-caption {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: -1.4rem;
+      margin-bottom: 2rem;
+      font-style: italic;
     }
 
     .feature-grid {
@@ -504,6 +535,7 @@
       <li><a href="#overview" class="active">overview</a></li>
       <li><a href="#problem">the friction</a></li>
       <li><a href="#solution">features</a></li>
+      <li><a href="#interface">interface</a></li>
       <li><a href="#pilot-call">for pilots</a></li>
     </ul>
   </aside>
@@ -551,6 +583,18 @@
         <p>
           I have been a light aircraft pilot for around five years, holding a Light Aircraft Pilot Licence (LAPL) with ~110 flight hours logged mostly in Piper and Cessna aircraft across Southern France and Corsica. Together with a close friend and fellow developer, we started building <strong>Alti-View</strong> to rethink how general aviation pilots prepare, review, and brief their flights.
         </p>
+
+        <!-- Hero Screenshot (Landing Page) -->
+        <div class="screenshot-frame">
+          <div class="screenshot-bar">
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-bar-title">alti-view.github.io — Landing Overview</span>
+          </div>
+          <img src="altiview_hero.png" alt="Alti-View Landing Screen showing 'Your Entire Flight, In One App' with artificial horizon instrument" />
+        </div>
+        <div class="screenshot-caption">Alti-View's landing interface and flight deck entrance.</div>
       </header>
 
       <section class="section" id="problem">
@@ -608,6 +652,38 @@
             </p>
           </div>
         </div>
+      </section>
+
+      <!-- Interface Screenshots Section -->
+      <section class="section" id="interface">
+        <div class="section-title">interface & flight workflow</div>
+        <p>
+          Here is an early look inside the web application, built around a responsive cockpit dark-mode designed for optimal readability in flight and pre-flight planning environments:
+        </p>
+
+        <!-- Screenshot 1: Interactive Tactical VFR Map -->
+        <div class="screenshot-frame">
+          <div class="screenshot-bar">
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-bar-title">Alti-View — Carte & Espace Aérien (Bordeaux-Mérignac CTR & TMA example)</span>
+          </div>
+          <img src="altiview_map.png" alt="Alti-View Interactive VFR Aeronautical Map displaying controlled airspaces, VFR reporting points, and flight route" />
+        </div>
+        <div class="screenshot-caption">Interactive airspace management: VFR reporting gates, restricted zones, and en-route flight plan tracking.</div>
+
+        <!-- Screenshot 2: Dossier de Vol & Log de Navigation -->
+        <div class="screenshot-frame">
+          <div class="screenshot-bar">
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-dot"></span>
+            <span class="screenshot-bar-title">Alti-View — Dossier de Vol & Log de Navigation (A5/A4 Kneeboard export)</span>
+          </div>
+          <img src="altiview_dossier.png" alt="Alti-View Dossier de Vol modal with navigation log calculation table and fuel consumption breakdown" />
+        </div>
+        <div class="screenshot-caption">Dossier de Vol: Automated navigation log table with fuel consumption, runway winds, checklists, and printable PDF export.</div>
       </section>
 
       <section class="section">
