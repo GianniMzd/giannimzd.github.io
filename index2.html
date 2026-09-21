@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gianni Mazaud — Finance student</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root,
+    [data-theme="light"] {
+      --bg: #faf9f7;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --accent: #1a3a5c;
+      --accent-light: #e8f0f8;
+      --link: #1a3a5c;
+      --border: #e0ddd8;
+      --tag-bg: #f0f4f8;
+      --toggle-bg: #e8f0f8;
+      --toggle-color: #1a3a5c;
+      --news-text: #333;
+      --dot-color: rgba(26, 58, 92, 0.10);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f1117;
+      --text: #e8e4dc;
+      --muted: #7a7a8a;
+      --accent: #7eaacc;
+      --accent-light: #1a2535;
+      --link: #8ab8d8;
+      --border: #2a2d36;
+      --tag-bg: #1a1d26;
+      --toggle-bg: #1a2535;
+      --toggle-color: #8ab8d8;
+      --news-text: #c8c4bc;
+      --dot-color: rgba(126, 170, 204, 0.12);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+      background-size: 22px 22px;
+      background-attachment: fixed;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100vh;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0 0.2rem 0 0;
+      z-index: 50;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      align-items: flex-end;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar-nav li {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .sidebar-nav li a {
+      display: block;
+      text-align: right;
+      text-decoration: none;
+      font-family: 'Caveat', cursive;
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: var(--muted);
+      padding: 0.38rem 0.6rem;
+      border-radius: 5px;
+      transition: color 0.15s, background 0.15s;
+      letter-spacing: 0.01em;
+      line-height: 1.3;
+    }
+
+    .sidebar-nav li a:hover {
+      color: var(--text);
+      background: var(--accent-light);
+    }
+
+    .sidebar-nav li a.active {
+      color: var(--accent);
+      background: var(--accent-light);
+      font-weight: 700;
+    }
+
+    .main {
+      margin-left: 200px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 3.5rem 3rem 5rem;
+    }
+
+    .main-inner {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.5rem;
+      background: var(--toggle-bg);
+      color: var(--toggle-color);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      z-index: 100;
+      letter-spacing: 0.02em;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    .theme-toggle svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .section {
+      padding-top: 4rem;
+    }
+
+    .section:first-child {
+      padding-top: 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .header-text {
+      flex: 1;
+    }
+
+    .header h1 {
+      font-family: 'Caveat', cursive;
+      font-size: 3.4rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.9rem;
+      color: var(--text);
+      line-height: 1.1;
+    }
+
+    .header p {
+      color: var(--news-text);
+      margin-bottom: 0.5rem;
+      max-width: 520px;
+    }
+
+    .uni-link {
+      color: var(--link);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.25s ease;
+    }
+
+    .header-photo-placeholder {
+      flex-shrink: 0;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'EB Garamond', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.2rem;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+    }
+
+    .links a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .links a:hover {
+      border-bottom-color: var(--link);
+    }
+
+    .section-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-transform: lowercase;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.4rem;
+      transition: border-color 0.25s;
+    }
+
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .news-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0 1rem;
+      align-items: baseline;
+    }
+
+    .news-date {
+      font-size: 0.82rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .news-text {
+      font-size: 0.93rem;
+      color: var(--news-text);
+    }
+
+    .news-text a {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .news-text a:hover {
+      border-bottom-color: var(--link);
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .paper-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+
+    .paper {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 0 1.2rem;
+      align-items: start;
+    }
+
+    .paper-thumb-placeholder {
+      width: 110px;
+      height: 80px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .paper-venue {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .paper-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .paper-title a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .paper-title a:hover {
+      color: var(--accent);
+    }
+
+    .paper-authors {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .paper-links {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .paper-links a {
+      font-size: 0.78rem;
+      color: var(--link);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .paper-links a:hover {
+      background: var(--accent-light);
+      border-color: var(--accent);
+    }
+
+    .header p,
+    .paper-authors,
+    .section p {
+      text-align: justify;
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 680px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0.8rem 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        align-items: center;
+        justify-content: flex-start;
+        width: auto;
+      }
+
+      .sidebar-nav li {
+        width: auto;
+        justify-content: flex-start;
+      }
+
+      .sidebar-nav li a {
+        font-size: 1rem;
+        padding: 0.25rem 0.6rem;
+        text-align: left;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 2rem 1.2rem 4rem;
+        justify-content: flex-start;
+      }
+
+      body {
+        flex-direction: column;
+      }
+
+      .header {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+      }
+
+      .header-photo-placeholder {
+        width: 110px;
+        height: 110px;
+      }
+
+      .paper {
+        grid-template-columns: 1fr;
+      }
+
+      .paper-thumb-placeholder {
+        display: none;
+      }
+
+      .theme-toggle {
+        top: 0.8rem;
+        right: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <ul class="sidebar-nav">
+      <li><a href="#about" class="active">about</a></li>
+      <li><a href="#events">events</a></li>
+      <li><a href="#projects">projects</a></li>
+      <!--<li><a href="#aviation">aviation</a></li>-->
+      <li><a href="#cv">curriculum vitae</a></li>
+    </ul>
+  </aside>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <svg id="iconMoon" viewBox="0 0 24 24">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+    <svg id="iconSun" viewBox="0 0 24 24" style="display:none">
+      <circle cx="12" cy="12" r="5" />
+      <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </svg>
+    <span id="toggleLabel">dark</span>
+  </button>
+
+  <main class="main">
+    <div class="main-inner">
+
+      <section class="section" id="about">
+        <div class="header">
+          <div class="header-text">
+            <h1>Gianni Mazaud</h1>
+            <p>
+              I am a student in <strong>Market Finance & Risk Management</strong> at the <a
+                href="https://www.pantheonsorbonne.fr/" target="_blank" class="uni-link">University
+                Panthéon-Sorbonne</a>.
+            </p>
+            <p style="margin-top:0.6rem;">
+              I hold a Bachelor's degree in <strong>Applied Mathematics</strong> from <a
+                href="https://univ-cotedazur.fr/" target="_blank" class="uni-link">Nice University</a>, with a focus on
+              social sciences and economics.
+            </p>
+            <p style="margin-top:0.6rem;">
+              Beyond my academic journey, I have a long-standing passion for aviation since I am child. I first earned my
+               Initiaion Aviation Certificate and later obtained my Light Aircraft Pilot Licence (LAPL). Since then, I have logged around
+              110 flight hours, mainly flying Piper and Cessna.
+            </p>
+            <div class="links">
+              <a href="https://www.linkedin.com/in/gianni-mazaud-685587321/" target="_blank">LinkedIn</a>
+              <a href="https://github.com/GianniMzd" target="_blank">GitHub</a>
+              <a href="mailto:gianni.mazaud@icloud.com">gianni.mazaud@icloud.com</a>
+            </div>
+          </div>
+          <div class="header-photo-placeholder" style="background:none;overflow:hidden;padding:0;"><img
+              src="IMG_5870.jpg" alt="Gianni Mazaud"
+              style="width:130%;height:130%;object-fit:cover;object-position:center 55%;margin-left:-15%;margin-top:-8%;" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="events">
+        <div class="section-title">events</div>
+        <div class="news-list">
+
+          <div class="news-item">
+            <span class="news-date">June '26</span>
+            <span class="news-text">
+              <a href="News/FFJ_BDF_SC/ffj_lab_summer_conference.html">France-Japan Foundation / French Bank Summer
+                Conference.</a>
+              <span class="badge">Economics</span>
+            </span>
+          </div>
+
+          <div class="news-item">
+            <span class="news-date">June '26</span>
+            <span class="news-text">
+              <a href="News/Vivatech/vivatech_26.html">First time visiting VivaTech Paris.</a>
+              <span class="badge">Tech</span>
+            </span>
+          </div>
+
+          <div class="news-item">
+            <span class="news-date">March '26</span>
+            <span class="news-text">
+              <a href="News/Financial-risk-forum/financial-risk-forum.html">19th Financial Risks International Forum..</a>
+              <span class="badge">Economics</span>
+            </span>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section" id="projects">
+        <div class="section-title">selected projects</div>
+        <div class="paper-list">
+
+        <div class="paper">
+            <div class="paper-thumb-placeholder">📊</div>
+            <div>
+              <div class="paper-venue">Risk Management · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/CVaR_VaR_modeling.pdf">Using Kernel Density Function and Student's t-distribution to
+                  model Value at Risk and Expected Shortfall using Monte Carlo method</a>
+              </div>
+              <div class="paper-authors">
+                Co-written with Yuto Murata. Monte Carlo method used on non-parametric KDE and parametric
+                Student's t-distribution to model Value at Risk and Expected Shortfall and compare it to traditional
+                GBM.
+                It takes into consideration the Basel III/FRTB framework and uses a backtesting methodology to evaluate
+                the performance of the model.
+              </div>
+              <div class="paper-links">
+                <a href="/paper/CVaR_VaR_modeling.pdf">paper</a>
+                <a href="https://github.com/GianniMzd/VaR_CVaR_model/blob/main/VaR_CVaR_simulation.py">code</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">📈</div>
+            <div>
+              <div class="paper-venue">Econometrics modeling · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/Master_thesis.pdf">Assessment of the Uncertainty Dynamics Affecting the Convenience Yield of Oil</a>
+              </div>
+              <div class="paper-authors">
+                This file is my Master Thesis (first year) in which I tried to realize an econometrics modeleling of the uncertainty dynamics affecting the
+                convenience yield of oil. I chose to include both geopolitical uncertainty (GPR Index) and economical uncertainty (VIX Index).
+              </div>
+              <div class="paper-links">
+                <a href="/paper/Master_thesis.pdf">paper</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">✈️</div>
+            <div>
+              <div class="paper-venue">Accounting · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/IFRS16_study.pdf">Airline reporting comparison regarding IFRS 16 and how does Air France
+                  manage to bypass this standard.</a>
+              </div>
+              <div class="paper-authors">
+                We compare the implications of the new IFRS 16 (leasing) standard for airlines and highlight the
+                accounting strategies used to mitigate its impact. We also analyze the case of Air France, which took
+                advantage of the "financing lease" to lower its lease liability.
+              </div>
+              <div class="paper-links">
+                <a href="/paper/IFRS16_study.pdf">paper</a>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">✈️</div>
+            <div>
+              <div class="paper-venue">Finance · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/Airbus_Boeing_Q2.pdf">What Airbus's and Boeing's Q2 Results Say About Global Aviation's 2026 Trajectory</a>
+              </div>
+              <div class="paper-authors">
+                This report examines the Q2 2026 financial results of Airbus and Boeing, contextualized within their strategic trajectories and forward-looking guidance.
+              </div>
+              <div class="paper-links">
+                <a href="/paper/Airbus_Boeing_Q2.pdf">paper</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="paper">
+            <div class="paper-thumb-placeholder">📈</div>
+            <div>
+              <div class="paper-venue">Portfolio optimization · 2026</div>
+              <div class="paper-title">
+                <a href="/paper/beta-opt-mavar.pdf">Optimal allocation finding for an aggressive portfolio under given
+                  VaR constraint</a>
+              </div>
+              <div class="paper-authors">
+                Under the assumption of economic growth, the idea is to determine the allocation that gives the max beta
+                portfolio with a given MAVaR constraint using KDE Monte Carlo simulation, SLSQP optimization, and
+                walk-forward backtesting with train/deploy split.
+              </div>
+              <div class="paper-links">
+                <a href="/paper/beta-opt-mavar.pdf">paper</a>
+                <a href="https://github.com/GianniMzd/Beta-optimization/blob/main/Beta_finding.py">code</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+<!--
+        <div class="section-title">aviation & aeronautics</div>
+        <p style="color: var(--news-text); margin-bottom: 1rem; max-width: 620px;">
+          Since I was a child, I have been passionate about aviation, which has influenced me throughout the years.
+          In 2022, I earned my Light Aircraft Pilot License (LAPL). With over 110 flight hours, I fly in the south of
+          France, especially in Corsica. I have flown the Robin DR400, Cessna 172, Cessna 152, and Piper PA28.
+        </p>
+        <div class="links" style="margin-top: 0;">
+          <a href="aero/aero_index.html"
+            style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 6px; background: var(--accent-light); font-weight: 500;">
+            🛩️ Visit My Aviation Portal &rarr;
+          </a>
+        </div>
+      </section>
+--->
+
+      <section class="section" id="cv">
+        <div class="section-title">curriculum vitae</div>
+        <p style="color: var(--news-text); margin-bottom: 1rem; max-width: 600px;">
+          I am currently seeking internship opportunities for a gap year to enhance my professional experience.
+          Building upon my academic background, I possess a strong foundation in economics, statistical modeling, risk management, 
+          accounting (especially IFRS) as well as a complete knowledge of financial instruments and corporate finance.
+        </p>
+        <div class="links" style="margin-top: 0;">
+          <a href="Gianni_Mazaud_CV.pdf" target="_blank"
+            style="display: inline-flex; align-items: center; gap: 0.3rem;">
+            📄 Download CV (PDF)
+          </a>
+        </div>
+      </section>
+
+      <footer>Last updated August 2026 · Built with AI 🤖</footer>
+
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const html = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const iconMoon = document.getElementById('iconMoon');
+      const iconSun = document.getElementById('iconSun');
+      const label = document.getElementById('toggleLabel');
+
+      let savedTheme = null;
+      try { savedTheme = localStorage.getItem('theme'); } catch (e) { }
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = savedTheme || (prefersDark ? 'dark' : 'light');
+
+      function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        iconMoon.style.display = theme === 'dark' ? 'none' : 'block';
+        iconSun.style.display = theme === 'dark' ? 'block' : 'none';
+        label.textContent = theme === 'dark' ? 'light' : 'dark';
+      }
+
+      applyTheme(initial);
+
+      btn.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem('theme', next); } catch (e) { }
+      });
+
+      const navLinks = document.querySelectorAll('.sidebar-nav a');
+      const sections = document.querySelectorAll('.section');
+
+      function onScroll() {
+        let current = sections[0].id;
+        sections.forEach(sec => {
+          if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+        });
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    });
+  </script>
+
+</body>
+
+</html>
