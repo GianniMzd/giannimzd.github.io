@@ -330,49 +330,6 @@
       font-style: italic;
     }
 
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem;
-      margin: 1.5rem 0 1rem;
-    }
-
-    .feature-card {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.1rem 1.2rem;
-      background: var(--card-bg);
-      box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.03);
-      transition: transform 0.15s, border-color 0.2s;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-    }
-
-    .feature-icon {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      display: inline-block;
-    }
-
-    .feature-title {
-      font-family: 'Caveat', cursive;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.35rem;
-    }
-
-    .feature-desc {
-      font-size: 0.86rem;
-      color: var(--muted);
-      line-height: 1.6;
-      text-align: left;
-      margin-bottom: 0;
-    }
-
     .callout {
       border-left: 3px solid var(--accent);
       background: var(--accent-soft);
@@ -384,71 +341,6 @@
     .callout p {
       margin-bottom: 0;
       font-size: 0.92rem;
-    }
-
-    .cta-box {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--card-bg);
-      padding: 1.5rem;
-      text-align: center;
-      margin-top: 1.5rem;
-    }
-
-    .cta-box h3 {
-      font-family: 'Caveat', cursive;
-      font-size: 1.8rem;
-      color: var(--text);
-      margin-bottom: 0.4rem;
-    }
-
-    .cta-box p {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.92rem;
-      max-width: 540px;
-      margin: 0 auto 1.2rem;
-    }
-
-    .cta-buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .cta-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      border-radius: 5px;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-
-    .cta-primary {
-      background: var(--accent);
-      color: #ffffff;
-      border: 1px solid var(--accent);
-    }
-
-    .cta-primary:hover {
-      opacity: 0.92;
-      transform: translateY(-1px);
-    }
-
-    .cta-secondary {
-      background: var(--accent-light);
-      color: var(--link);
-      border: 1px solid var(--border);
-    }
-
-    .cta-secondary:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
     }
 
     footer {
@@ -514,10 +406,6 @@
         font-size: 2.5rem;
       }
 
-      .feature-grid {
-        grid-template-columns: 1fr;
-      }
-
       .theme-toggle {
         top: 0.8rem;
         right: 1rem;
@@ -534,9 +422,8 @@
       <li><a href="../index.html">← home</a></li>
       <li><a href="#overview" class="active">overview</a></li>
       <li><a href="#problem">the friction</a></li>
-      <li><a href="#solution">features</a></li>
       <li><a href="#interface">interface</a></li>
-      <li><a href="#pilot-call">for pilots</a></li>
+      <li><a href="#dashboard">dashboard</a></li>
     </ul>
   </aside>
 
@@ -610,35 +497,6 @@
         </div>
       </section>
 
-      <section class="section" id="solution">
-        <div class="section-title">key capabilities</div>
-        <p>
-          AltiView is designed around the exact chronological order of a pilot's briefing routine:
-        </p>
-
-        <div class="feature-grid">
-          <div class="feature-card">
-            <span class="feature-icon">🧭</span>
-            <div class="feature-title">Dynamic Navlog Builder</div>
-          </div>
-
-          <div class="feature-card">
-            <span class="feature-icon">⚖️</span>
-            <div class="feature-title">Flight Performance Calculations</div>
-          </div>
-
-          <div class="feature-card">
-            <span class="feature-icon">🌦️</span>
-            <div class="feature-title">Integrated Weather & NOTAMs</div>
-          </div>
-
-          <div class="feature-card">
-            <span class="feature-icon">📋</span>
-            <div class="feature-title">Kneeboard-Ready Briefing</div>
-          </div>
-        </div>
-      </section>
-
       <!-- Interface Screenshots Section -->
       <section class="section" id="interface">
         <div class="section-title">interface & flight workflow</div>
@@ -671,29 +529,19 @@
         <div class="screenshot-caption">Dossier de Vol: Automated navigation log table with fuel consumption, runway winds, checklists, and printable PDF export.</div>
       </section>
 
+      <!-- Dashboard & Community Section -->
+      <section class="section" id="dashboard">
+        <div class="section-title">the dashboard & community</div>
+        <p>
+          Beyond flight preparation, we also built a dashboard that turns AltiView into a place where pilots can connect. From a single space, pilots can create or join groups, add friends, post their flights to share them with others, and exchange through built-in messaging. The dashboard is also designed to support Aeroclub life, bringing members of a club together around the same tool so that preparing a flight and staying in touch with fellow pilots happen in one place.
+        </p>
+      </section>
+
       <section class="section">
         <div class="section-title">design philosophy & tech stack</div>
         <p>
           The final objective is to get a generated flight file to use either in PDF or to be printed, with all information required (weather, navlog, NOTAMs, briefing, checklists...) and get rid of other useless and non-intuitive files.
         </p>
-      </section>
-
-      <section class="section" id="pilot-call">
-        <div class="section-title">pilot feedback & early testing</div>
-        <div class="cta-box">
-          <h3>Are you an active VFR pilot or flight instructor?</h3>
-          <p>
-            AltiView is nearing its initial launch. We are actively running pilot interviews and private beta testing with general aviation pilots to validate the navigation log ergonomics, performance charts, and calculations.
-          </p>
-          <div class="cta-buttons">
-            <a href="https://www.linkedin.com/in/gianni-mazaud-685587321/" target="_blank" rel="noopener noreferrer" class="cta-button cta-secondary">
-              <span>↗</span> LinkedIn
-            </a>
-            <a href="mailto:contact@altiview.eu?subject=Alti-View%20Pilot%20Feedback" class="cta-button cta-secondary">
-              <span>✉</span> Send an Email
-            </a>
-          </div>
-        </div>
       </section>
 
       <footer>
